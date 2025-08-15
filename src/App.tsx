@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Navigation from "./components/Navigation";
@@ -11,6 +12,9 @@ import ScrollingBanner from "./components/ScrollingBanner";
 import AboutSection from "./components/AboutSection";
 import ProjectsSection from "./components/ProjectsSection";
 import ContactSection from "./components/ContactSection";
+import DitherTrail from "./components/cursor-dither-trail";
+
+import "./font/fonts.css";
 
 const queryClient = new QueryClient();
 
@@ -20,20 +24,30 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        
+        {/* Background effect rendered on every page */}
+        <div className="absolute inset-0 -z-10">
+          <DitherTrail />
+        </div>
+
         <Routes>
-          <Route path="/" element={
-            <div className="relative">
-              <Navigation />
-              <main>
-                <HeroSection />
-                <ScrollingBanner />
-                <AboutSection />
-                <ProjectsSection />
-                <ContactSection />
-              </main>
-            </div>
-          } />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route
+            path="/"
+            element={
+              <div className="relative">
+                <Navigation />
+                <main>
+                  <HeroSection />
+                  <ScrollingBanner />
+                  <AboutSection />
+                  <ProjectsSection />
+                  <ContactSection />
+                </main>
+              </div>
+            }
+          />
+          
+          {/* Catch-all route for 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

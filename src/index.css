@@ -68,10 +68,12 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
+    font-family: 'Clash Display', system-ui, sans-serif;
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Clash Display', system-ui, sans-serif;
     overflow-x: hidden;
   }
 

@@ -19,7 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				inter: ['Inter', 'system-ui', 'sans-serif'],
+				sans: ['Clash Display', 'system-ui', 'sans-serif'],
+				'clash': ['Clash Display', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -64,6 +65,8 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
+
+			
 			keyframes: {
 				'accordion-down': {
 					from: {

@@ -5,6 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Navigation from "./components/Navigation";
+import HeroSection from "./components/HeroSection";
+import ScrollingBanner from "./components/ScrollingBanner";
+import AboutSection from "./components/AboutSection";
+import ProjectsSection from "./components/ProjectsSection";
+import ContactSection from "./components/ContactSection";
 
 const queryClient = new QueryClient();
 
@@ -15,7 +21,18 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={
+            <div className="relative">
+              <Navigation />
+              <main>
+                <HeroSection />
+                <ScrollingBanner />
+                <AboutSection />
+                <ProjectsSection />
+                <ContactSection />
+              </main>
+            </div>
+          } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

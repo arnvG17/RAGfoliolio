@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { motion, useAnimation, useMotionValue } from "motion/react";
+import "./circle.css";
 
 const getRotationTransition = (duration, from, loop = true) => ({
   from,
@@ -22,7 +23,7 @@ const getTransition = (duration, from) => ({
 const CircularText = ({
   text,
   spinDuration = 20,
-  onHover = "speedUp",
+  onHover = "goBonkers",
   className = "",
 }) => {
   const letters = Array.from(text);
@@ -85,7 +86,7 @@ const CircularText = ({
 
   return (
     <motion.div
-      className={`m-0 mx-auto rounded-full w-[200px] h-[200px] relative text-white font-black text-center cursor-pointer origin-center ${className}`}
+      className={`m-0 mx-auto rounded-full w-[280px] h-[280px] relative text-white font-black text-center cursor-pointer origin-center ${className}`}
       style={{ rotate: rotation }}
       initial={{ rotate: 0 }}
       animate={controls}
@@ -93,16 +94,18 @@ const CircularText = ({
       onMouseLeave={handleHoverEnd}
     >
       {letters.map((letter, i) => {
-        const rotationDeg = (360 / letters.length) * i;
-        const factor = Math.PI / letters.length;
-        const x = factor * i;
-        const y = factor * i;
-        const transform = `rotateZ(${rotationDeg}deg) translate3d(${x}px, ${y}px, 0)`;
+        const radius = 115; 
+        const angle = (360 / letters.length) * i;
+        
+        // --- KEY CHANGE HERE ---
+        // 1. `translateX(-50%) translateY(-50%)` properly centers the letter.
+        // 2. The final `rotate(${-angle}deg)` is removed, so letters follow the curve.
+        const transform = `translateX(-50%) translateY(-50%) rotate(${angle}deg) translateY(-${radius}px)`;
 
         return (
           <span
             key={i}
-            className="absolute inline-block inset-0 text-2xl transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]"
+            className="absolute top-1/2 left-1/2 text-4xl transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]"
             style={{ transform, WebkitTransform: transform }}
           >
             {letter}

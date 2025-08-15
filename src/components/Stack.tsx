@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import FlowingMenu from "./FlowingMenu2";
+import MagicBento from "./MagicBento"
+import Noise from "./Noise";
 
 const Stack = () => {
     const demoItems = [
@@ -8,30 +10,40 @@ const Stack = () => {
         { link: '#', text: 'Node.js', image: 'https://picsum.photos/600/400?random=3' },
         { link: '#', text: 'MongoDB', image: 'https://picsum.photos/600/400?random=4' }
       ];
-  
-
-  
 
   return (
     <section id="about" className="py-20 px-6 relative overflow-hidden">
       
+      {/* Noise component positioned as the background */}
+      <div className="absolute inset-0 z-[-1] pointer-events-none">
+        <Noise />
+      </div>
 
       <div className="max-w-4xl mx-auto">
+        
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-accent">✦</span>
             <span className="text-accent font-medium text-sm tracking-wider uppercase">
-              About Me
+              My Stack
             </span>
           </div>
           <div>
-            <FlowingMenu items={demoItems} />
+            <MagicBento 
+              textAutoHide={true}
+              enableStars={false}
+              enableSpotlight={false}
+              enableBorderGlow={true}
+              enableTilt={false}
+              enableMagnetism={true}
+              clickEffect={true}
+              spotlightRadius={500}
+              particleCount={12}
+              glowColor="0, 255, 0"
+            />
           </div>
         </div>
-
-        
-
         
       </div>
     </section>

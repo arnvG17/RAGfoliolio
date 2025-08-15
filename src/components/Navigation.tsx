@@ -6,8 +6,7 @@ const Navigation = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const heroHeight = document.getElementById("home")?.offsetHeight || 300;
-      setIsScrolled(window.scrollY > heroHeight - 80);
+      setIsScrolled(window.scrollY > 0); // Trigger immediately on scroll
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -21,13 +20,13 @@ const Navigation = () => {
 
   return (
     <nav
-      className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 
+      className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 
         backdrop-blur-xl border border-white/10 bg-background/40 rounded-full 
-        shadow-lg flex items-center justify-between px-6 
-        ${isScrolled ? "scale-90 py-2" : "scale-100 py-4"}`}
+        shadow-lg flex items-center justify-between px-6 py-3
+        transition-[max-width] duration-700 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]
+        ${isScrolled ? "max-w-[650px]" : "max-w-[900px]"}`}
       style={{
-        maxWidth: "900px",
-        width: "90%",
+        width: "90%", // keeps height constant, only width changes
       }}
     >
       {/* Logo */}
@@ -63,14 +62,8 @@ const Navigation = () => {
         </button>
       </div>
 
-      {/* Theme toggle */}
-      <Button
-        variant="outline"
-        size="sm"
-        className="hidden md:flex border-accent/20 text-accent hover:bg-accent/10 hover:border-accent/40"
-      >
-        🌙
-      </Button>
+      {/* Button */}
+      <Button className="ml-4">Resume</Button>
     </nav>
   );
 };

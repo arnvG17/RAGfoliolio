@@ -1,0 +1,19 @@
+.blob-cursor {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    pointer-events: none !important;
+    width: 300px !important;
+    height: 300px !important;
+    background: radial-gradient(
+      circle,
+      rgba(0, 255, 0, 0.7) 0%,     /* bright green core */
+      rgba(0, 255, 0, 0.3) 50%,    /* mid green glow */
+      rgba(0, 255, 0, 0) 100%      /* fade out edge */
+    ) !important;
+    border-radius: 50% !important;
+    filter: blur(120px) !important; /* more blur for spread */
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+  }
+  

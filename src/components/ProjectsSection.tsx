@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUpRight } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const ProjectsSection = () => {
+  const headerRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.2 });
+  const projectsRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
   const projects = [
     {
       title: "Aora",
@@ -31,7 +34,12 @@ const ProjectsSection = () => {
     <section id="projects" className="py-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div 
+          ref={headerRef.ref}
+          className={`text-center mb-16 transition-all duration-1000 ${
+            headerRef.isVisible ? 'animate-pop-in' : 'opacity-0 scale-90 translate-y-8 blur-sm'
+          }`}
+        >
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-accent">✦</span>
             <span className="text-accent font-medium text-sm tracking-wider uppercase">My Work</span>
@@ -46,7 +54,12 @@ const ProjectsSection = () => {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div 
+          ref={projectsRef.ref}
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-1000 ${
+            projectsRef.isVisible ? 'animate-fade-in-scale' : 'opacity-0 scale-95 blur-md'
+          }`}
+        >
           {projects.map((project, index) => (
             <Card key={index} className="group bg-card/50 border-border/30 hover:border-accent/30 transition-all duration-300 overflow-hidden">
               <div className="aspect-video overflow-hidden">

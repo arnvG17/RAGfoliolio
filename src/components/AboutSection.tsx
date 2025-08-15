@@ -1,8 +1,11 @@
 import { useEffect, useRef } from "react";
 import BlobCursor from "./BlobCursor";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const AboutSection = () => {
   const blobRef = useRef(null);
+  const headerRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.2 });
+  const contentRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -57,7 +60,12 @@ const AboutSection = () => {
 
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div 
+          ref={headerRef.ref}
+          className={`text-center mb-16 transition-all duration-1000 ${
+            headerRef.isVisible ? 'animate-pop-in' : 'opacity-0 scale-90 translate-y-8 blur-sm'
+          }`}
+        >
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-accent">✦</span>
             <span className="text-accent font-medium text-sm tracking-wider uppercase">
@@ -67,43 +75,29 @@ const AboutSection = () => {
         </div>
 
         {/* About Content */}
-        <div className="text-center">
-          <p className="text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed text-muted-foreground">
-            I'm{" "}
-            <span className="text-foreground font-medium">Arnav Gawandi</span>,
-            with over{" "}
-            <span className="text-accent font-medium">5+ years</span> of
-            experience in design & development with strong focus on producing{" "}
-            <span className="text-foreground font-medium">
-              high quality & impactful digital experiences
-            </span>
-            . I have worked with some of the most innovative industry leaders to
-            help build their{" "}
-            <span className="text-accent font-medium">top-notch products</span>.
-          </p>
+        <div 
+          ref={contentRef.ref}
+          className={`text-center transition-all duration-1000 ${
+            contentRef.isVisible ? 'animate-fade-in-scale' : 'opacity-0 scale-95 blur-md'
+          }`}
+        >
+        <p className="text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed text-muted-foreground">
+  I'm{" "}
+  <span className="text-foreground font-medium">Arnav Gawandi</span>, a{" "}
+  <span className="text-accent font-medium">web designer</span> who approaches
+  every project as if crafting a{" "}
+  <span className="text-foreground font-medium">bespoke home</span>. I immerse
+  myself in your vision, shaping every{" "}
+  <span className="text-accent font-medium">layout, interaction, and detail</span>{" "}
+  with care and intention. My goal is to create digital spaces that are{" "}
+  <span className="text-foreground font-medium">visually striking</span> yet{" "}
+  <span className="text-accent font-medium">personal, functional, and welcoming</span>, 
+  a place where your <span className="text-foreground font-medium">brand truly lives </span> 
+   and connects with its audience.
+</p>
         </div>
 
-        {/* Stats */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div className="p-6">
-            <div className="text-3xl font-bold text-accent mb-2">5+</div>
-            <div className="text-muted-foreground text-sm uppercase tracking-wider">
-              Years Experience
-            </div>
-          </div>
-          <div className="p-6">
-            <div className="text-3xl font-bold text-accent mb-2">50+</div>
-            <div className="text-muted-foreground text-sm uppercase tracking-wider">
-              Projects Completed
-            </div>
-          </div>
-          <div className="p-6">
-            <div className="text-3xl font-bold text-accent mb-2">100%</div>
-            <div className="text-muted-foreground text-sm uppercase tracking-wider">
-              Client Satisfaction
-            </div>
-          </div>
-        </div>
+        
       </div>
     </section>
   );

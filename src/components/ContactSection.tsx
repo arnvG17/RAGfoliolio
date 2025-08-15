@@ -1,12 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const ContactSection = () => {
+  const headerRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.2 });
+  const actionsRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.3 });
+  const linksRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.4 });
   return (
     <section id="contact" className="py-20 px-6">
       <div className="max-w-4xl mx-auto text-center">
         {/* Section Header */}
-        <div className="mb-16">
+        <div 
+          ref={headerRef.ref}
+          className={`mb-16 transition-all duration-1000 ${
+            headerRef.isVisible ? 'animate-pop-in' : 'opacity-0 scale-90 translate-y-8 blur-sm'
+          }`}
+        >
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-accent">✦</span>
             <span className="text-accent font-medium text-sm tracking-wider uppercase">Get In Touch</span>
@@ -23,7 +32,12 @@ const ContactSection = () => {
         </div>
 
         {/* Contact Actions */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <div 
+          ref={actionsRef.ref}
+          className={`flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 transition-all duration-1000 ${
+            actionsRef.isVisible ? 'animate-slide-in-left' : 'opacity-0 -translate-x-8 blur-sm'
+          }`}
+        >
           <Button 
             asChild
             size="lg"
@@ -46,7 +60,12 @@ const ContactSection = () => {
         </div>
 
         {/* Contact Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div 
+          ref={linksRef.ref}
+          className={`grid grid-cols-2 md:grid-cols-4 gap-6 text-center transition-all duration-1000 ${
+            linksRef.isVisible ? 'animate-slide-in-right' : 'opacity-0 translate-x-8 blur-sm'
+          }`}
+        >
           <a 
             href="https://www.linkedin.com/in/devraj-chatribin/" 
             target="_blank" 

@@ -1,6 +1,6 @@
 const ScrollingBanner = () => {
   const skills = [
-    "Websites", "Designing", "Graphics", "Animations", "Community", "Development", "Mentor"
+    "AI","Websites", "Design", "Graphics", "Animations", "AI", "Marketing"
   ];
 
   // Duplicate the array to create seamless infinite scroll

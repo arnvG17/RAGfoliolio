@@ -1,11 +1,11 @@
 import { useRef, useEffect } from 'react';
 
 const Noise = ({
-  patternSize = 250,
-  patternScaleX = 1,
-  patternScaleY = 1,
-  patternRefreshInterval = 2,
-  patternAlpha = 15,
+  patternSize = 300,
+  patternScaleX = 18,
+  patternScaleY = 100,
+  patternRefreshInterval = 6,
+  patternAlpha = 55,
 }) => {
   const grainRef = useRef(null);
 

@@ -10,6 +10,7 @@ import Navigation from "./components/Navigation";
 import HeroSection from "./components/HeroSection";
 import ScrollingBanner from "./components/ScrollingBanner";
 import AboutSection from "./components/AboutSection";
+import Stack from "./components/Stack";
 import ProjectsSection from "./components/ProjectsSection";
 import ContactSection from "./components/ContactSection";
 import DitherTrail from "./components/cursor-dither-trail";
@@ -40,9 +41,10 @@ const App = () => (
                 <Navigation />
                 <main>
                   <HeroSection />
-                  <ScrollingBanner />
                   <AboutSection />
+                  <Stack />
                   <ProjectsSection />
+                  <ScrollingBanner />
                   <ContactSection />
                 </main>
               </div>

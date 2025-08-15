@@ -13,7 +13,7 @@ const AboutSection = () => {
         {/* About Content */}
         <div className="text-center">
           <p className="text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed text-muted-foreground">
-            I'm <span className="text-foreground font-medium">Devraj Chatribin</span>, with over{" "}
+            I'm <span className="text-foreground font-medium">Arnav Gawandi</span>, with over{" "}
             <span className="text-accent font-medium">5+ years</span> of experience in design & development 
             with strong focus on producing{" "}
             <span className="text-foreground font-medium">high quality & impactful digital experiences</span>. 

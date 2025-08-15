@@ -13,6 +13,7 @@ import AboutSection from "./components/AboutSection";
 import ProjectsSection from "./components/ProjectsSection";
 import ContactSection from "./components/ContactSection";
 import DitherTrail from "./components/cursor-dither-trail";
+import Noise from "./components/Noise";
 
 import "./font/fonts.css";
 
@@ -28,6 +29,7 @@ const App = () => (
         {/* Background effect rendered on every page */}
         <div className="absolute inset-0 -z-10">
           <DitherTrail />
+          <Noise />
         </div>
 
         <Routes>

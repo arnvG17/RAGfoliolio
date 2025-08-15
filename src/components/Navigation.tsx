@@ -31,7 +31,7 @@ const Navigation = () => {
     >
       {/* Logo */}
       <div className="flex items-center space-x-2 text-xl font-bold text-accent">
-        <span>⚛</span> <span>React Bits</span>
+        <span>⚛</span> <span>Arnv</span>
       </div>
 
       {/* Links */}

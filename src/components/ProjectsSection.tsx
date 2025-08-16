@@ -15,7 +15,7 @@ const ProjectsSection = () => {
       description:
         "AI-Based Notes summarizer with Inbuilt RAG chatbot and Quiz",
       image:
-        "public\Screenshot 2025-08-16 160212.png", // <-- CORRECTED LINK
+        "https://github.com/arnV17/folio/blob/main/public/Screenshot%202025-08-16%20161004.png?raw=true", // <-- CORRECTED LINK
       link: "https://the-noting-pap.vercel.app/",
     },
     // ... other projects remain the same
@@ -26,7 +26,7 @@ const ProjectsSection = () => {
       description:
         "PokeAPI based Pokedex using react and node with caching",
       image:
-        "public\Screenshot 2025-08-16 160445.png",
+        "https://github.com/arnV17/folio/blob/main/public/Screenshot%202025-08-16%20160212.png?raw=true",
       link: "https://pokedb-sj8s.vercel.app/",
     },
     {
@@ -36,7 +36,7 @@ const ProjectsSection = () => {
       description:
         "A Work in progress Digital brochure for an AgroTourism Agency",
       image:
-        "C:\Users\Arnv\folio-glie\devraj-clone-showcase\public\Screenshot 2025-08-16 161004.png",
+        "https://github.com/arnV17/folio/blob/main/public/Screenshot%202025-08-16%20160445.png?raw=true",
       link: "https://konkanai-ccyn.vercel.app/",
     },
   ];

@@ -15,9 +15,10 @@ const ProjectsSection = () => {
       description:
         "AI-Based Notes summarizer with Inbuilt RAG chatbot and Quiz",
       image:
-        "https://drive.google.com/uc?export=view&id=154GIWbEfwhWoXfjNPYXufDQitU2Z39Xl", // fixed drive link
+        "public\Screenshot 2025-08-16 160212.png", // <-- CORRECTED LINK
       link: "https://the-noting-pap.vercel.app/",
     },
+    // ... other projects remain the same
     {
       title: "Pokedex",
       category: "Full Stack Project, API",
@@ -25,7 +26,7 @@ const ProjectsSection = () => {
       description:
         "PokeAPI based Pokedex using react and node with caching",
       image:
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop&crop=center",
+        "public\Screenshot 2025-08-16 160445.png",
       link: "https://pokedb-sj8s.vercel.app/",
     },
     {
@@ -35,7 +36,7 @@ const ProjectsSection = () => {
       description:
         "A Work in progress Digital brochure for an AgroTourism Agency",
       image:
-        "https://images.unsplash.com/photo-1558655146-9f40138c9db3?w=600&h=400&fit=crop&crop=center",
+        "C:\Users\Arnv\folio-glie\devraj-clone-showcase\public\Screenshot 2025-08-16 161004.png",
       link: "https://konkanai-ccyn.vercel.app/",
     },
   ];

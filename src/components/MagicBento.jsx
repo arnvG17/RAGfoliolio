@@ -1,52 +1,56 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
-import "./bento.css"
+
+import "./bento.css";
 
 const DEFAULT_PARTICLE_COUNT = 12;
 const DEFAULT_SPOTLIGHT_RADIUS = 300;
-const DEFAULT_GLOW_COLOR = "0, 255, 0";
+const DEFAULT_GLOW_COLOR = "75, 69, 237"; // Replaced previous color with #4B45ED from image
 const MOBILE_BREAKPOINT = 768;
 
-// --- UPDATED DATA HERE ---
 const cardData = [
   {
-    color: "#001006",
+    color: "#0f0c29", // Dark blue/purple background
     title: "React.js",
-    description: "Building dynamic and responsive user interfaces with modern web standards.",
+    description:
+      "Building dynamic and responsive user interfaces with modern web standards.",
     label: "Frontend",
   },
   {
-    color: "#001006",
+    color: "#0f0c29", // Dark blue/purple background
     title: "Node.js",
-    description: "Creating fast and scalable server-side applications with JavaScript.",
+    description:
+      "Creating fast and scalable server-side applications with JavaScript.",
     label: "Backend",
   },
   {
-    color: "#001006",
+    color: "#0f0c29", // Dark blue/purple background
     title: "MongoDB",
     description: "Utilizing NoSQL databases for flexible and efficient data storage.",
     label: "Database",
   },
   {
-    color: "#001006",
+    color: "#0f0c29", // Dark blue/purple background
     title: "C++",
-    description: "Developing high-performance applications and systems programming.",
+    description:
+      "Developing high-performance applications and systems programming.",
     label: "Systems",
   },
   {
-    color: "#001006",
+    color: "#0f0c29", // Dark blue/purple background
     title: "Langchain",
-    description: "Building powerful applications with Large Language Models (LLMs).",
+    description:
+      "Building powerful applications with Large Language Models (LLMs).",
     label: "AI/ML",
   },
   {
-    color: "#001006",
+    color: "#0f0c29", // Dark blue/purple background
     title: "Python",
-    description: "Versatile scripting for backend services, data science, and AI.",
+    description:
+      "Versatile scripting for backend services, data science, and AI.",
     label: "General Purpose",
   },
 ];
-
 
 const createParticleElement = (
   x,
@@ -492,10 +496,11 @@ const GlobalSpotlight = ({
 
 const BentoCardGrid = ({ children, gridRef }) => (
   <div
-    className="bento-section grid gap-2 p-3 max-w-[54rem] select-none relative"
+    className="bento-section grid gap-2 p-3 select-none relative"
     style={{ fontSize: "clamp(1rem, 0.9rem + 0.5vw, 1.5rem)" }}
     ref={gridRef}
   >
+    <div className="absolute inset-0 z-[-1] pointer-events-none"></div>
     {children}
   </div>
 );
@@ -543,12 +548,12 @@ const MagicBento = ({
             --glow-intensity: 0;
             --glow-radius: 200px;
             --glow-color: ${glowColor};
-            --border-color: #2e4e39;
-            --background-dark: #001006;
+            --border-color: #4a3a69;
+            --background-dark: #0f0c29;
             --white: hsl(0, 0%, 100%);
-            --green-primary: rgba(0, 255, 0, 1);
-            --green-glow: rgba(0, 255, 0, 0.2);
-            --green-border: rgba(0, 255, 0, 0.8);
+            --theme-primary: rgba(59, 130, 246, 1);
+            --theme-glow: rgba(75, 69, 237, 0.2);
+            --theme-border: rgba(59, 130, 246, 0.8);
           }
           
           .card-responsive {
@@ -609,7 +614,7 @@ const MagicBento = ({
           }
           
           .card--border-glow:hover {
-            box-shadow: 0 4px 20px rgba(24, 78, 46, 0.4), 0 0 30px rgba(${glowColor}, 0.2);
+            box-shadow: 0 4px 20px rgba(74, 58, 105, 0.4), 0 0 30px rgba(${glowColor}, 0.2);
           }
           
           .particle::before {
@@ -625,7 +630,7 @@ const MagicBento = ({
           }
           
           .particle-container:hover {
-            box-shadow: 0 4px 20px rgba(24, 78, 46, 0.2), 0 0 30px rgba(${glowColor}, 0.2);
+            box-shadow: 0 4px 20px rgba(74, 58, 105, 0.2), 0 0 30px rgba(${glowColor}, 0.2);
           }
           
           .text-clamp-1 {
@@ -675,8 +680,9 @@ const MagicBento = ({
       <BentoCardGrid gridRef={gridRef}>
         <div className="card-responsive grid gap-2">
           {cardData.map((card, index) => {
-            const baseClassName = `card flex flex-col justify-between relative aspect-[4/3] min-h-[200px] w-full max-w-full p-5 rounded-[20px] border border-solid font-light overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] ${enableBorderGlow ? "card--border-glow" : ""
-              }`;
+            const baseClassName = `card flex flex-col justify-between relative aspect-[4/3] min-h-[200px] w-full max-w-full p-5 rounded-[20px] border border-solid font-light overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] ${
+              enableBorderGlow ? "card--border-glow" : ""
+            }`;
 
             const cardStyle = {
               backgroundColor: card.color || "var(--background-dark)",
@@ -706,12 +712,16 @@ const MagicBento = ({
                   </div>
                   <div className="card__content flex flex-col relative text-white">
                     <h3
-                      className={`card__title font-normal text-base m-0 mb-1 ${textAutoHide ? "text-clamp-1" : ""}`}
+                      className={`card__title font-normal text-base m-0 mb-1 ${
+                        textAutoHide ? "text-clamp-1" : ""
+                      }`}
                     >
                       {card.title}
                     </h3>
                     <p
-                      className={`card__description text-xs leading-5 opacity-90 ${textAutoHide ? "text-clamp-2" : ""}`}
+                      className={`card__description text-xs leading-5 opacity-90 ${
+                        textAutoHide ? "text-clamp-2" : ""
+                      }`}
                     >
                       {card.description}
                     </p>
@@ -840,12 +850,16 @@ const MagicBento = ({
                 </div>
                 <div className="card__content flex flex-col relative text-white">
                   <h3
-                    className={`card__title font-normal text-base m-0 mb-1 ${textAutoHide ? "text-clamp-1" : ""}`}
+                    className={`card__title font-normal text-base m-0 mb-1 ${
+                      textAutoHide ? "text-clamp-1" : ""
+                    }`}
                   >
                     {card.title}
                   </h3>
                   <p
-                    className={`card__description text-xs leading-5 opacity-90 ${textAutoHide ? "text-clamp-2" : ""}`}
+                    className={`card__description text-xs leading-5 opacity-90 ${
+                      textAutoHide ? "text-clamp-2" : ""
+                    }`}
                   >
                     {card.description}
                   </p>

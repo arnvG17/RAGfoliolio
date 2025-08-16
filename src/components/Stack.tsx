@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import FlowingMenu from "./FlowingMenu2";
 import MagicBento from "./MagicBento"
-import Noise from "./Noise";
+
 
 const Stack = () => {
     const demoItems = [
@@ -16,7 +16,7 @@ const Stack = () => {
       
       {/* Noise component positioned as the background */}
       <div className="absolute inset-0 z-[-1] pointer-events-none">
-        <Noise />
+        
       </div>
 
       <div className="max-w-4xl mx-auto">
@@ -34,11 +34,11 @@ const Stack = () => {
               textAutoHide={true}
               enableStars={false}
               enableSpotlight={false}
-              enableBorderGlow={true}
+              enableBorderGlow={false}
               enableTilt={false}
               enableMagnetism={true}
               clickEffect={true}
-              spotlightRadius={500}
+              spotlightRadius={90}
               particleCount={12}
               glowColor="0, 255, 0"
             />

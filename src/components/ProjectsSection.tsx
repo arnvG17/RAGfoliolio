@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUpRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import Noise from "./Noise";
+
 
 const ProjectsSection = () => {
   const headerRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.2 });
@@ -37,7 +37,8 @@ const ProjectsSection = () => {
       
       {/* 2. Wrapped Noise component and applied positioning classes */}
       <div className="absolute inset-0 z-[-1] pointer-events-none">
-        <Noise />
+        
+        
       </div>
       
       <div className="max-w-7xl mx-auto">

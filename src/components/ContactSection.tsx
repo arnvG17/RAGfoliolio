@@ -53,7 +53,7 @@ const ContactSection = () => {
             size="lg"
             className="border-accent/20 text-accent hover:bg-accent/10 hover:border-accent/40 px-8 py-3 text-base font-medium rounded-full"
           >
-            <a href="https://www.linkedin.com/in/devraj-chatribin/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/" target="_blank" rel="noopener noreferrer">
               Let's Connect <ArrowUpRight className="w-4 h-4 ml-2" />
             </a>
           </Button>
@@ -91,7 +91,7 @@ const ContactSection = () => {
             Leetcode ↗
           </a>
           <a 
-            href="mailto:devrajchatribin9978@gmail.com"
+            href="mailto:arnavog@gmail.com"
             className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
           >
             Email ↗

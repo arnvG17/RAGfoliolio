@@ -23,8 +23,11 @@ const getTransition = (duration, from) => ({
 const CircularText = ({
   text,
   spinDuration = 20,
+  spinDirection = "clockwise", // 🔥 new
   onHover = "goBonkers",
   className = "",
+  radius = 150, // 🔥 radius customizable
+  fontSize = "text-4xl",
 }) => {
   const letters = Array.from(text);
   const controls = useAnimation();
@@ -33,11 +36,11 @@ const CircularText = ({
   useEffect(() => {
     const start = rotation.get();
     controls.start({
-      rotate: start + 360,
+      rotate: spinDirection === "clockwise" ? start + 360 : start - 360,
       scale: 1,
       transition: getTransition(spinDuration, start),
     });
-  }, [spinDuration, text, onHover, controls, rotation]);
+  }, [spinDuration, text, onHover, spinDirection, controls, rotation]);
 
   const handleHoverStart = () => {
     const start = rotation.get();
@@ -69,7 +72,7 @@ const CircularText = ({
     }
 
     controls.start({
-      rotate: start + 360,
+      rotate: spinDirection === "clockwise" ? start + 360 : start - 360,
       scale: scaleVal,
       transition: transitionConfig,
     });
@@ -78,7 +81,7 @@ const CircularText = ({
   const handleHoverEnd = () => {
     const start = rotation.get();
     controls.start({
-      rotate: start + 360,
+      rotate: spinDirection === "clockwise" ? start + 360 : start - 360,
       scale: 1,
       transition: getTransition(spinDuration, start),
     });
@@ -86,23 +89,21 @@ const CircularText = ({
 
   return (
     <motion.div
-      className={`m-0 mx-auto rounded-full w-[320px] h-[320px] relative text-white text-center cursor-pointer origin-center ${className}`}
-      style={{ rotate: rotation }}
+      className={`m-0 mx-auto rounded-full relative text-white text-center cursor-pointer origin-center ${className}`}
+      style={{ rotate: rotation, width: radius * 2, height: radius * 2 }}
       initial={{ rotate: 0 }}
       animate={controls}
       onMouseEnter={handleHoverStart}
       onMouseLeave={handleHoverEnd}
     >
       {letters.map((letter, i) => {
-        const radius = 150; // 🔥 Bigger radius here
         const angle = (360 / letters.length) * i;
-
         const transform = `translateX(-50%) translateY(-50%) rotate(${angle}deg) translateY(-${radius}px)`;
 
         return (
           <span
             key={i}
-            className="absolute top-1/2 left-1/2 text-4xl font-bold transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]"
+            className={`absolute top-1/2 left-1/2 ${fontSize} font-bold`}
             style={{ transform, WebkitTransform: transform }}
           >
             {letter}
@@ -114,4 +115,3 @@ const CircularText = ({
 };
 
 export default CircularText;
-  

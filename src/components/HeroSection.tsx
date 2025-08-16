@@ -26,8 +26,8 @@ const HeroSection = () => {
                 : "opacity-0 scale-90 translate-y-8 blur-sm"
             }`}
           >
-            <span className="text-xl"> `</span>
-            <span className="text-muted-foreground text-lg">  </span>
+            <span className="text-xl">`</span>
+            <span className="text-muted-foreground text-lg"></span>
           </div>
 
           {/* Main Headline */}
@@ -81,7 +81,7 @@ const HeroSection = () => {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium flex items-center gap-1"
             >
-              INSTAGRAM <ArrowUpRight className="w-3 h-3" />
+              LEETCODE <ArrowUpRight className="w-3 h-3" />
             </a>
             <a
               href="mailto:arnavog@gmail.com"
@@ -92,22 +92,33 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* --- RIGHT COLUMN: Only Circular Text --- */}
+        {/* --- RIGHT COLUMN: Dual Circular Texts --- */}
         <div className="flex justify-center items-center relative h-full">
           <div
             ref={circularTextRef.ref}
-            className={`transition-all duration-1000 ${
+            className={`relative transition-all duration-1000 ${
               circularTextRef.isVisible
                 ? "animate-fade-in-scale"
                 : "opacity-0 scale-95 blur-md"
             }`}
           >
+            {/* Outer circle - clockwise */}
             <CircularText
-              text="ARNAV⚛GAWANDI⚛"
-              onHover="goBonkers"
-              spinDuration={6}
-              className="w-64 h-64"
+              text="ARNAV  GAWANDI "
+              spinDuration={12}
+              direction="clockwise"
+              className="w-72 h-72 text-lg"
             />
+
+            {/* Inner circle - counter-clockwise */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <CircularText
+                text="DEVELOPER⚛DESIGNER⚛CREATOR⚛"
+                spinDuration={68}
+                direction="counter-clockwise"
+                className="w-48 h-48 text-sm"
+              />
+            </div>
           </div>
         </div>
       </div>

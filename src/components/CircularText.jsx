@@ -86,7 +86,7 @@ const CircularText = ({
 
   return (
     <motion.div
-      className={`m-0 mx-auto rounded-full w-[280px] h-[280px] relative text-white font-black text-center cursor-pointer origin-center ${className}`}
+      className={`m-0 mx-auto rounded-full w-[320px] h-[320px] relative text-white text-center cursor-pointer origin-center ${className}`}
       style={{ rotate: rotation }}
       initial={{ rotate: 0 }}
       animate={controls}
@@ -94,18 +94,15 @@ const CircularText = ({
       onMouseLeave={handleHoverEnd}
     >
       {letters.map((letter, i) => {
-        const radius = 115; 
+        const radius = 150; // 🔥 Bigger radius here
         const angle = (360 / letters.length) * i;
-        
-        // --- KEY CHANGE HERE ---
-        // 1. `translateX(-50%) translateY(-50%)` properly centers the letter.
-        // 2. The final `rotate(${-angle}deg)` is removed, so letters follow the curve.
+
         const transform = `translateX(-50%) translateY(-50%) rotate(${angle}deg) translateY(-${radius}px)`;
 
         return (
           <span
             key={i}
-            className="absolute top-1/2 left-1/2 text-4xl transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]"
+            className="absolute top-1/2 left-1/2 text-4xl font-bold transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]"
             style={{ transform, WebkitTransform: transform }}
           >
             {letter}
@@ -117,3 +114,4 @@ const CircularText = ({
 };
 
 export default CircularText;
+  

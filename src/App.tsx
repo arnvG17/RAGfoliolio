@@ -44,8 +44,8 @@ const App = () => (
                   <HeroSection />
                   <AboutSection />
                   <Stack />
-                  <ProjectsSection />
                   <ScrollingBanner />
+                  <ProjectsSection />
                   <ContactSection />
                 </main>
               </div>

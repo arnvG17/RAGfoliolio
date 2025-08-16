@@ -78,7 +78,7 @@ const HeroSection = () => {
             }`}
           >
              <a
-              href="https://www.linkedin.com/in/devraj-chatribin/"
+              href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium flex items-center gap-1"
@@ -94,7 +94,7 @@ const HeroSection = () => {
               GITHUB <ArrowUpRight className="w-3 h-3" />
             </a>
             <a
-              href="https://www.instagram.com/devraj_uiux/"
+              href="https://leetcode.com/u/ArnV17/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium flex items-center gap-1"

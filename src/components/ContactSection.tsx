@@ -43,7 +43,7 @@ const ContactSection = () => {
             size="lg"
             className="bg-accent text-accent-foreground hover:bg-accent/90 px-8 py-3 text-base font-medium rounded-full"
           >
-            <a href="mailto:devrajchatribin9978@gmail.com">
+            <a href="mailto:arnavog@gmail.com">
               Start a Project <ArrowUpRight className="w-4 h-4 ml-2" />
             </a>
           </Button>
@@ -67,7 +67,7 @@ const ContactSection = () => {
           }`}
         >
           <a 
-            href="https://www.linkedin.com/in/devraj-chatribin/" 
+            href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
@@ -75,7 +75,7 @@ const ContactSection = () => {
             LinkedIn ↗
           </a>
           <a 
-            href="https://github.com/DevrajDC" 
+            href="https://github.com/arnV17" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
@@ -83,12 +83,12 @@ const ContactSection = () => {
             GitHub ↗
           </a>
           <a 
-            href="https://www.instagram.com/devraj_uiux/" 
+            href="https://leetcode.com/u/ArnV17/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
           >
-            Instagram ↗
+            Leetcode ↗
           </a>
           <a 
             href="mailto:devrajchatribin9978@gmail.com"

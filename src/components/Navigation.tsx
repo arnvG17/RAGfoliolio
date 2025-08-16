@@ -62,8 +62,19 @@ const Navigation = () => {
         </button>
       </div>
 
-      {/* Button */}
-      <Button className="ml-4">Resume</Button>
+      {/* Resume Button */}
+      <Button
+        asChild
+        className="ml-4 rounded-full px-6 py-2" // capsule shape
+      >
+        <a
+          href="https://flowcv.com/resume/4sse35818k"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Resume
+        </a>
+      </Button>
     </nav>
   );
 };

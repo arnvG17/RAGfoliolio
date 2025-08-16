@@ -31,7 +31,7 @@ const cardData = [
   },
   {
     color: "#0f0c29", // Dark blue/purple background
-    title: "C++",
+    title: "C++ and JAVA",
     description:
       "Developing high-performance applications and systems programming.",
     label: "Systems",
@@ -48,7 +48,7 @@ const cardData = [
     title: "Python",
     description:
       "Versatile scripting for backend services, data science, and AI.",
-    label: "General Purpose",
+    label: "Datascience",
   },
 ];
 

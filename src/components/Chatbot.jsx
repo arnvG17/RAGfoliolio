@@ -5,6 +5,7 @@ export default function Chatbot({
   title = "Portfolio RAG Bot",
   placeholder = "Ask me about my projects, skills, or experience…",
   k = 4,
+  customStyles = {},
 }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -27,6 +28,34 @@ export default function Chatbot({
     []
   );
 
+  // Default styles that can be overridden
+  const defaultContainerStyles = {
+    background: theme.bg,
+    color: theme.text,
+    minHeight: 480,
+    width: "100%",
+    maxWidth: 720,
+    margin: "0 auto",
+    border: `1px solid ${theme.border}`,
+    borderRadius: 16,
+    boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+    display: "flex",
+    flexDirection: "column",
+  };
+
+  const defaultMessagesStyles = {
+    flex: 1,
+    overflowY: "auto",
+    overflowX: "hidden",
+    padding: 16,
+    background: theme.bg,
+    position: "relative",
+  };
+
+  // Merge custom styles with defaults
+  const containerStyles = { ...defaultContainerStyles, ...customStyles.container };
+  const messagesStyles = { ...defaultMessagesStyles, ...customStyles.messagesContainer };
+
   // Scroll handler to toggle scroll button
   function handleScroll() {
     if (!listRef.current) return;
@@ -48,6 +77,14 @@ export default function Chatbot({
   useEffect(() => {
     scrollToBottom(true);
   }, [messages]);
+
+  // Handle scroll restoration and smooth scrolling
+  useEffect(() => {
+    if (listRef.current) {
+      // Ensure we start at the bottom
+      scrollToBottom(false);
+    }
+  }, []);
 
   async function sendMessage() {
     const question = input.trim();
@@ -82,7 +119,7 @@ export default function Chatbot({
         {
           role: "assistant",
           content:
-            "Sorry, I couldn’t fetch a reply right now. Please try again.",
+            "Sorry, I couldn't fetch a reply right now. Please try again.",
         },
       ]);
     } finally {
@@ -98,21 +135,7 @@ export default function Chatbot({
   }
 
   return (
-    <div
-      style={{
-        background: theme.bg,
-        color: theme.text,
-        minHeight: 480,
-        width: "100%",
-        maxWidth: 720,
-        margin: "0 auto",
-        border: `1px solid ${theme.border}`,
-        borderRadius: 16,
-        boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div style={containerStyles}>
       {/* Header */}
       <div
         style={{
@@ -122,8 +145,9 @@ export default function Chatbot({
           padding: "14px 16px",
           background: theme.panel,
           borderBottom: `1px solid ${theme.border}`,
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
+          borderTopLeftRadius: containerStyles.borderRadius === 0 ? 0 : 16,
+          borderTopRightRadius: containerStyles.borderRadius === 0 ? 0 : 16,
+          flexShrink: 0,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -148,13 +172,7 @@ export default function Chatbot({
       <div
         ref={listRef}
         onScroll={handleScroll}
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: 16,
-          background: theme.bg,
-          position: "relative",
-        }}
+        style={messagesStyles}
       >
         {messages.length === 0 && <EmptyState theme={theme} />}
         {messages.map((m, i) => (
@@ -179,6 +197,15 @@ export default function Chatbot({
               boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
               fontSize: 18,
               fontWeight: 700,
+              transition: "transform 0.1s ease, box-shadow 0.1s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = "scale(1.1)";
+              e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
             }}
             title="Scroll to latest"
           >
@@ -195,6 +222,7 @@ export default function Chatbot({
             color: theme.text,
             borderTop: `1px solid ${theme.border}`,
             padding: "8px 12px",
+            flexShrink: 0,
           }}
         >
           <span style={{ color: theme.danger, marginRight: 8 }}>●</span>
@@ -208,8 +236,9 @@ export default function Chatbot({
           padding: 12,
           background: theme.panel,
           borderTop: `1px solid ${theme.border}`,
-          borderBottomLeftRadius: 16,
-          borderBottomRightRadius: 16,
+          borderBottomLeftRadius: containerStyles.borderRadius === 0 ? 0 : 16,
+          borderBottomRightRadius: containerStyles.borderRadius === 0 ? 0 : 16,
+          flexShrink: 0,
         }}
       >
         <div style={{ display: "flex", gap: 8 }}>
@@ -296,13 +325,14 @@ function Bubble({ role, text, theme }) {
           color: isUser ? "#0a0f0c" : theme.text,
           fontSize: 14,
           fontWeight: 700,
+          flexShrink: 0,
         }}
         title={isUser ? "You" : "Bot"}
       >
         {isUser ? "U" : "B"}
       </div>
 
-      <div style={{ maxWidth: "78%" }}>
+      <div style={{ maxWidth: "78%", minWidth: 0 }}>
         <div
           style={{
             background: isUser ? "#111518" : "#13181d",
@@ -312,6 +342,7 @@ function Bubble({ role, text, theme }) {
             padding: "10px 12px",
             whiteSpace: "pre-wrap",
             wordWrap: "break-word",
+            overflowWrap: "break-word",
           }}
         >
           {text}
@@ -353,7 +384,7 @@ function EmptyState({ theme }) {
       </div>
       <div>
         <div style={{ fontSize: 16, color: "#d1d5db" }}>
-          Ask me about Arnav’s work
+          Ask me about Arnav's work
         </div>
         <div style={{ fontSize: 13 }}>
           Projects • Competitions • Stack • Experience

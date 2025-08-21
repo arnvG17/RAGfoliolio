@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function Chatbot({
-  apiUrl = "http://localhost:5000/chat",
+  apiUrl = "https://rag-lh.onrender.com/chat",
   title = "Portfolio RAG Bot",
   placeholder = "Ask me about my projects, skills, or experience…",
   k = 4,

@@ -66,7 +66,7 @@ export default function ChatWidget() {
             }}
           >
             <Chatbot
-              apiUrl="http://localhost:5000/chat"
+              apiUrl="https://rag-lh.onrender.com/chat"
               title="Ask Arnav"
               // Override the default styles for the widget context
               customStyles={{

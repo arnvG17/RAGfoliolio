@@ -2,6 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import "./Metal.css";
 import CircularText from "./CircularText";
+import Chatbot from "./Chatbot.jsx"
 
 const HeroSection = () => {
   const greetingRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.2 });
@@ -59,6 +60,7 @@ const HeroSection = () => {
                 : "opacity-0 -translate-x-8 blur-sm"
             }`}
           >
+            <Chatbot apiUrl="http://localhost:5000/chat" title="Ask Arnav" />
             <a
               href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/"
               target="_blank"

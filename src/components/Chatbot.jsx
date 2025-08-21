@@ -387,7 +387,7 @@ function EmptyState({ theme }) {
           Ask me about Lewis "8XWDC" Hamilton 
         </div>
         <div style={{ fontSize: 13 }}>
-          Projects • Competitions • Stack • Experience
+          F1 • WDC • Sprint • Stint
         </div>
       </div>
     </div>

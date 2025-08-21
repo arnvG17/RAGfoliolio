@@ -1,42 +1,52 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-/**
- * Chatbot — Minimal, flat UI (green + black‑grey)
- *
- * Usage:
- * <Chatbot apiUrl="http://localhost:5000/chat" title="Ask Arnav" />
- */
 export default function Chatbot({
   apiUrl = "http://localhost:5000/chat",
   title = "Portfolio RAG Bot",
   placeholder = "Ask me about my projects, skills, or experience…",
   k = 4,
 }) {
-  const [messages, setMessages] = useState([]); // {role: "user"|"assistant", content: string}
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const listRef = useRef(null);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
 
-  // Colors — solid, flat palette
   const theme = useMemo(
     () => ({
-      bg: "#0f1214", // page bg (black‑grey)
-      panel: "#151a1f", // card/panel bg (slightly lighter)
-      border: "#22282f", // subtle borders
-      text: "#e5e7eb", // primary text
-      subtext: "#9ca3af", // secondary text
-      green: "#22c55e", // primary accent
-      greenDark: "#16a34a", // darker hover
+      bg: "#0f1214",
+      panel: "#151a1f",
+      border: "#22282f",
+      text: "#e5e7eb",
+      subtext: "#9ca3af",
+      green: "#22c55e",
+      greenDark: "#16a34a",
       danger: "#ef4444",
     }),
     []
   );
 
-  // Auto‑scroll on new messages
-  useEffect(() => {
+  // Scroll handler to toggle scroll button
+  function handleScroll() {
     if (!listRef.current) return;
-    listRef.current.scrollTop = listRef.current.scrollHeight;
+    const { scrollTop, scrollHeight, clientHeight } = listRef.current;
+    const atBottom = scrollTop + clientHeight >= scrollHeight - 40;
+    setShowScrollBtn(!atBottom);
+  }
+
+  // Scroll to bottom helper
+  function scrollToBottom(smooth = true) {
+    if (!listRef.current) return;
+    listRef.current.scrollTo({
+      top: listRef.current.scrollHeight,
+      behavior: smooth ? "smooth" : "auto",
+    });
+  }
+
+  // Auto scroll when messages change
+  useEffect(() => {
+    scrollToBottom(true);
   }, [messages]);
 
   async function sendMessage() {
@@ -65,7 +75,7 @@ export default function Chatbot({
       const answer = data?.answer ?? "(No answer returned)";
       setMessages((prev) => [...prev, { role: "assistant", content: answer }]);
     } catch (e) {
-      console.error(e,"orror");
+      console.error(e, "error");
       setError(e?.message || "Request failed");
       setMessages((prev) => [
         ...prev,
@@ -88,38 +98,46 @@ export default function Chatbot({
   }
 
   return (
-    <div style={{
-      background: theme.bg,
-      color: theme.text,
-      minHeight: 480,
-      width: "100%",
-      maxWidth: 720,
-      margin: "0 auto",
-      border: `1px solid ${theme.border}`,
-      borderRadius: 16,
-      boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-      display: "flex",
-      flexDirection: "column",
-    }}>
-      {/* Header */}
-      <div style={{
+    <div
+      style={{
+        background: theme.bg,
+        color: theme.text,
+        minHeight: 480,
+        width: "100%",
+        maxWidth: 720,
+        margin: "0 auto",
+        border: `1px solid ${theme.border}`,
+        borderRadius: 16,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "14px 16px",
-        background: theme.panel,
-        borderBottom: `1px solid ${theme.border}`,
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-      }}>
+        flexDirection: "column",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "14px 16px",
+          background: theme.panel,
+          borderBottom: `1px solid ${theme.border}`,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            width: 10,
-            height: 10,
-            borderRadius: 999,
-            background: theme.green,
-          }} />
-          <h3 style={{ margin: 0, fontSize: 16, letterSpacing: 0.3 }}>{title}</h3>
+          <div
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: theme.green,
+            }}
+          />
+          <h3 style={{ margin: 0, fontSize: 16, letterSpacing: 0.3 }}>
+            {title}
+          </h3>
         </div>
         <span style={{ fontSize: 12, color: theme.subtext }}>
           {loading ? "thinking…" : "online"}
@@ -127,41 +145,73 @@ export default function Chatbot({
       </div>
 
       {/* Messages */}
-      <div ref={listRef} style={{
-        flex: 1,
-        overflowY: "auto",
-        padding: 16,
-        background: theme.bg,
-      }}>
-        {messages.length === 0 && (
-          <EmptyState theme={theme} />
-        )}
+      <div
+        ref={listRef}
+        onScroll={handleScroll}
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: 16,
+          background: theme.bg,
+          position: "relative",
+        }}
+      >
+        {messages.length === 0 && <EmptyState theme={theme} />}
         {messages.map((m, i) => (
           <Bubble key={i} role={m.role} text={m.content} theme={theme} />
         ))}
+
+        {/* Scroll to bottom button */}
+        {showScrollBtn && (
+          <button
+            onClick={() => scrollToBottom(true)}
+            style={{
+              position: "absolute",
+              bottom: 20,
+              right: 20,
+              background: theme.green,
+              color: "#0a0f0c",
+              border: "none",
+              borderRadius: "50%",
+              width: 36,
+              height: 36,
+              cursor: "pointer",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+              fontSize: 18,
+              fontWeight: 700,
+            }}
+            title="Scroll to latest"
+          >
+            ↓
+          </button>
+        )}
       </div>
 
       {/* Error bar */}
       {error && (
-        <div style={{
-          background: "#1f2937",
-          color: theme.text,
-          borderTop: `1px solid ${theme.border}`,
-          padding: "8px 12px",
-        }}>
+        <div
+          style={{
+            background: "#1f2937",
+            color: theme.text,
+            borderTop: `1px solid ${theme.border}`,
+            padding: "8px 12px",
+          }}
+        >
           <span style={{ color: theme.danger, marginRight: 8 }}>●</span>
           <span style={{ fontSize: 13 }}>{error}</span>
         </div>
       )}
 
       {/* Composer */}
-      <div style={{
-        padding: 12,
-        background: theme.panel,
-        borderTop: `1px solid ${theme.border}`,
-        borderBottomLeftRadius: 16,
-        borderBottomRightRadius: 16,
-      }}>
+      <div
+        style={{
+          padding: 12,
+          background: theme.panel,
+          borderTop: `1px solid ${theme.border}`,
+          borderBottomLeftRadius: 16,
+          borderBottomRightRadius: 16,
+        }}
+      >
         <div style={{ display: "flex", gap: 8 }}>
           <textarea
             value={input}
@@ -196,14 +246,24 @@ export default function Chatbot({
               padding: "10px 14px",
               transition: "transform 0.06s ease",
             }}
-            onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+            onMouseDown={(e) =>
+              (e.currentTarget.style.transform = "scale(0.98)")
+            }
             onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
             {loading ? "Sending…" : "Send"}
           </button>
         </div>
-        <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between" }}>
-          <small style={{ color: theme.subtext }}>Enter to send • Shift+Enter for newline</small>
+        <div
+          style={{
+            marginTop: 6,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <small style={{ color: theme.subtext }}>
+            Enter to send • Shift+Enter for newline
+          </small>
           <small style={{ color: theme.subtext }}>Powered by Gemini + RAG</small>
         </div>
       </div>
@@ -214,13 +274,15 @@ export default function Chatbot({
 function Bubble({ role, text, theme }) {
   const isUser = role === "user";
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: isUser ? "row-reverse" : "row",
-      alignItems: "flex-start",
-      gap: 10,
-      margin: "8px 0",
-    }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: isUser ? "row-reverse" : "row",
+        alignItems: "flex-start",
+        gap: 10,
+        margin: "8px 0",
+      }}
+    >
       <div
         aria-hidden
         style={{
@@ -241,15 +303,17 @@ function Bubble({ role, text, theme }) {
       </div>
 
       <div style={{ maxWidth: "78%" }}>
-        <div style={{
-          background: isUser ? "#111518" : "#13181d",
-          color: theme.text,
-          border: `1px solid ${theme.border}`,
-          borderRadius: 12,
-          padding: "10px 12px",
-          whiteSpace: "pre-wrap",
-          wordWrap: "break-word",
-        }}>
+        <div
+          style={{
+            background: isUser ? "#111518" : "#13181d",
+            color: theme.text,
+            border: `1px solid ${theme.border}`,
+            borderRadius: 12,
+            padding: "10px 12px",
+            whiteSpace: "pre-wrap",
+            wordWrap: "break-word",
+          }}
+        >
           {text}
         </div>
       </div>
@@ -259,33 +323,41 @@ function Bubble({ role, text, theme }) {
 
 function EmptyState({ theme }) {
   return (
-    <div style={{
-      height: "100%",
-      minHeight: 280,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 8,
-      color: theme.subtext,
-      textAlign: "center",
-    }}>
-      <div style={{
-        width: 64,
-        height: 64,
-        borderRadius: 16,
-        background: "#12171c",
-        border: `1px solid ${theme.border}`,
+    <div
+      style={{
+        height: "100%",
+        minHeight: 280,
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 4,
-      }}>
+        gap: 8,
+        color: theme.subtext,
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: 16,
+          background: "#12171c",
+          border: `1px solid ${theme.border}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 4,
+        }}
+      >
         <span style={{ color: theme.green, fontSize: 28 }}>✳</span>
       </div>
       <div>
-        <div style={{ fontSize: 16, color: "#d1d5db" }}>Ask me about Arnav’s work</div>
-        <div style={{ fontSize: 13 }}>Projects • Competitions • Stack • Experience</div>
+        <div style={{ fontSize: 16, color: "#d1d5db" }}>
+          Ask me about Arnav’s work
+        </div>
+        <div style={{ fontSize: 13 }}>
+          Projects • Competitions • Stack • Experience
+        </div>
       </div>
     </div>
   );

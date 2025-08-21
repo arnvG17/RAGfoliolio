@@ -293,7 +293,7 @@ export default function Chatbot({
           <small style={{ color: theme.subtext }}>
             Enter to send • Shift+Enter for newline
           </small>
-          <small style={{ color: theme.subtext }}>Powered by Gemini + RAG</small>
+          <small style={{ color: theme.subtext }}>Powered by ArnV@teamLH</small>
         </div>
       </div>
     </div>
@@ -384,7 +384,7 @@ function EmptyState({ theme }) {
       </div>
       <div>
         <div style={{ fontSize: 16, color: "#d1d5db" }}>
-          Ask me about Arnav's work
+          Ask me about Lewis "8XWDC" Hamilton 
         </div>
         <div style={{ fontSize: 13 }}>
           Projects • Competitions • Stack • Experience

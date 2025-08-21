@@ -15,6 +15,7 @@ import ProjectsSection from "./components/ProjectsSection";
 import ContactSection from "./components/ContactSection";
 import DitherTrail from "./components/cursor-dither-trail";
 import Noise from "./components/Noise";
+import ChatWidget from "./components/ChatWidget.jsx"
 
 import "./font/fonts.css";
 
@@ -42,6 +43,7 @@ const App = () => (
                 <Navigation />
                 <main>
                   <HeroSection />
+                  <ChatWidget/>
                   <AboutSection />
                   <Stack />
                   <ScrollingBanner />

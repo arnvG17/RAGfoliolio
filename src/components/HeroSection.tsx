@@ -60,7 +60,7 @@ const HeroSection = () => {
                 : "opacity-0 -translate-x-8 blur-sm"
             }`}
           >
-            <Chatbot apiUrl="http://localhost:5000/chat" title="Ask Arnav" />
+            
             <a
               href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/"
               target="_blank"

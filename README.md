@@ -1,5 +1,5 @@
 
-frontend[-https://ra-gfoliolio.vercel.app/](https://ra-gfoliolio-x6qq.vercel.app/) backend-https://ragfolio-1.onrender.com
+frontend-https://ra-gfoliolio-x6qq.vercel.app/ backend-https://ragfolio-1.onrender.com
 
 this file server as frontend to it
 

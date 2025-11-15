@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import FlowingMenu from "./FlowingMenu2";
 import MagicBento from "./MagicBento"
+import StackFlow from "./StackFlow"
 
 
 const Stack = () => {
@@ -30,18 +31,8 @@ const Stack = () => {
             </span>
           </div>
           <div>
-            <MagicBento 
-              textAutoHide={true}
-              enableStars={false}
-              enableSpotlight={false}
-              enableBorderGlow={false}
-              enableTilt={false}
-              enableMagnetism={true}
-              clickEffect={true}
-              spotlightRadius={90}
-              particleCount={12}
-              glowColor="0, 255, 0"
-            />
+            <StackFlow />
+            
           </div>
         </div>
         

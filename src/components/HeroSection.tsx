@@ -1,19 +1,19 @@
 import { ArrowUpRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import "./Metal.css";
-import CircularText from "./CircularText";
+import Car3D from "./Car3D";
 import Chatbot from "./Chatbot.jsx"
 
 const HeroSection = () => {
   const greetingRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.2 });
   const headlineRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
   const socialRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.3 });
-  const circularTextRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
+  const car3DRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
 
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center p-6 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center p-6 overflow-visible"
     >
       <div className="max-w-7xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16 items-start">
         {/* --- LEFT COLUMN --- */}
@@ -94,33 +94,17 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* --- RIGHT COLUMN: Dual Circular Texts --- */}
-        <div className="flex justify-center items-center relative h-full">
+        {/* --- RIGHT COLUMN: 3D Car Model --- */}
+        <div className="flex justify-center items-center relative h-full w-full overflow-visible">
           <div
-            ref={circularTextRef.ref}
-            className={`relative transition-all duration-1000 ${
-              circularTextRef.isVisible
+            ref={car3DRef.ref}
+            className={`absolute inset-0 w-[200%] h-[180%] -right-[50%] left-[-300px] -top-10 transition-all duration-1000 ${
+              car3DRef.isVisible
                 ? "animate-fade-in-scale"
                 : "opacity-0 scale-95 blur-md"
             }`}
           >
-            {/* Outer circle - clockwise */}
-            <CircularText
-              text="ARNAV  GAWANDI "
-              spinDuration={12}
-              direction="clockwise"
-              className="w-72 h-72 text-lg"
-            />
-
-            {/* Inner circle - counter-clockwise */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <CircularText
-                text="DEVELOPER⚛DESIGNER⚛CREATOR⚛"
-                spinDuration={68}
-                direction="counter-clockwise"
-                className="w-48 h-48 text-sm"
-              />
-            </div>
+            <Car3D />
           </div>
         </div>
       </div>

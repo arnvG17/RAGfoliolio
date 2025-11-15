@@ -1,5 +1,6 @@
 // ChatWidget.jsx
 import { useState } from "react";
+import { MessageCircle, X } from "lucide-react";
 import Chatbot from "./Chatbot";
 
 export default function ChatWidget() {
@@ -14,24 +15,35 @@ export default function ChatWidget() {
           position: "fixed",
           bottom: 24,
           right: 24,
-          width: 56,
-          height: 56,
+          width: 72,
+          height: 72,
           borderRadius: "50%",
           background: "#22c55e",
           color: "#0a0f0c",
-          border: "none",
+          border: "3px solid rgba(255, 255, 255, 0.2)",
           cursor: "pointer",
-          fontSize: 26,
-          fontWeight: "bold",
-          boxShadow: "0 4px 14px rgba(0,0,0,0.4)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 6px 20px rgba(34, 197, 94, 0.4), 0 0 0 0 rgba(34, 197, 94, 0.5)",
           zIndex: 1000,
-          transition: "transform 0.2s ease",
+          transition: "all 0.3s ease",
         }}
-        title={open ? "Close chat" : "Open chat"}
-        onMouseEnter={(e) => e.target.style.transform = "scale(1.1)"}
-        onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+        title={open ? "Close chat" : "Chat with me"}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "scale(1.1)";
+          e.currentTarget.style.boxShadow = "0 8px 25px rgba(34, 197, 94, 0.5), 0 0 0 4px rgba(34, 197, 94, 0.2)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.boxShadow = "0 6px 20px rgba(34, 197, 94, 0.4), 0 0 0 0 rgba(34, 197, 94, 0.5)";
+        }}
       >
-        {open ? "×" : "💬"}
+        {open ? (
+          <X size={32} strokeWidth={2.5} />
+        ) : (
+          <MessageCircle size={36} strokeWidth={2.5} />
+        )}
       </button>
 
       {/* Chatbot panel */}
@@ -39,7 +51,7 @@ export default function ChatWidget() {
         <div
           style={{
             position: "fixed",
-            bottom: 90,
+            bottom: 100,
             right: 24,
             width: 360,
             height: "70vh",

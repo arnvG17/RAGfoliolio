@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import carModelPath from "../3D/aston_martin_f1_amr23_2023.glb?url";
+import carModelPath from "../3D/mercedes_amg_petronas__w14_2023 (1).glb?url";
 
 // Load the 3D model
 function CarModel() {
@@ -21,7 +21,7 @@ function CarModel() {
     <primitive
       ref={carRef}
       object={scene}
-      scale={[1.5, 1.5, 1.5]}
+      scale={[1.85, 1.85, 1.85]}
       position={[0, 0, 0]}
     />
   );

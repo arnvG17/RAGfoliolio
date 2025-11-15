@@ -98,7 +98,7 @@ const HeroSection = () => {
         <div className="flex justify-center items-center relative h-full w-full overflow-visible">
           <div
             ref={car3DRef.ref}
-            className={`absolute inset-0 w-[200%] h-[180%] -right-[50%] left-[-300px] -top-10 transition-all duration-1000 ${
+            className={`absolute inset-0 w-[200%] h-[180%] -right-[50%] left-[-350px] -top-28 transition-all duration-1000 ${
               car3DRef.isVisible
                 ? "animate-fade-in-scale"
                 : "opacity-0 scale-95 blur-md"

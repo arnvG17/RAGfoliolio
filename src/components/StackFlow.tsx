@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import ReactFlow, {
-  MiniMap,
   Controls,
   Background,
   Handle,
@@ -66,22 +65,33 @@ const edgeStyle = {
   animation: 'pulse 2s ease-in-out infinite',
 };
 
-// Better grid-based positioning to avoid overlap
+// Structured but messy positioning - 2 columns with variation
 const getGridPosition = (index) => {
-  const cols = 3;
+  const cols = 2;
   const row = Math.floor(index / cols);
   const col = index % cols;
-  const spacingX = 350;
-  const spacingY = 200;
-  const startX = 100;
-  const startY = 100;
+  const baseSpacingX = 450;
+  const baseSpacingY = 220;
+  const startX = 150;
+  const startY = 80;
+  
+  // Deterministic but messy offsets (using index for consistency)
+  const offsets = [
+    { x: -25, y: 15 }, { x: 30, y: -20 },
+    { x: 20, y: 25 }, { x: -35, y: -15 },
+    { x: -15, y: -30 }, { x: 40, y: 20 },
+    { x: 25, y: -25 }, { x: -20, y: 30 },
+    { x: 35, y: 15 }, { x: -30, y: -20 },
+  ];
+  const offset = offsets[index] || { x: 0, y: 0 };
+  
   return {
-    x: startX + col * spacingX,
-    y: startY + row * spacingY,
+    x: startX + col * baseSpacingX + offset.x,
+    y: startY + row * baseSpacingY + offset.y,
   };
 };
 
-// --- Grid-positioned nodes (3 columns, spaced to avoid overlap) ---
+// --- Grid-positioned nodes (2 columns, structured but messy) ---
 const initialNodes = [
   { id: '1', type: 'stackNode', position: getGridPosition(0), data: { idShort: '1', label: 'React.js', category: 'Frontend', icon: '⚛️', description: 'Dynamic UI powerhouse', isActive: true } },
   { id: '2', type: 'stackNode', position: getGridPosition(1), data: { idShort: '2', label: 'Node.js', category: 'Backend', icon: '🟢', description: 'Server-side runtime', isActive: false } },
@@ -242,17 +252,6 @@ export default function StackFlow() {
               borderRadius: 6, 
               boxShadow: '6px 6px 0 #000',
             }}
-          />
-          <MiniMap 
-            nodeStrokeWidth={2} 
-            nodeColor={(n) => {
-              const catColor = brutalistColors[n.data.category] || CYAN;
-              return n.data.isActive ? LIME : catColor;
-            }} 
-            style={{ 
-              background: '#fff', 
-              border: '3px solid #000',
-            }} 
           />
           <Background gap={18} size={2} color="#222" />
         </ReactFlow>

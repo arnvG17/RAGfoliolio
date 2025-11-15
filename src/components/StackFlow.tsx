@@ -29,7 +29,7 @@ const ORANGE = '#FF8C00';
 const LIME = '#00FF00';
 const DARK_BG = '#1e1e1e';
 
-// Vibrant brutalist color palette
+// Vibrant brutalist color palette for categories
 const brutalistColors = {
   'Frontend': '#FF6B6B',
   'Backend': '#4ECDC4',
@@ -41,54 +41,74 @@ const brutalistColors = {
   'Auth/DB': '#AA96DA',
   'Bundler': '#FCBAD3',
   'Language': '#FFD93D',
+  'Automation': '#FF6B9D',
 };
 
-// Brutalist edge style
+// Individual icon colors for each node
+const iconColors = {
+  'React.js': '#61DAFB',
+  'Node.js': '#339933',
+  'MongoDB': '#47A248',
+  'C++ & Java': '#00599C',
+  'LangChain': '#F7DF1E',
+  'Python': '#3776AB',
+  'Express': '#000000',
+  'Firebase': '#FFCA28',
+  'TypeScript': '#3178C6',
+  'n8n': '#FF6B6B',
+};
+
+// Orange pulsating edge style
 const edgeStyle = {
-  stroke: '#000',
+  stroke: '#D97706', // Dull orange
   strokeWidth: 3,
-  strokeDasharray: '8 6',
+  strokeDasharray: '10 8',
+  animation: 'pulse 2s ease-in-out infinite',
 };
 
-// Generate random positions
-const getRandomPosition = () => ({
-  x: Math.floor(Math.random() * 1000) + 50,
-  y: Math.floor(Math.random() * 500) + 50,
-});
+// Better grid-based positioning to avoid overlap
+const getGridPosition = (index) => {
+  const cols = 3;
+  const row = Math.floor(index / cols);
+  const col = index % cols;
+  const spacingX = 350;
+  const spacingY = 200;
+  const startX = 100;
+  const startY = 100;
+  return {
+    x: startX + col * spacingX,
+    y: startY + row * spacingY,
+  };
+};
 
-// --- Randomly positioned nodes ---
+// --- Grid-positioned nodes (3 columns, spaced to avoid overlap) ---
 const initialNodes = [
-  { id: '1', type: 'stackNode', position: getRandomPosition(), data: { idShort: '1', label: 'React.js', category: 'Frontend', icon: '⚛️', description: 'Dynamic UI powerhouse', isActive: true } },
-  { id: '2', type: 'stackNode', position: getRandomPosition(), data: { idShort: '2', label: 'Node.js', category: 'Backend', icon: '🟢', description: 'Server-side runtime', isActive: false } },
-  { id: '3', type: 'stackNode', position: getRandomPosition(), data: { idShort: '3', label: 'MongoDB', category: 'Database', icon: '🍃', description: 'NoSQL flexibility', isActive: false } },
-  { id: '4', type: 'stackNode', position: getRandomPosition(), data: { idShort: '4', label: 'C++ & Java', category: 'Systems', icon: '⚙️', description: 'Performance critical', isActive: false } },
-  { id: '5', type: 'stackNode', position: getRandomPosition(), data: { idShort: '5', label: 'LangChain', category: 'AI/ML', icon: '🤖', description: 'LLM orchestration', isActive: false } },
-  { id: '6', type: 'stackNode', position: getRandomPosition(), data: { idShort: '6', label: 'Python', category: 'Data Science', icon: '🐍', description: 'Versatile scripting', isActive: false } },
-  { id: '7', type: 'stackNode', position: getRandomPosition(), data: { idShort: '7', label: 'Express', category: 'Backend', icon: '🚂', description: 'Web server framework', isActive: false } },
-  { id: '8', type: 'stackNode', position: getRandomPosition(), data: { idShort: '8', label: 'Firebase', category: 'Auth/DB', icon: '🔥', description: 'Realtime & Auth', isActive: false } },
-  { id: '9', type: 'stackNode', position: getRandomPosition(), data: { idShort: '9', label: 'OpenRouter', category: 'AI Routing', icon: '🛰️', description: 'LLM routing', isActive: false } },
-  { id: '10', type: 'stackNode', position: getRandomPosition(), data: { idShort: '10', label: 'Vite', category: 'Bundler', icon: '⚡', description: 'Fast dev server', isActive: false } },
-  { id: '11', type: 'stackNode', position: getRandomPosition(), data: { idShort: '11', label: 'TypeScript', category: 'Language', icon: '📝', description: 'Typed JS', isActive: false } },
+  { id: '1', type: 'stackNode', position: getGridPosition(0), data: { idShort: '1', label: 'React.js', category: 'Frontend', icon: '⚛️', description: 'Dynamic UI powerhouse', isActive: true } },
+  { id: '2', type: 'stackNode', position: getGridPosition(1), data: { idShort: '2', label: 'Node.js', category: 'Backend', icon: '🟢', description: 'Server-side runtime', isActive: false } },
+  { id: '3', type: 'stackNode', position: getGridPosition(2), data: { idShort: '3', label: 'MongoDB', category: 'Database', icon: '🍃', description: 'NoSQL flexibility', isActive: false } },
+  { id: '4', type: 'stackNode', position: getGridPosition(3), data: { idShort: '4', label: 'C++ & Java', category: 'Systems', icon: '⚙️', description: 'Performance critical', isActive: false } },
+  { id: '5', type: 'stackNode', position: getGridPosition(4), data: { idShort: '5', label: 'LangChain', category: 'AI/ML', icon: '🤖', description: 'LLM orchestration', isActive: false } },
+  { id: '6', type: 'stackNode', position: getGridPosition(5), data: { idShort: '6', label: 'Python', category: 'Data Science', icon: '🐍', description: 'Versatile scripting', isActive: false } },
+  { id: '7', type: 'stackNode', position: getGridPosition(6), data: { idShort: '7', label: 'Express', category: 'Backend', icon: '🚂', description: 'Web server framework', isActive: false } },
+  { id: '8', type: 'stackNode', position: getGridPosition(7), data: { idShort: '8', label: 'Firebase', category: 'Auth/DB', icon: '🔥', description: 'Realtime & Auth', isActive: false } },
+  { id: '9', type: 'stackNode', position: getGridPosition(8), data: { idShort: '9', label: 'n8n', category: 'Automation', icon: '🔄', description: 'Workflow automation', isActive: false } },
+  { id: '10', type: 'stackNode', position: getGridPosition(9), data: { idShort: '10', label: 'TypeScript', category: 'Language', icon: '📝', description: 'Typed JS', isActive: false } },
 ];
 
-// --- Random edges showing connections ---
+// --- Reduced edges showing key connections ---
 const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e1-3', source: '1', target: '3', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e2-5', source: '2', target: '5', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e3-6', source: '3', target: '6', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e2-4', source: '2', target: '4', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e5-6', source: '5', target: '6', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e3-8', source: '3', target: '8', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e7-3', source: '7', target: '3', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e9-1', source: '9', target: '1', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
-  { id: 'e10-11', source: '10', target: '11', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#000' } },
+  { id: 'e1-2', source: '1', target: '2', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
+  { id: 'e2-3', source: '2', target: '3', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
+  { id: 'e2-5', source: '2', target: '5', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
+  { id: 'e5-6', source: '5', target: '6', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
+  { id: 'e1-10', source: '1', target: '10', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
 ];
 
 // --- Custom node renderer (brutalist style) ---
 const StackNode = ({ data, isConnectable }) => {
   const categoryColor = brutalistColors[data.category] || CYAN;
-  const activeBg = data.isActive ? categoryColor : '#f4f4f4';
+  const iconColor = iconColors[data.label] || categoryColor;
+  const nodeBg = iconColor; // Use icon color for entire node background
   
   return (
     <div style={{ width: 260 }} className="relative px-4 py-3 rounded-md border-4 border-black shadow-[6px_6px_0_#000] select-none" >
@@ -122,12 +142,12 @@ const StackNode = ({ data, isConnectable }) => {
         }}
       />
 
-      <div style={{ background: activeBg, padding: 8, border: '2px solid #000' }}>
+      <div style={{ background: nodeBg, padding: 8, border: '2px solid #000' }}>
         <div className="flex items-start gap-3">
           <div style={{ 
             width: 44, 
             height: 44, 
-            background: categoryColor, 
+            background: '#fff', 
             border: '3px solid #000', 
             display: 'flex', 
             alignItems: 'center', 
@@ -142,9 +162,9 @@ const StackNode = ({ data, isConnectable }) => {
             <div style={{ 
               fontSize: 11, 
               textTransform: 'uppercase', 
-              color: categoryColor, 
+              color: '#000', 
               fontWeight: 700,
-              textShadow: '1px 1px 0 #000',
+              textShadow: '1px 1px 0 #fff',
             }}>
               {data.category}
             </div>
@@ -173,7 +193,7 @@ export default function StackFlow() {
             type: 'smoothstep',
             animated: true,
             style: edgeStyle,
-            markerEnd: { type: MarkerType.ArrowClosed, color: '#000' },
+            markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' },
           },
           eds
         )
@@ -188,6 +208,21 @@ export default function StackFlow() {
 
   return (
     <div style={{ width: '100%', height: 720, background: DARK_BG, padding: 24 }}>
+      <style>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.6;
+            stroke-width: 3;
+          }
+          50% {
+            opacity: 1;
+            stroke-width: 4;
+          }
+        }
+        .react-flow__edge-path {
+          animation: pulse 2s ease-in-out infinite;
+        }
+      `}</style>
       <div style={{ width: '100%', height: '100%', borderRadius: 16, overflow: 'hidden', border: '6px solid #000', boxShadow: '12px 12px 0 #000' }}>
         <ReactFlow
           nodes={nodes}
@@ -198,7 +233,7 @@ export default function StackFlow() {
           onNodeClick={onNodeClick}
           nodeTypes={nodeTypes}
           fitView
-          connectionLineStyle={{ stroke: '#000', strokeWidth: 3 }}
+          connectionLineStyle={{ stroke: '#D97706', strokeWidth: 3, strokeDasharray: '10 8' }}
         >
           <Controls
             style={{ 

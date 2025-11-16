@@ -9,6 +9,21 @@ import ReactFlow, {
   addEdge,
   MarkerType,
 } from 'reactflow';
+import { 
+  SiReact, 
+  SiNodedotjs, 
+  SiMongodb, 
+  SiCplusplus, 
+  SiPython,
+  SiExpress,
+  SiFirebase,
+  SiTypescript,
+} from 'react-icons/si';
+import { 
+  FaCode,
+  FaRobot,
+  FaProjectDiagram
+} from 'react-icons/fa';
 import 'reactflow/dist/style.css';
 
 /*
@@ -57,52 +72,66 @@ const iconColors = {
   'n8n': '#FF6B6B',
 };
 
-// Orange pulsating edge style
+// Icon component mapping
+const iconComponents = {
+  'React.js': SiReact,
+  'Node.js': SiNodedotjs,
+  'MongoDB': SiMongodb,
+  'C++ & Java': SiCplusplus,
+  'LangChain': FaRobot,
+  'Python': SiPython,
+  'Express': SiExpress,
+  'Firebase': SiFirebase,
+  'TypeScript': SiTypescript,
+  'n8n': FaProjectDiagram,
+};
+
+// Orange pulsating edge style with forward animation
 const edgeStyle = {
   stroke: '#D97706', // Dull orange
   strokeWidth: 3,
   strokeDasharray: '10 8',
-  animation: 'pulse 2s ease-in-out infinite',
 };
 
-// Structured but messy positioning - 2 columns with variation
+// Better randomized positioning - 2 columns with smart variation
 const getGridPosition = (index) => {
   const cols = 2;
   const row = Math.floor(index / cols);
   const col = index % cols;
-  const baseSpacingX = 450;
-  const baseSpacingY = 220;
-  const startX = 150;
-  const startY = 80;
   
-  // Deterministic but messy offsets (using index for consistency)
-  const offsets = [
-    { x: -25, y: 15 }, { x: 30, y: -20 },
-    { x: 20, y: 25 }, { x: -35, y: -15 },
-    { x: -15, y: -30 }, { x: 40, y: 20 },
-    { x: 25, y: -25 }, { x: -20, y: 30 },
-    { x: 35, y: 15 }, { x: -30, y: -20 },
-  ];
-  const offset = offsets[index] || { x: 0, y: 0 };
+  // Base spacing for 2 columns (increased for bigger nodes)
+  const baseSpacingX = 550;
+  const baseSpacingY = 280;
+  const startX = 100;
+  const startY = 50;
+  
+  // Better randomized offsets - more variation but still structured
+  // Using a pseudo-random function based on index for consistency
+  const seed = index * 137.508; // Golden angle approximation
+  const randomX = Math.sin(seed) * 100; // ±100px horizontal variation
+  const randomY = Math.cos(seed * 1.3) * 80; // ±80px vertical variation
+  
+  // Add some row-based variation for better distribution
+  const rowVariation = (row % 2 === 0 ? 1 : -1) * 30;
   
   return {
-    x: startX + col * baseSpacingX + offset.x,
-    y: startY + row * baseSpacingY + offset.y,
+    x: startX + col * baseSpacingX + randomX + rowVariation,
+    y: startY + row * baseSpacingY + randomY,
   };
 };
 
-// --- Grid-positioned nodes (2 columns, structured but messy) ---
+// --- Better randomized nodes (2 columns with smart variation) ---
 const initialNodes = [
-  { id: '1', type: 'stackNode', position: getGridPosition(0), data: { idShort: '1', label: 'React.js', category: 'Frontend', icon: '⚛️', description: 'Dynamic UI powerhouse', isActive: true } },
-  { id: '2', type: 'stackNode', position: getGridPosition(1), data: { idShort: '2', label: 'Node.js', category: 'Backend', icon: '🟢', description: 'Server-side runtime', isActive: false } },
-  { id: '3', type: 'stackNode', position: getGridPosition(2), data: { idShort: '3', label: 'MongoDB', category: 'Database', icon: '🍃', description: 'NoSQL flexibility', isActive: false } },
-  { id: '4', type: 'stackNode', position: getGridPosition(3), data: { idShort: '4', label: 'C++ & Java', category: 'Systems', icon: '⚙️', description: 'Performance critical', isActive: false } },
-  { id: '5', type: 'stackNode', position: getGridPosition(4), data: { idShort: '5', label: 'LangChain', category: 'AI/ML', icon: '🤖', description: 'LLM orchestration', isActive: false } },
-  { id: '6', type: 'stackNode', position: getGridPosition(5), data: { idShort: '6', label: 'Python', category: 'Data Science', icon: '🐍', description: 'Versatile scripting', isActive: false } },
-  { id: '7', type: 'stackNode', position: getGridPosition(6), data: { idShort: '7', label: 'Express', category: 'Backend', icon: '🚂', description: 'Web server framework', isActive: false } },
-  { id: '8', type: 'stackNode', position: getGridPosition(7), data: { idShort: '8', label: 'Firebase', category: 'Auth/DB', icon: '🔥', description: 'Realtime & Auth', isActive: false } },
-  { id: '9', type: 'stackNode', position: getGridPosition(8), data: { idShort: '9', label: 'n8n', category: 'Automation', icon: '🔄', description: 'Workflow automation', isActive: false } },
-  { id: '10', type: 'stackNode', position: getGridPosition(9), data: { idShort: '10', label: 'TypeScript', category: 'Language', icon: '📝', description: 'Typed JS', isActive: false } },
+  { id: '1', type: 'stackNode', position: getGridPosition(0), data: { idShort: '1', label: 'React.js', category: 'Frontend', description: 'Dynamic UI powerhouse', isActive: true } },
+  { id: '2', type: 'stackNode', position: getGridPosition(1), data: { idShort: '2', label: 'Node.js', category: 'Backend', description: 'Server-side runtime', isActive: false } },
+  { id: '3', type: 'stackNode', position: getGridPosition(2), data: { idShort: '3', label: 'MongoDB', category: 'Database', description: 'NoSQL flexibility', isActive: false } },
+  { id: '4', type: 'stackNode', position: getGridPosition(3), data: { idShort: '4', label: 'C++ & Java', category: 'Systems', description: 'Performance critical', isActive: false } },
+  { id: '5', type: 'stackNode', position: getGridPosition(4), data: { idShort: '5', label: 'LangChain', category: 'AI/ML', description: 'LLM orchestration', isActive: false } },
+  { id: '6', type: 'stackNode', position: getGridPosition(5), data: { idShort: '6', label: 'Python', category: 'Data Science', description: 'Versatile scripting', isActive: false } },
+  { id: '7', type: 'stackNode', position: getGridPosition(6), data: { idShort: '7', label: 'Express', category: 'Backend', description: 'Web server framework', isActive: false } },
+  { id: '8', type: 'stackNode', position: getGridPosition(7), data: { idShort: '8', label: 'Firebase', category: 'Auth/DB', description: 'Realtime & Auth', isActive: false } },
+  { id: '9', type: 'stackNode', position: getGridPosition(8), data: { idShort: '9', label: 'n8n', category: 'Automation', description: 'Workflow automation', isActive: false } },
+  { id: '10', type: 'stackNode', position: getGridPosition(9), data: { idShort: '10', label: 'TypeScript', category: 'Language', description: 'Typed JS', isActive: false } },
 ];
 
 // --- Reduced edges showing key connections ---
@@ -114,26 +143,40 @@ const initialEdges = [
   { id: 'e1-10', source: '1', target: '10', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
 ];
 
+// Helper function to check if color is dark
+const isDarkColor = (color) => {
+  if (color === '#000000' || color === '#000') return true;
+  // Convert hex to RGB and calculate brightness
+  const hex = color.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness < 128; // Dark if brightness is less than 128
+};
+
 // --- Custom node renderer (brutalist style) ---
 const StackNode = ({ data, isConnectable }) => {
   const categoryColor = brutalistColors[data.category] || CYAN;
   const iconColor = iconColors[data.label] || categoryColor;
   const nodeBg = iconColor; // Use icon color for entire node background
+  const textColor = isDarkColor(nodeBg) ? '#fff' : '#000';
+  const IconComponent = iconComponents[data.label] || FaCode;
   
   return (
-    <div style={{ width: 260 }} className="relative px-4 py-3 rounded-md border-4 border-black shadow-[6px_6px_0_#000] select-none" >
+    <div style={{ width: 320 }} className="relative px-6 py-5 rounded-md border-4 border-black shadow-[6px_6px_0_#000] select-none" >
       {/* left input handle */}
       <Handle
         type="target"
         position={Position.Left}
         isConnectable={isConnectable}
         style={{
-          width: 18,
-          height: 18,
+          width: 20,
+          height: 20,
           background: '#fff',
           border: '3px solid #000',
           borderRadius: '50%',
-          left: -14,
+          left: -16,
         }}
       />
 
@@ -143,43 +186,31 @@ const StackNode = ({ data, isConnectable }) => {
         position={Position.Right}
         isConnectable={isConnectable}
         style={{
-          width: 18,
-          height: 18,
+          width: 20,
+          height: 20,
           background: '#fff',
           border: '3px solid #000',
           borderRadius: '50%',
-          right: -14,
+          right: -16,
         }}
       />
 
-      <div style={{ background: nodeBg, padding: 8, border: '2px solid #000' }}>
-        <div className="flex items-start gap-3">
-          <div style={{ 
-            width: 44, 
-            height: 44, 
-            background: '#fff', 
-            border: '3px solid #000', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            fontSize: 20,
-            boxShadow: '3px 3px 0 #000',
-          }}>
-            {data.icon}
-          </div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 16, color: '#000' }}>{data.label}</div>
-            <div style={{ 
-              fontSize: 11, 
-              textTransform: 'uppercase', 
-              color: '#000', 
-              fontWeight: 700,
-              textShadow: '1px 1px 0 #fff',
-            }}>
-              {data.category}
-            </div>
-            <div style={{ fontSize: 12, color: '#222', maxWidth: 200, fontWeight: 500 }}>{data.description}</div>
-          </div>
+      <div style={{ background: nodeBg, padding: 16, border: '2px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+        <div style={{ 
+          width: 64, 
+          height: 64, 
+          background: '#fff', 
+          border: '4px solid #000', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          boxShadow: '4px 4px 0 #000',
+          flexShrink: 0,
+        }}>
+          <IconComponent size={32} color="#000" />
+        </div>
+        <div style={{ fontWeight: 900, fontSize: 24, color: textColor, letterSpacing: '-0.5px' }}>
+          {data.label}
         </div>
       </div>
     </div>
@@ -219,18 +250,21 @@ export default function StackFlow() {
   return (
     <div style={{ width: '100%', height: 720, background: DARK_BG, padding: 24 }}>
       <style>{`
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 0.6;
-            stroke-width: 3;
+        @keyframes dashForward {
+          0% {
+            stroke-dashoffset: 0;
+            opacity: 0.7;
           }
           50% {
             opacity: 1;
-            stroke-width: 4;
+          }
+          100% {
+            stroke-dashoffset: 18;
+            opacity: 0.7;
           }
         }
         .react-flow__edge-path {
-          animation: pulse 2s ease-in-out infinite;
+          animation: dashForward 1.5s linear infinite;
         }
       `}</style>
       <div style={{ width: '100%', height: '100%', borderRadius: 16, overflow: 'hidden', border: '6px solid #000', boxShadow: '12px 12px 0 #000' }}>

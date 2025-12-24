@@ -2,7 +2,7 @@
 
 <p align="center">
   <i>A React + Node.js portfolio with a built-in Retrieval-Augmented Generation chatbot.</i><br>
-  🌐 <a href="https://ra-gfoliolio-x6qq.vercel.app/">Live Frontend</a> •
+  🌐 <a href="https://arnvfolio.vercel.app/">Live Frontend</a> •
   ⚙️ <a href="https://ragfolio-1.onrender.com/">Backend Host</a>
   ⚙️ <a href="https://github.com/arnvG17/florio">Backend Repo</a>
 </p>

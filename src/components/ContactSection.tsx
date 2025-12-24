@@ -10,11 +10,10 @@ const ContactSection = () => {
     <section id="contact" className="py-20 px-6">
       <div className="max-w-4xl mx-auto text-center">
         {/* Section Header */}
-        <div 
+        <div
           ref={headerRef.ref}
-          className={`mb-16 transition-all duration-1000 ${
-            headerRef.isVisible ? 'animate-pop-in' : 'opacity-0 scale-90 translate-y-8 blur-sm'
-          }`}
+          className={`mb-16 transition-all duration-1000 ${headerRef.isVisible ? 'animate-pop-in' : 'opacity-0 scale-90 translate-y-8 blur-sm'
+            }`}
         >
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-accent">✦</span>
@@ -26,19 +25,18 @@ const ContactSection = () => {
             <span className="text-accent">amazing together</span>
           </h2>
           <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-            Ready to bring your vision to life? I'm here to help create exceptional digital experiences 
+            Ready to bring your vision to life? I'm here to help create exceptional digital experiences
             that drive results and exceed expectations.
           </p>
         </div>
 
         {/* Contact Actions */}
-        <div 
+        <div
           ref={actionsRef.ref}
-          className={`flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 transition-all duration-1000 ${
-            actionsRef.isVisible ? 'animate-slide-in-left' : 'opacity-0 -translate-x-8 blur-sm'
-          }`}
+          className={`flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 transition-all duration-1000 ${actionsRef.isVisible ? 'animate-slide-in-left' : 'opacity-0 -translate-x-8 blur-sm'
+            }`}
         >
-          <Button 
+          <Button
             asChild
             size="lg"
             className="bg-accent text-accent-foreground hover:bg-accent/90 px-8 py-3 text-base font-medium rounded-full"
@@ -47,7 +45,7 @@ const ContactSection = () => {
               Start a Project <ArrowUpRight className="w-4 h-4 ml-2" />
             </a>
           </Button>
-          <Button 
+          <Button
             asChild
             variant="outline"
             size="lg"
@@ -60,37 +58,36 @@ const ContactSection = () => {
         </div>
 
         {/* Contact Links */}
-        <div 
+        <div
           ref={linksRef.ref}
-          className={`grid grid-cols-2 md:grid-cols-4 gap-6 text-center transition-all duration-1000 ${
-            linksRef.isVisible ? 'animate-slide-in-right' : 'opacity-0 translate-x-8 blur-sm'
-          }`}
+          className={`grid grid-cols-2 md:grid-cols-4 gap-6 text-center transition-all duration-1000 ${linksRef.isVisible ? 'animate-slide-in-right' : 'opacity-0 translate-x-8 blur-sm'
+            }`}
         >
-          <a 
-            href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/" 
-            target="_blank" 
+          <a
+            href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/"
+            target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
           >
             LinkedIn ↗
           </a>
-          <a 
-            href="https://github.com/arnV17" 
-            target="_blank" 
+          <a
+            href="https://github.com/arnvG17"
+            target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
           >
             GitHub ↗
           </a>
-          <a 
-            href="https://leetcode.com/u/ArnV17/" 
-            target="_blank" 
+          <a
+            href="https://leetcode.com/u/ArnV17/"
+            target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
           >
             Leetcode ↗
           </a>
-          <a 
+          <a
             href="mailto:arnavog@gmail.com"
             className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
           >

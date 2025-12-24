@@ -14,7 +14,7 @@ const ProjectsSection = () => {
       year: "2025",
       description:
         "AI-Based Notes summarizer with Inbuilt RAG chatbot and Quiz",
-      image: "/Screenshot 2025-08-16 161004.png",
+      image: "/Screenshot 2025-12-24 183856.png",
       link: "https://the-noting-pap.vercel.app/",
     },
     {
@@ -43,11 +43,10 @@ const ProjectsSection = () => {
         {/* Section Header */}
         <div
           ref={headerRef.ref}
-          className={`text-center mb-16 transition-all duration-1000 ${
-            headerRef.isVisible
-              ? "animate-pop-in"
-              : "opacity-0 scale-90 translate-y-8 blur-sm"
-          }`}
+          className={`text-center mb-16 transition-all duration-1000 ${headerRef.isVisible
+            ? "animate-pop-in"
+            : "opacity-0 scale-90 translate-y-8 blur-sm"
+            }`}
         >
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-accent">✦</span>
@@ -68,11 +67,10 @@ const ProjectsSection = () => {
         {/* Projects Grid */}
         <div
           ref={projectsRef.ref}
-          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-1000 ${
-            projectsRef.isVisible
-              ? "animate-fade-in-scale"
-              : "opacity-0 scale-95 blur-md"
-          }`}
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-1000 ${projectsRef.isVisible
+            ? "animate-fade-in-scale"
+            : "opacity-0 scale-95 blur-md"
+            }`}
         >
           {projects.map((project, index) => (
             <Card

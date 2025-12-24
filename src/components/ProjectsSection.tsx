@@ -15,7 +15,7 @@ const ProjectsSection = () => {
       description:
         "AI-Based Notes summarizer with Inbuilt RAG chatbot and Quiz",
       image: "/Screenshot 2025-12-24 183856.png",
-      link: "https://the-noting-pap.vercel.app/",
+      link: "https://thenotingapp.vercel.app/",
     },
     {
       title: "Konkanai AgroTourism",

@@ -9,6 +9,15 @@ const ProjectsSection = () => {
 
   const projects = [
     {
+      title: "Lakeside-Podcasting App",
+      category: "Podcasting App",
+      year: "2026",
+      description:
+        "A Video Conference and Recording app for Podcasters and Educators, with cloud-storage and real-time transcriptions",
+      image: "/Screenshot 2026-01-18 214311.png",
+      link: "https://lakeside-beta.vercel.app/",
+    },
+    {
       title: "The Noting App",
       category: "AI Integration",
       year: "2025",

@@ -70,7 +70,7 @@ const HeroSection = () => {
               LINKEDIN <ArrowUpRight className="w-3 h-3" />
             </a>
             <a
-              href="https://github.com/arnV17"
+              href="https://github.com/arnvG17"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium flex items-center gap-1"

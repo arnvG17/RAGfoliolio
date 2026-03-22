@@ -78,8 +78,9 @@ export default function ChatWidget() {
             }}
           >
             <Chatbot
-              apiUrl="https://ragfolio-1.onrender.com/chat"
-              title="Ask Arnav"
+              apiUrl="http://localhost:5000/simple-chat"
+              title="Ask Arnav AI"
+              placeholder="Ask me about Arnav's education, experience, or interests…"
               // Override the default styles for the widget context
               customStyles={{
                 container: {

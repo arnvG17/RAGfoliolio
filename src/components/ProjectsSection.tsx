@@ -44,6 +44,15 @@ const ProjectsSection = () => {
       image: "/Screenshot 2025-08-16 160212.png",
       link: "https://pokedb-sj8s.vercel.app/",
     },
+
+    {
+      title: "Recursion",
+      category: "Portfolio",
+      year: "2025",
+      description: " ",
+      image: "/Screenshot 2025-12-24 183856.png",
+      link: "https://thenotingapp.vercel.app/",
+    },
   ];
 
   return (

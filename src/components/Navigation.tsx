@@ -68,7 +68,8 @@ const Navigation = () => {
         className="ml-4 rounded-full px-6 py-2" // capsule shape
       >
         <a
-          href="https://flowcv.com/resume/4sse35818k"
+          href="/Arnav_Gawandi_Resume.pdf"
+          download="Arnav_Gawandi_Resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
         >

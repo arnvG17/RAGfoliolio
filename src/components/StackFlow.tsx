@@ -22,7 +22,8 @@ import {
 import { 
   FaCode,
   FaRobot,
-  FaProjectDiagram
+  FaProjectDiagram,
+  FaBtc
 } from 'react-icons/fa';
 import 'reactflow/dist/style.css';
 
@@ -56,6 +57,7 @@ const brutalistColors = {
   'Bundler': '#FCBAD3',
   'Language': '#FFD93D',
   'Automation': '#FF6B9D',
+  'Web3 & AI': '#FFD700', // Gold for Web3 & AI
 };
 
 // Individual icon colors for each node
@@ -70,6 +72,7 @@ const iconColors = {
   'Firebase': '#FFCA28',
   'TypeScript': '#3178C6',
   'n8n': '#FF6B6B',
+  'Web3 & AI': '#FFD700',
 };
 
 // Icon component mapping
@@ -84,6 +87,7 @@ const iconComponents = {
   'Firebase': SiFirebase,
   'TypeScript': SiTypescript,
   'n8n': FaProjectDiagram,
+  'Web3 & AI': FaRobot,
 };
 
 // Orange pulsating edge style with forward animation
@@ -122,16 +126,17 @@ const getGridPosition = (index) => {
 
 // --- Better randomized nodes (2 columns with smart variation) ---
 const initialNodes = [
-  { id: '1', type: 'stackNode', position: getGridPosition(0), data: { idShort: '1', label: 'React.js', category: 'Frontend', description: 'Dynamic UI powerhouse', isActive: true } },
-  { id: '2', type: 'stackNode', position: getGridPosition(1), data: { idShort: '2', label: 'Node.js', category: 'Backend', description: 'Server-side runtime', isActive: false } },
-  { id: '3', type: 'stackNode', position: getGridPosition(2), data: { idShort: '3', label: 'MongoDB', category: 'Database', description: 'NoSQL flexibility', isActive: false } },
-  { id: '4', type: 'stackNode', position: getGridPosition(3), data: { idShort: '4', label: 'C++ & Java', category: 'Systems', description: 'Performance critical', isActive: false } },
-  { id: '5', type: 'stackNode', position: getGridPosition(4), data: { idShort: '5', label: 'LangChain', category: 'AI/ML', description: 'LLM orchestration', isActive: false } },
-  { id: '6', type: 'stackNode', position: getGridPosition(5), data: { idShort: '6', label: 'Python', category: 'Data Science', description: 'Versatile scripting', isActive: false } },
-  { id: '7', type: 'stackNode', position: getGridPosition(6), data: { idShort: '7', label: 'Express', category: 'Backend', description: 'Web server framework', isActive: false } },
-  { id: '8', type: 'stackNode', position: getGridPosition(7), data: { idShort: '8', label: 'Firebase', category: 'Auth/DB', description: 'Realtime & Auth', isActive: false } },
-  { id: '9', type: 'stackNode', position: getGridPosition(8), data: { idShort: '9', label: 'n8n', category: 'Automation', description: 'Workflow automation', isActive: false } },
-  { id: '10', type: 'stackNode', position: getGridPosition(9), data: { idShort: '10', label: 'TypeScript', category: 'Language', description: 'Typed JS', isActive: false } },
+  { id: '1', type: 'stackNode', position: getGridPosition(0), data: { idShort: '1', label: 'React.js', category: 'Frontend', description: 'Dynamic UI powerhouse', isActive: true, isSpecial: false } },
+  { id: '2', type: 'stackNode', position: getGridPosition(1), data: { idShort: '2', label: 'Node.js', category: 'Backend', description: 'Server-side runtime', isActive: false, isSpecial: false } },
+  { id: '3', type: 'stackNode', position: getGridPosition(2), data: { idShort: '3', label: 'MongoDB', category: 'Database', description: 'NoSQL flexibility', isActive: false, isSpecial: false } },
+  { id: '4', type: 'stackNode', position: getGridPosition(3), data: { idShort: '4', label: 'C++ & Java', category: 'Systems', description: 'Performance critical', isActive: false, isSpecial: false } },
+  { id: '5', type: 'stackNode', position: getGridPosition(4), data: { idShort: '5', label: 'LangChain', category: 'AI/ML', description: 'LLM orchestration', isActive: false, isSpecial: false } },
+  { id: '6', type: 'stackNode', position: getGridPosition(5), data: { idShort: '6', label: 'Python', category: 'Data Science', description: 'Versatile scripting', isActive: false, isSpecial: false } },
+  { id: '7', type: 'stackNode', position: getGridPosition(6), data: { idShort: '7', label: 'Express', category: 'Backend', description: 'Web server framework', isActive: false, isSpecial: false } },
+  { id: '8', type: 'stackNode', position: getGridPosition(7), data: { idShort: '8', label: 'Firebase', category: 'Auth/DB', description: 'Realtime & Auth', isActive: false, isSpecial: false } },
+  { id: '9', type: 'stackNode', position: getGridPosition(8), data: { idShort: '9', label: 'n8n', category: 'Automation', description: 'Workflow automation', isActive: false, isSpecial: false } },
+  { id: '10', type: 'stackNode', position: getGridPosition(9), data: { idShort: '10', label: 'TypeScript', category: 'Language', description: 'Typed JS', isActive: false, isSpecial: false } },
+  { id: '11', type: 'stackNode', position: getGridPosition(10), data: { idShort: '11', label: 'Web3 & AI', category: 'Web3 & AI', description: 'Decentralized Intelligence', isActive: false, isSpecial: true } },
 ];
 
 // --- Reduced edges showing key connections ---
@@ -141,6 +146,8 @@ const initialEdges = [
   { id: 'e2-5', source: '2', target: '5', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
   { id: 'e5-6', source: '5', target: '6', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
   { id: 'e1-10', source: '1', target: '10', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
+  { id: 'e2-11', source: '2', target: '11', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
+  { id: 'e5-11', source: '5', target: '11', type: 'smoothstep', animated: true, style: edgeStyle, markerEnd: { type: MarkerType.ArrowClosed, color: '#D97706' } },
 ];
 
 // Helper function to check if color is dark
@@ -164,7 +171,12 @@ const StackNode = ({ data, isConnectable }) => {
   const IconComponent = iconComponents[data.label] || FaCode;
   
   return (
-    <div style={{ width: 320 }} className="relative px-6 py-5 rounded-md border-4 border-black shadow-[6px_6px_0_#000] select-none" >
+    <div 
+      style={{ width: 320 }} 
+      className={`relative px-6 py-5 rounded-md border-4 border-black transition-all duration-300 transform hover:scale-105 hover:shadow-[10px_10px_0_#000] select-none cursor-pointer
+        ${data.isSpecial ? "animate-pulse shadow-[0_0_20px_rgba(255,215,0,0.5)]" : "shadow-[6px_6px_0_#000]"}
+      `}
+    >
       {/* left input handle */}
       <Handle
         type="target"

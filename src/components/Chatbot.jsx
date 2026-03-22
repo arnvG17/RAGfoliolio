@@ -384,7 +384,7 @@ function EmptyState({ theme }) {
       </div>
       <div>
         <div style={{ fontSize: 16, color: "#d1d5db" }}>
-          Ask me about Lewis "8XWDC" Hamilton 
+          Ask me about Lewis Hamilton 
         </div>
         <div style={{ fontSize: 13 }}>
           F1 • WDC • Sprint • Stint

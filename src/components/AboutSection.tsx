@@ -138,12 +138,13 @@ const AboutSection = () => {
         <p className="text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed text-muted-foreground">
           I'm{" "}
           <span className="text-foreground font-medium">Arnav Gawandi</span>, a{" "}
-          <span className="text-accent font-medium">web designer</span> who approaches
+          <span className="text-accent font-medium">web designer & developer</span> specialzing in{" "}
+          <span className="text-foreground font-medium">Web3 development</span> and{" "}
+          <span className="text-accent font-medium">AI integration</span>. I approach
           every project as if crafting a{" "}
-          <span className="text-foreground font-medium">bespoke home</span>. I immerse
-          myself in your vision, shaping every{" "}
-          <span className="text-accent font-medium">layout, interaction, and detail</span>{" "}
-          with care and intention. My goal is to create digital spaces that are{" "}
+          <span className="text-foreground font-medium">bespoke home</span>, leveraging{" "}
+          <span className="text-accent font-medium">agentic workflows</span> to build
+          intelligent solutions. My goal is to create digital spaces that are{" "}
           <span className="text-foreground font-medium">visually striking</span> yet{" "}
           <span className="text-accent font-medium">personal, functional, and welcoming</span>,
           a place where your <span className="text-foreground font-medium">brand truly lives </span>

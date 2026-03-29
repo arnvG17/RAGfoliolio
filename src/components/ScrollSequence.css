@@ -1,0 +1,175 @@
+/* ===================================================
+   ScrollSequence — Pinned scroll-driven frame animation
+   White background · Pinned until complete · Bigger canvas
+   =================================================== */
+
+/* Section — white background, full viewport height.
+   GSAP pin will keep this fixed during scroll. */
+.scroll-seq-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #ffffff;
+  overflow: hidden;
+  z-index: 2;
+}
+
+/* Viewport wrapper — centers everything */
+.scroll-seq-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Canvas card — bigger size, clean white aesthetic */
+.scroll-seq-canvas-card {
+  position: relative;
+  width: 75vw;
+  max-width: 1000px;
+  height: 75vh;
+  max-height: 650px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #f5f5f5;
+  box-shadow:
+    0 4px 60px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.scroll-seq-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #f8f8f8;
+}
+
+/* ─── Loading overlay ─── */
+.scroll-seq-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  z-index: 100;
+}
+
+.scroll-seq-loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Spinner */
+.scroll-seq-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  border-top-color: #111111;
+  border-radius: 50%;
+  animation: seq-spin 0.8s linear infinite;
+}
+
+@keyframes seq-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Progress bar */
+.scroll-seq-loader-bar {
+  width: 220px;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.scroll-seq-loader-fill {
+  height: 100%;
+  background: #111111;
+  border-radius: 3px;
+  transition: width 0.2s ease-out;
+}
+
+.scroll-seq-loader-text {
+  font-family: 'Clash Display', system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+/* ─── Scroll progress indicator (right edge) ─── */
+.scroll-seq-progress {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-seq-progress:hover {
+  opacity: 0.7;
+}
+
+.scroll-seq-progress-track {
+  width: 2px;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-seq-progress-thumb {
+  width: 100%;
+  height: 0%;
+  background: #111111;
+  border-radius: 2px;
+  transition: height 0.08s ease-out;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .scroll-seq-canvas-card {
+    width: 85vw;
+    height: 65vh;
+    max-width: 850px;
+    max-height: 550px;
+  }
+}
+
+@media (max-width: 768px) {
+  .scroll-seq-canvas-card {
+    width: 92vw;
+    height: 55vh;
+    max-width: none;
+    max-height: 450px;
+    border-radius: 14px;
+  }
+
+  .scroll-seq-progress {
+    right: 14px;
+  }
+
+  .scroll-seq-progress-track {
+    height: 45px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-seq-canvas-card {
+    width: 95vw;
+    height: 50vh;
+    max-height: 380px;
+    border-radius: 12px;
+  }
+}

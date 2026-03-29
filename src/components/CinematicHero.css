@@ -1,0 +1,267 @@
+/* ===================================================
+   CinematicHero — Split-screen pinned experience
+   Left: scrolling text panels   Right: pinned frame animation
+   =================================================== */
+
+.cinematic-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  /* Transparent so noise + cursor dither trail show through */
+  background: transparent;
+}
+
+/* ─── Left column: text panels ─── */
+.cinematic-left {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.cinematic-left-scroll {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.cinematic-panel {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px 60px 60px;
+}
+
+/* Hero panel */
+.cinematic-hero-panel {
+  gap: 30px;
+}
+
+.cinematic-hero-greeting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cinematic-hero-headline {
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.cinematic-hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.cinematic-social-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: hsl(0 0% 55%);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s ease;
+}
+
+.cinematic-social-link:hover {
+  color: hsl(120 100% 50%);
+}
+
+/* About panel */
+.cinematic-about-panel {
+  align-items: center;
+  text-align: center;
+  padding: 80px 50px;
+  gap: 20px;
+}
+
+.cinematic-about-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cinematic-about-label {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: hsl(120 100% 50%);
+}
+
+.cinematic-about-text {
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 300;
+  line-height: 1.7;
+  color: hsl(0 0% 60%);
+  max-width: 550px;
+}
+
+/* ─── Right column: pinned canvas ─── */
+.cinematic-right {
+  position: relative;
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+}
+
+.cinematic-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0px; 
+  background: transparent;
+}
+
+.cinematic-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── Loading overlay ─── */
+.cinematic-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(0 0% 6%);
+  z-index: 10;
+}
+
+.cinematic-loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.cinematic-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid hsl(0 0% 20%);
+  border-top-color: hsl(120 100% 50%);
+  border-radius: 50%;
+  animation: cinematicSpin 0.7s linear infinite;
+}
+
+@keyframes cinematicSpin {
+  to { transform: rotate(360deg); }
+}
+
+.cinematic-loader-bar {
+  width: 140px;
+  height: 2px;
+  background: hsl(0 0% 15%);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.cinematic-loader-fill {
+  height: 100%;
+  background: hsl(120 100% 50%);
+  border-radius: 2px;
+  transition: width 0.2s ease-out;
+  box-shadow: 0 0 8px hsl(120 100% 50% / 0.4);
+}
+
+.cinematic-loader-text {
+  font-family: 'Clash Display', system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: hsl(0 0% 40%);
+}
+
+/* ─── Divider line between left and right ─── */
+.cinematic-left::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsl(0 0% 18%) 30%,
+    hsl(0 0% 18%) 70%,
+    transparent 100%
+  );
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .cinematic-section {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .cinematic-left {
+    width: 100%;
+    min-height: 50vh;
+  }
+
+  .cinematic-right {
+    width: 100%;
+    min-height: 50vh;
+    padding: 15px;
+  }
+
+  .cinematic-left-scroll {
+    position: relative;
+    height: 200vh;
+  }
+
+  .cinematic-panel {
+    padding: 40px 24px;
+    height: 100vh;
+  }
+
+  .cinematic-hero-headline {
+    font-size: clamp(2rem, 7vw, 3rem);
+  }
+
+  .cinematic-about-text {
+    font-size: clamp(1rem, 3.5vw, 1.3rem);
+  }
+
+  .cinematic-left::after {
+    top: auto;
+    left: 15%;
+    right: 15%;
+    bottom: 0;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(0 0% 18%) 30%,
+      hsl(0 0% 18%) 70%,
+      transparent 100%
+    );
+  }
+}

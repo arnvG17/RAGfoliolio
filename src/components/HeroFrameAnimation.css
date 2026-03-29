@@ -1,0 +1,154 @@
+/* ===================================================
+   HeroFrameAnimation — Parallax scroll animation
+   Extended vertically · Parallax motion · Cover-fit
+   =================================================== */
+
+/* Outer wrapper — clips the extended inner content */
+.hero-frame-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: hsl(0 0% 5%);
+  box-shadow:
+    0 0 100px hsl(120 100% 50% / 0.05),
+    0 12px 50px hsl(0 0% 0% / 0.55),
+    inset 0 0 0 1px hsl(0 0% 14%);
+}
+
+/* Inner — extends vertically beyond the wrapper for parallax headroom.
+   The extra height prevents blank edges during parallax shift. */
+.hero-frame-inner {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  right: 0;
+  bottom: -100px;
+  will-change: transform;
+  transition: none; /* animated via JS requestAnimationFrame */
+}
+
+.hero-frame-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: hsl(0 0% 5%);
+}
+
+/* ─── Subtle top/bottom edge gradients for depth ─── */
+.hero-frame-wrapper::before,
+.hero-frame-wrapper::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 80px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.hero-frame-wrapper::before {
+  top: 0;
+  background: linear-gradient(
+    180deg,
+    hsl(0 0% 5% / 0.6) 0%,
+    transparent 100%
+  );
+}
+
+.hero-frame-wrapper::after {
+  bottom: 0;
+  background: linear-gradient(
+    0deg,
+    hsl(0 0% 5% / 0.6) 0%,
+    transparent 100%
+  );
+}
+
+/* ─── Loading overlay ─── */
+.hero-frame-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(0 0% 5%);
+  z-index: 10;
+  border-radius: 20px;
+}
+
+.hero-frame-loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-frame-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid hsl(0 0% 20%);
+  border-top-color: hsl(120 100% 50%);
+  border-radius: 50%;
+  animation: heroFrameSpin 0.7s linear infinite;
+}
+
+@keyframes heroFrameSpin {
+  to { transform: rotate(360deg); }
+}
+
+.hero-frame-loader-bar {
+  width: 140px;
+  height: 2px;
+  background: hsl(0 0% 15%);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.hero-frame-loader-fill {
+  height: 100%;
+  background: hsl(120 100% 50%);
+  border-radius: 2px;
+  transition: width 0.2s ease-out;
+  box-shadow: 0 0 8px hsl(120 100% 50% / 0.4);
+}
+
+.hero-frame-loader-text {
+  font-family: 'Clash Display', system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: hsl(0 0% 40%);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .hero-frame-wrapper {
+    min-height: 380px;
+    border-radius: 16px;
+  }
+
+  .hero-frame-inner {
+    top: -60px;
+    bottom: -60px;
+  }
+
+  .hero-frame-wrapper::before,
+  .hero-frame-wrapper::after {
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-frame-wrapper {
+    min-height: 300px;
+    border-radius: 14px;
+  }
+
+  .hero-frame-inner {
+    top: -40px;
+    bottom: -40px;
+  }
+}

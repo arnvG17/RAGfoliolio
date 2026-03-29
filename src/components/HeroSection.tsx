@@ -1,14 +1,13 @@
 import { ArrowUpRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import "./Metal.css";
-import Car3D from "./Car3D";
-import Chatbot from "./Chatbot.jsx"
+import HeroFrameAnimation from "./HeroFrameAnimation";
 
 const HeroSection = () => {
   const greetingRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.2 });
   const headlineRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
   const socialRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.3 });
-  const car3DRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
+  const rightColRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
 
   return (
     <section
@@ -94,18 +93,16 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* --- RIGHT COLUMN: 3D Car Model --- */}
-        <div className="flex justify-center items-center relative h-full w-full overflow-visible">
-          <div
-            ref={car3DRef.ref}
-            className={`absolute inset-0 w-[200%] h-[180%] -right-[50%] left-[-350px] -top-28 transition-all duration-1000 ${
-              car3DRef.isVisible
-                ? "animate-fade-in-scale"
-                : "opacity-0 scale-95 blur-md"
-            }`}
-          >
-            <Car3D />
-          </div>
+        {/* --- RIGHT COLUMN: Frame Animation --- */}
+        <div
+          ref={rightColRef.ref}
+          className={`flex justify-center items-center relative h-full w-full transition-all duration-1000 ${
+            rightColRef.isVisible
+              ? "animate-fade-in-scale"
+              : "opacity-0 scale-95 blur-md"
+          }`}
+        >
+          <HeroFrameAnimation />
         </div>
       </div>
     </section>

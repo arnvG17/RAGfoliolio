@@ -78,7 +78,7 @@ export default function ChatWidget() {
             }}
           >
             <Chatbot
-              apiUrl="http://localhost:5000/simple-chat"
+              apiUrl="http://localhost:5000/chat"
               title="Ask Arnav AI"
               placeholder="Ask me about Arnav's education, experience, or interests…"
               // Override the default styles for the widget context

@@ -7,15 +7,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Navigation from "./components/Navigation";
-import HeroSection from "./components/HeroSection";
-import ScrollingBanner from "./components/ScrollingBanner";
-import AboutSection from "./components/AboutSection";
+import CinematicHero from "./components/CinematicHero";
 import Stack from "./components/Stack";
 import ProjectsSection from "./components/ProjectsSection";
 import ContactSection from "./components/ContactSection";
 import DitherTrail from "./components/cursor-dither-trail";
 import Noise from "./components/Noise";
 import ChatWidget from "./components/ChatWidget.jsx"
+
 
 import "./font/fonts.css";
 
@@ -29,10 +28,9 @@ const App = () => (
       <BrowserRouter>
         
         {/* Background effect rendered on every page */}
-        <div className="absolute inset-0 -z-10">
+        <div className="fixed inset-0 pointer-events-none -z-10">
           <DitherTrail />
           <Noise />
-          
         </div>
 
         <Routes>
@@ -42,11 +40,9 @@ const App = () => (
               <div className="relative">
                 <Navigation />
                 <main>
-                  <HeroSection />
+                  <CinematicHero />
                   <ChatWidget/>
-                  <AboutSection />
                   <Stack />
-                  <ScrollingBanner />
                   <ProjectsSection />
                   <ContactSection />
                 </main>

@@ -20,14 +20,13 @@ const Navigation = () => {
 
   return (
     <nav
-      className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 
-        backdrop-blur-xl border border-white/10 bg-background/40 rounded-full 
-        shadow-lg flex items-center justify-between px-6 py-3
-        transition-[max-width] duration-700 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]
-        ${isScrolled ? "max-w-[650px]" : "max-w-[900px]"}`}
-      style={{
-        width: "90%", // keeps height constant, only width changes
-      }}
+      className={`fixed top-6 max-[900px]:left-1/2 min-[901px]:left-[25%] -translate-x-1/2 z-50 
+        backdrop-blur-xl border rounded-full w-[90%] min-[901px]:w-[45%]
+        flex items-center justify-between py-3
+        transition-all duration-700 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]
+        ${isScrolled 
+          ? "max-[900px]:max-w-[650px] min-[901px]:max-w-[480px] px-4 bg-white/5 border-white/5 shadow-none" 
+          : "max-[900px]:max-w-[900px] min-[901px]:max-w-[700px] px-6 bg-background/40 border-white/10 shadow-lg"}`}
     >
       {/* Logo */}
       <div className="flex items-center space-x-2 text-xl font-bold text-accent">
@@ -35,7 +34,7 @@ const Navigation = () => {
       </div>
 
       {/* Links */}
-      <div className="hidden md:flex items-center space-x-8">
+      <div className={`hidden md:flex items-center transition-all duration-700 ${isScrolled ? "space-x-2 xl:space-x-4" : "space-x-4 xl:space-x-8"}`}>
         <button
           onClick={() => scrollToSection("home")}
           className="text-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
@@ -65,7 +64,7 @@ const Navigation = () => {
       {/* Resume Button */}
       <Button
         asChild
-        className="ml-4 rounded-full px-6 py-2" // capsule shape
+        className={`rounded-full transition-all duration-700 ${isScrolled ? "ml-2 px-4 py-2" : "ml-4 px-6 py-2"}`} // capsule shape
       >
         <a
           href="/Arnav_Gawandi_Resume.pdf"

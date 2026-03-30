@@ -8,8 +8,8 @@ import "./CinematicHero.css";
 gsap.registerPlugin(ScrollTrigger);
 
 // ─── Frame config ───
-const FRAME_COUNT = 144;
-const FRAME_PATH = "/sequence1/ezgif-frame-";
+const FRAME_COUNT = 160;
+const FRAME_PATH = "/new-sequence/ezgif-frame-";
 const FRAME_EXT = ".jpg";
 const CRITICAL_BATCH = 20;
 const BG_BATCH = 8;

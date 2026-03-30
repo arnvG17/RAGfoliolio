@@ -6,9 +6,9 @@ import "./ScrollSequence.css";
 gsap.registerPlugin(ScrollTrigger);
 
 // ─── Configuration ───
-const START_FRAME_OFFSET = 70;
-const FRAME_COUNT = 144 - START_FRAME_OFFSET + 1;
-const FRAME_PATH = "/sequence1/ezgif-frame-";
+const START_FRAME_OFFSET = 0;
+const FRAME_COUNT = 160;
+const FRAME_PATH = "/new-sequence/ezgif-frame-";
 const FRAME_EXT = ".jpg";
 
 // Preloading config

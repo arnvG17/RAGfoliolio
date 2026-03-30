@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Navigation from "./components/Navigation";
 import CinematicHero from "./components/CinematicHero";
-import Stack from "./components/Stack";
 import ProjectsSection from "./components/ProjectsSection";
 import ContactSection from "./components/ContactSection";
 import DitherTrail from "./components/cursor-dither-trail";
@@ -42,7 +41,6 @@ const App = () => (
                 <main>
                   <CinematicHero />
                   <ChatWidget/>
-                  <Stack />
                   <ProjectsSection />
                   <ContactSection />
                 </main>

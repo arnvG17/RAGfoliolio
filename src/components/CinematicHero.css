@@ -7,10 +7,37 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  display: flex;
   overflow: hidden;
   /* Transparent so noise + cursor dither trail show through */
   background: transparent;
+}
+
+/* ─── Horizontal scroll container ─── */
+.cinematic-horizontal {
+  display: flex;
+  width: 150vw;
+  height: 100vh;
+  will-change: transform;
+}
+
+.cinematic-h-panel {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.cinematic-h-panel-main {
+  display: flex;
+}
+
+.cinematic-h-panel-stack {
+  width: 50vw;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  background: transparent;
+  overflow: hidden;
 }
 
 /* ─── Left column: text panels ─── */
@@ -214,10 +241,12 @@
 
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
-  .cinematic-section {
+  .cinematic-horizontal {
+    width: 150vw; /* keep horizontal scroll on mobile too */
+  }
+
+  .cinematic-h-panel-main {
     flex-direction: column;
-    height: auto;
-    min-height: 100vh;
   }
 
   .cinematic-left {

@@ -13,30 +13,21 @@ const Stack = () => {
       ];
 
   return (
-    <section id="about" className="py-20 px-6 relative overflow-hidden">
-      
-      {/* Noise component positioned as the background */}
-      <div className="absolute inset-0 z-[-1] pointer-events-none">
-        
+    <section id="stack" className="w-full h-full relative overflow-hidden">
+
+      {/* Section Header — overlaid at top */}
+      <div className="absolute top-6 left-0 right-0 z-10 flex items-center justify-center gap-2 pointer-events-none">
+        <span className="text-accent">✦</span>
+        <span className="text-accent font-medium text-sm tracking-wider uppercase">
+          My Stack
+        </span>
       </div>
 
-      <div className="max-w-4xl mx-auto">
-        
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-accent">✦</span>
-            <span className="text-accent font-medium text-sm tracking-wider uppercase">
-              My Stack
-            </span>
-          </div>
-          <div>
-            <StackFlow />
-            
-          </div>
-        </div>
-        
+      {/* StackFlow fills the entire panel */}
+      <div className="w-full h-full">
+        <StackFlow />
       </div>
+
     </section>
   );
 };

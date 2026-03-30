@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
+import Stack from "./Stack";
 import "./CinematicHero.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -159,24 +160,53 @@ const CinematicHero = () => {
     window.addEventListener("resize", resizeCanvas);
     rafRef.current = requestAnimationFrame(animate);
 
+    // Phase 1: frame animation + text scroll (0 → PHASE1_END)
+    // Phase 2: horizontal scroll revealing Stack (PHASE1_END → 1.0)
+    const PHASE1_END = 0.55;
+
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: "+=400%",
+      end: "+=750%",
       pin: true,
       scrub: 0.5,
       anticipatePin: 1,
       onUpdate: (self) => {
-        const p = self.progress; 
-        targetFrameRef.current = p * (FRAME_COUNT - 1);
+        const p = self.progress;
 
-        // Map scroll directly to left container transform
-        const leftScroll = document.getElementById("cinematic-left-scroll");
-        if (leftScroll) {
-          // Translate from 0 to -100vh (which shifts exact 1 window height up)
-          // 400% scroll -> 100vh movement = very smooth and slow parallax!
-          const maxTranslate = window.innerHeight;
-          leftScroll.style.transform = `translate3d(0, -${p * maxTranslate}px, 0)`;
+        if (p <= PHASE1_END) {
+          // ── Phase 1: frame animation + vertical text scroll ──
+          const phase1P = p / PHASE1_END; // normalize to 0–1
+          targetFrameRef.current = phase1P * (FRAME_COUNT - 1);
+
+          const leftScroll = document.getElementById("cinematic-left-scroll");
+          if (leftScroll) {
+            const maxTranslate = window.innerHeight;
+            leftScroll.style.transform = `translate3d(0, -${phase1P * maxTranslate}px, 0)`;
+          }
+
+          // Keep horizontal container at origin
+          const hz = document.getElementById("cinematic-horizontal");
+          if (hz) hz.style.transform = `translate3d(0, 0, 0)`;
+        } else {
+          // ── Phase 2: horizontal scroll ──
+          const phase2P = (p - PHASE1_END) / (1 - PHASE1_END); // normalize to 0–1
+          targetFrameRef.current = FRAME_COUNT - 1; // hold last frame
+
+          // Keep left text at final position
+          const leftScroll = document.getElementById("cinematic-left-scroll");
+          if (leftScroll) {
+            const maxTranslate = window.innerHeight;
+            leftScroll.style.transform = `translate3d(0, -${maxTranslate}px, 0)`;
+          }
+
+          // Translate horizontal container to reveal Stack panel
+          // Only shift by 50vw so the canvas stays on the left half
+          const hz = document.getElementById("cinematic-horizontal");
+          if (hz) {
+            const translateX = phase2P * (window.innerWidth * 0.5);
+            hz.style.transform = `translate3d(-${translateX}px, 0, 0)`;
+          }
         }
       },
     });
@@ -194,87 +224,101 @@ const CinematicHero = () => {
 
   return (
     <section ref={sectionRef} className="cinematic-section" id="home">
-      {/* ─── LEFT: Seamlessly scrolling text container ─── */}
-      <div className="cinematic-left">
-        <div id="cinematic-left-scroll" className="cinematic-left-scroll">
-          
-          {/* Hero Panel (takes 100vh height) */}
-          <div className="cinematic-panel cinematic-hero-panel">
-            <div className="cinematic-hero-greeting">
-              <span className="text-xl">`</span>
-            </div>
+      <div id="cinematic-horizontal" className="cinematic-horizontal">
 
-            <h1 className="cinematic-hero-headline">
-              <span className="text-foreground">Crafting </span>
-              <span className="text-accent">purpose driven</span>
-              <br />
-              <span className="text-accent">experiences </span>
-              <span className="text-foreground">that inspire</span>
-              <br />
-              <span className="text-foreground">& engage.</span>
-            </h1>
+        {/* ═══ Panel 1: Original cinematic split-screen ═══ */}
+        <div className="cinematic-h-panel cinematic-h-panel-main">
 
-            <div className="cinematic-hero-links">
-              <a href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
-                LINKEDIN <ArrowUpRight className="w-3 h-3" />
-              </a>
-              <a href="https://github.com/arnvG17" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
-                GITHUB <ArrowUpRight className="w-3 h-3" />
-              </a>
-              <a href="https://leetcode.com/u/ArnV17/" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
-                LEETCODE <ArrowUpRight className="w-3 h-3" />
-              </a>
-              <a href="mailto:arnavog@gmail.com" className="cinematic-social-link">
-                GMAIL <ArrowUpRight className="w-3 h-3" />
-              </a>
-            </div>
-          </div>
+          {/* ─── LEFT: Seamlessly scrolling text container ─── */}
+          <div className="cinematic-left">
+            <div id="cinematic-left-scroll" className="cinematic-left-scroll">
 
-          {/* About Panel (takes 100vh height, naturally below Hero) */}
-          <div className="cinematic-panel cinematic-about-panel">
-            <div className="cinematic-about-badge">
-              <span className="text-accent">✦</span>
-              <span className="cinematic-about-label">About Me</span>
-            </div>
-
-            <p className="cinematic-about-text">
-              I'm{" "}
-              <span className="font-medium text-white">Arnav Gawandi</span>, a{" "}
-              <span className="font-medium text-accent">web designer & developer</span> specializing in{" "}
-              <span className="font-medium text-white">Web3 development</span> and{" "}
-              <span className="font-medium text-accent">AI integration</span>. I approach
-              every project as if crafting a{" "}
-              <span className="font-medium text-white">bespoke home</span>, leveraging{" "}
-              <span className="font-medium text-accent">agentic workflows</span> to build
-              intelligent solutions. My goal is to create digital spaces that are{" "}
-              <span className="font-medium text-white">visually striking</span> yet{" "}
-              <span className="font-medium text-accent">personal, functional, and welcoming</span>,
-              a place where your <span className="font-medium text-white">brand truly lives</span>{" "}
-              and connects with its audience.
-            </p>
-          </div>
-
-        </div>
-      </div>
-
-      {/* ─── RIGHT: Pinned frame animation canvas ─── */}
-      <div className="cinematic-right">
-        <div className="cinematic-canvas-wrapper">
-          <canvas ref={canvasRef} className="cinematic-canvas" />
-
-          {/* Loading overlay */}
-          {!ready && (
-            <div className="cinematic-loader">
-              <div className="cinematic-loader-inner">
-                <div className="cinematic-spinner" />
-                <div className="cinematic-loader-bar">
-                  <div className="cinematic-loader-fill" style={{ width: `${pct}%` }} />
+              {/* Hero Panel */}
+              <div className="cinematic-panel cinematic-hero-panel">
+                <div className="cinematic-hero-greeting">
+                  <span className="text-xl">`</span>
                 </div>
-                <span className="cinematic-loader-text">{pct}%</span>
+
+                <h1 className="cinematic-hero-headline">
+                  <span className="text-foreground">Crafting </span>
+                  <span className="text-accent">purpose driven</span>
+                  <br />
+                  <span className="text-accent">experiences </span>
+                  <span className="text-foreground">that inspire</span>
+                  <br />
+                  <span className="text-foreground">& engage.</span>
+                </h1>
+
+                <div className="cinematic-hero-links">
+                  <a href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
+                    LINKEDIN <ArrowUpRight className="w-3 h-3" />
+                  </a>
+                  <a href="https://github.com/arnvG17" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
+                    GITHUB <ArrowUpRight className="w-3 h-3" />
+                  </a>
+                  <a href="https://leetcode.com/u/ArnV17/" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
+                    LEETCODE <ArrowUpRight className="w-3 h-3" />
+                  </a>
+                  <a href="mailto:arnavog@gmail.com" className="cinematic-social-link">
+                    GMAIL <ArrowUpRight className="w-3 h-3" />
+                  </a>
+                </div>
               </div>
+
+              {/* About Panel */}
+              <div className="cinematic-panel cinematic-about-panel">
+                <div className="cinematic-about-badge">
+                  <span className="text-accent">✦</span>
+                  <span className="cinematic-about-label">About Me</span>
+                </div>
+
+                <p className="cinematic-about-text">
+                  I'm{" "}
+                  <span className="font-medium text-white">Arnav Gawandi</span>, a{" "}
+                  <span className="font-medium text-accent">web designer & developer</span> specializing in{" "}
+                  <span className="font-medium text-white">Web3 development</span> and{" "}
+                  <span className="font-medium text-accent">AI integration</span>. I approach
+                  every project as if crafting a{" "}
+                  <span className="font-medium text-white">bespoke home</span>, leveraging{" "}
+                  <span className="font-medium text-accent">agentic workflows</span> to build
+                  intelligent solutions. My goal is to create digital spaces that are{" "}
+                  <span className="font-medium text-white">visually striking</span> yet{" "}
+                  <span className="font-medium text-accent">personal, functional, and welcoming</span>,
+                  a place where your <span className="font-medium text-white">brand truly lives</span>{" "}
+                  and connects with its audience.
+                </p>
+              </div>
+
             </div>
-          )}
+          </div>
+
+          {/* ─── RIGHT: Pinned frame animation canvas ─── */}
+          <div className="cinematic-right">
+            <div className="cinematic-canvas-wrapper">
+              <canvas ref={canvasRef} className="cinematic-canvas" />
+
+              {/* Loading overlay */}
+              {!ready && (
+                <div className="cinematic-loader">
+                  <div className="cinematic-loader-inner">
+                    <div className="cinematic-spinner" />
+                    <div className="cinematic-loader-bar">
+                      <div className="cinematic-loader-fill" style={{ width: `${pct}%` }} />
+                    </div>
+                    <span className="cinematic-loader-text">{pct}%</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
+
+        {/* ═══ Panel 2: Stack — revealed via horizontal scroll ═══ */}
+        <div className="cinematic-h-panel cinematic-h-panel-stack">
+          <Stack />
+        </div>
+
       </div>
     </section>
   );

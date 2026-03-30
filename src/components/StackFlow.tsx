@@ -260,7 +260,7 @@ export default function StackFlow() {
   }, [setNodes]);
 
   return (
-    <div style={{ width: '100%', height: 720, background: DARK_BG, padding: 24 }}>
+    <div style={{ width: '100%', height: '100%', background: DARK_BG, padding: 24 }}>
       <style>{`
         @keyframes dashForward {
           0% {

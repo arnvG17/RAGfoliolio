@@ -20,11 +20,10 @@ const HeroSection = () => {
           {/* Greeting */}
           <div
             ref={greetingRef.ref}
-            className={`flex items-center gap-2 mb-8 transition-all duration-1000 ${
-              greetingRef.isVisible
-                ? "animate-pop-in"
-                : "opacity-0 scale-90 translate-y-8 blur-sm"
-            }`}
+            className={`flex items-center gap-2 mb-8 transition-all duration-1000 ${greetingRef.isVisible
+              ? "animate-pop-in"
+              : "opacity-0 scale-90 translate-y-8 blur-sm"
+              }`}
           >
             <span className="text-xl">`</span>
             <span className="text-muted-foreground text-lg"></span>
@@ -33,33 +32,31 @@ const HeroSection = () => {
           {/* Main Headline */}
           <div
             ref={headlineRef.ref}
-            className={`mb-12 transition-all duration-1000 ${
-              headlineRef.isVisible
-                ? "animate-fade-in-scale"
-                : "opacity-0 scale-95 blur-md"
-            }`}
+            className={`mb-12 transition-all duration-1000 ${headlineRef.isVisible
+              ? "animate-fade-in-scale"
+              : "opacity-0 scale-95 blur-md"
+              }`}
           >
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-              <span className="text-foreground">Crafting </span>
-              <span className="text-accent">purpose driven</span>
+              <span className="text-foreground">WireFrame </span>
+              <span className="text-accent">to a</span>
               <br />
-              <span className="text-accent">experiences </span>
-              <span className="text-foreground">that inspire</span>
+              <span className="text-accent">Pixel-Perfect </span>
+              <span className="text-foreground">Digital Experience</span>
               <br />
-              <span className="text-foreground">& engage.</span>
+              <span className="text-foreground">that Inspire & Engage.</span>
             </h1>
           </div>
 
           {/* Social Links */}
           <div
             ref={socialRef.ref}
-            className={`flex flex-wrap items-center gap-6 mt-auto transition-all duration-1000 ${
-              socialRef.isVisible
-                ? "animate-slide-in-left"
-                : "opacity-0 -translate-x-8 blur-sm"
-            }`}
+            className={`flex flex-wrap items-center gap-6 mt-auto transition-all duration-1000 ${socialRef.isVisible
+              ? "animate-slide-in-left"
+              : "opacity-0 -translate-x-8 blur-sm"
+              }`}
           >
-            
+
             <a
               href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/"
               target="_blank"
@@ -96,11 +93,10 @@ const HeroSection = () => {
         {/* --- RIGHT COLUMN: Frame Animation --- */}
         <div
           ref={rightColRef.ref}
-          className={`flex justify-center items-center relative h-full w-full transition-all duration-1000 ${
-            rightColRef.isVisible
-              ? "animate-fade-in-scale"
-              : "opacity-0 scale-95 blur-md"
-          }`}
+          className={`flex justify-center items-center relative h-full w-full transition-all duration-1000 ${rightColRef.isVisible
+            ? "animate-fade-in-scale"
+            : "opacity-0 scale-95 blur-md"
+            }`}
         >
           <HeroFrameAnimation />
         </div>

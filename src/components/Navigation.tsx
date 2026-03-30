@@ -20,13 +20,13 @@ const Navigation = () => {
 
   return (
     <nav
-      className={`fixed top-6 max-[900px]:left-1/2 min-[901px]:left-[25%] -translate-x-1/2 z-50 
-        backdrop-blur-xl border rounded-full w-[90%] min-[901px]:w-[45%]
+      className={`fixed top-6 max-[900px]:left-1/2 min-[901px]:left-[32.5%] -translate-x-1/2 z-50 
+        backdrop-blur-xl border rounded-full w-[94%] min-[901px]:w-[60%]
         flex items-center justify-between py-3
         transition-all duration-700 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]
         ${isScrolled 
-          ? "max-[900px]:max-w-[650px] min-[901px]:max-w-[480px] px-4 bg-white/5 border-white/5 shadow-none" 
-          : "max-[900px]:max-w-[900px] min-[901px]:max-w-[700px] px-6 bg-background/40 border-white/10 shadow-lg"}`}
+          ? "max-[900px]:max-w-[700px] min-[901px]:max-w-[600px] px-6 bg-white/5 border-white/5 shadow-none" 
+          : "max-[900px]:max-w-[1100px] min-[901px]:max-w-[950px] px-8 bg-background/40 border-white/10 shadow-lg"}`}
     >
       {/* Logo */}
       <div className="flex items-center space-x-2 text-xl font-bold text-accent">

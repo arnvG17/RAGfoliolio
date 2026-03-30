@@ -8,14 +8,14 @@
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  /* Transparent so noise + cursor dither trail show through */
-  background: transparent;
+  background: transparent !important;
+  z-index: 10;
 }
 
 /* ─── Horizontal scroll container ─── */
 .cinematic-horizontal {
   display: flex;
-  width: 150vw;
+  width: 160vw;
   height: 100vh;
   will-change: transform;
 }
@@ -32,7 +32,7 @@
 }
 
 .cinematic-h-panel-stack {
-  width: 50vw;
+  width: 60vw;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
@@ -43,12 +43,13 @@
 /* ─── Left column: text panels ─── */
 .cinematic-left {
   position: relative;
-  width: 50%;
+  width: 60%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
+  padding: 0 40px; /* Extra padding to let content spread out */
 }
 
 .cinematic-left-scroll {
@@ -82,10 +83,10 @@
 }
 
 .cinematic-hero-headline {
-  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-size: clamp(2.4rem, 5.5vw, 4.4rem);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
 }
 
 .cinematic-hero-links {
@@ -134,21 +135,21 @@
 }
 
 .cinematic-about-text {
-  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
   font-weight: 300;
-  line-height: 1.7;
-  color: hsl(0 0% 60%);
-  max-width: 550px;
+  line-height: 1.6;
+  color: hsl(0 0% 70%);
+  max-width: 750px;
 }
 
 /* ─── Right column: pinned canvas ─── */
 .cinematic-right {
   position: relative;
-  width: 50%;
+  width: 40%;
   height: 100vh;
   display: flex;
   align-items: stretch;
-  justify-content: stretch;
+  justify-content: flex-end;
   padding: 0;
 }
 
@@ -165,6 +166,8 @@
   display: block;
   width: 100%;
   height: 100%;
+  mix-blend-mode: multiply;
+  filter: contrast(1.4) brightness(1.25) grayscale(0.5); /* Stronger contrast to wash out frame background to white for 'multiply' */
 }
 
 /* ─── Loading overlay ─── */

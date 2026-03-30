@@ -205,7 +205,9 @@ const ScrollSequence = () => {
     const current = currentFrameRef.current;
     const target = targetFrameRef.current;
     const diff = Math.abs(target - current);
-    const speed = diff > 5 ? 0.15 : 0.08;
+    
+    // Slower speeds for more "buttery" feel
+    const speed = diff > 5 ? 0.08 : 0.04;
 
     const nextFrame = lerp(current, target, speed);
     currentFrameRef.current = nextFrame;
@@ -278,9 +280,9 @@ const ScrollSequence = () => {
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: "+=900%", // increased scroll distance for slower, smoother progression
+      end: "+=1500%", // Significantly increased distance for "very slow" feel
       pin: true,       // PIN the section in place
-      scrub: true,     // directly tied to scroll
+      scrub: 1.2,      // Added 1.2s scrub for extra smoothness
       anticipatePin: 1,
       onUpdate: (self) => {
         targetFrameRef.current = self.progress * (FRAME_COUNT - 1);

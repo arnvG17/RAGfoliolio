@@ -56,7 +56,7 @@ const ProjectsSection = () => {
   ];
 
   return (
-    <section id="projects" className="relative py-20 px-6 overflow-hidden">
+    <section id="projects" className="relative py-20 px-6 overflow-hidden bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div

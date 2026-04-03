@@ -173,21 +173,17 @@ const CinematicHero = () => {
     window.addEventListener("resize", resizeCanvas);
     rafRef.current = requestAnimationFrame(animate);
 
-    // Phase 1: frame animation + text scroll (0 → PHASE1_END)
-    // Phase 2: horizontal scroll revealing Stack (PHASE1_END → PHASE2_END)
-    // Phase 3: Premium Car Performance + Stack Exit (PHASE2_END → PHASE3_END)
-    // Phase 4: Smooth Projects Reveal from top (PHASE3_END → 1.0)
     const PHASE1_END = 0.30;
     const PHASE2_END = 0.50;
-    const PHASE_HOLD_END = 0.65;
-    const PHASE3_END = 0.94;
+    const PHASE_HOLD_END = 0.80; // Extended hold to make the snap feel more distinct
+    const PHASE3_END = 0.92; // Very tight window for the bounce
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: "+=900%", 
+      end: "+=800%", 
       pin: true,
-      scrub: 1.5, // Slightly higher scrub for even more smoothness
+      scrub: 0.8, // Low scrub for "instant" reaction
       anticipatePin: 1,
       invalidateOnRefresh: false,
       fastScrollEnd: true,
@@ -200,7 +196,7 @@ const CinematicHero = () => {
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            const maxTranslate = window.innerHeight * 1; // One full height scroll for 2 panels
+            const maxTranslate = window.innerHeight * 1; 
             leftScroll.style.transform = `translate3d(0, -${phase1P * maxTranslate}px, 0)`;
             leftScroll.style.opacity = "1";
           }
@@ -216,24 +212,19 @@ const CinematicHero = () => {
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
             leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
-            leftScroll.style.opacity = String(1 - phase2P); // Fade out hero text
+            leftScroll.style.opacity = String(1 - phase2P); 
           }
 
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
-            // Horizontal reveal of Stack panel
             hz.style.opacity = "1";
             hz.style.transform = `translate3d(-${easedP * 60}vw, 0, 0)`;
           }
         }
         else if (p <= PHASE_HOLD_END) {
-          // ── HOLD PHASE ──
-          // Car stays at last frame of Seq 1, Stack stays shifted at -60vw
           targetFrameRef.current = FRAME_COUNT_1 - 1;
-          
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) hz.style.transform = `translate3d(-60vw, 0, 0)`;
-
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
             leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
@@ -242,12 +233,11 @@ const CinematicHero = () => {
         }
         else if (p <= PHASE3_END) {
           const phase3P = (p - PHASE_HOLD_END) / (PHASE3_END - PHASE_HOLD_END);
-          const easedP = gsap.parseEase("power2.inOut")(phase3P);
+          const easedP = gsap.parseEase("power3.out")(phase3P); // Sharper ease-out for snap
           targetFrameRef.current = (FRAME_COUNT_1) + easedP * (FRAME_COUNT_2 - 1);
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            // Phase 3 vertical: Scroll from About (100vh) to Expertise (200vh) + Fade in
             const verticalTranslate = window.innerHeight + (easedP * window.innerHeight);
             leftScroll.style.transform = `translate3d(0, -${verticalTranslate}px, 0)`;
             leftScroll.style.opacity = String(easedP);
@@ -255,7 +245,6 @@ const CinematicHero = () => {
 
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
-            // Phase 3 horizontal: Return horizontally from -60vw back to 0 while car performs
             hz.style.transform = `translate3d(-${(1 - easedP) * 60}vw, 0, 0)`;
           }
 

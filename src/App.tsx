@@ -29,13 +29,13 @@ const App = () => {
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
+      duration: 2.2, // Significantly longer duration for a "slower" feel
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom cinematic easing
+      wheelMultiplier: 0.8, // Slightly more resistance
+      touchMultiplier: 1.5,
+      infinite: false,
       gestureOrientation: 'both',
       smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
     });
 
     function raf(time: number) {

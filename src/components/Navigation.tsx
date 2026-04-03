@@ -22,8 +22,8 @@ const Navigation = () => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             mostVisibleSection = entry.target.id;
-            // The "further-content" wrapper contains projects and contact
-            if (entry.target.id === "further-content" || entry.target.id === "projects" || entry.target.id === "contact") {
+            // ONLY Projects section triggers full width
+            if (entry.target.id === "projects") {
               isProjectOrContact = true;
             }
           }
@@ -33,8 +33,8 @@ const Navigation = () => {
         setActiveSection(mostVisibleSection);
       },
       { 
-        threshold: 0.1,
-        rootMargin: "-10% 0px -10% 0px"
+        threshold: 0.05, // More sensitive triggering
+        rootMargin: "20% 0px 20% 0px" // Pre-emptively trigger transitions
       }
     );
 
@@ -62,7 +62,7 @@ const Navigation = () => {
 
   return (
     <nav
-      className={`fixed top-6 z-50 transition-all duration-700 ease-[cubic-bezier(0.2, 0.8, 0.2, 1)]
+      className={`fixed top-8 z-50 transition-all duration-700 ease-[cubic-bezier(0.2, 0.8, 0.2, 1)]
         backdrop-blur-xl border rounded-full 
         flex items-center justify-between py-3
         -translate-x-1/2

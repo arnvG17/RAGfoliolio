@@ -318,72 +318,104 @@
 
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
-  .cinematic-horizontal {
-    width: 100vw; /* Disable horizontal scroll on mobile */
-    flex-direction: column;
-    height: auto;
+  .cinematic-section {
+    height: 500vh; /* Extremely long for sticky scroll animation */
+    overflow: visible; /* Must be visible for sticky to work */
   }
 
-  .cinematic-section {
-    height: auto;
-    overflow: visible;
+  .cinematic-horizontal {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    will-change: transform;
   }
 
   .cinematic-h-panel {
     width: 100vw;
-    height: auto;
+    height: 100vh;
+    flex-shrink: 0;
   }
 
   .cinematic-h-panel-main {
+    display: flex;
     flex-direction: column;
+    height: 400vh; /* Sequence of HERO, ABOUT, EXPERTISE */
   }
 
   .cinematic-left {
     width: 100%;
-    min-height: auto;
+    height: 100%; /* Spans the full 400vh */
     padding: 0;
+    position: relative;
+    z-index: 2;
   }
 
   .cinematic-right {
+    position: sticky; /* Sticky is much better for mobile frames */
+    top: 20vh;
+    left: 0;
     width: 100%;
-    min-height: 400px;
-    padding: 20px;
+    height: 60vh;
+    padding: 0;
+    display: flex;
     justify-content: center;
+    z-index: 1;
+    pointer-events: none;
+    background: transparent;
   }
 
   .cinematic-left-scroll {
     position: relative;
-    height: auto;
-    transform: none !important;
+    height: 100%;
+    transform: none !important; /* Let natural scroll handle it */
   }
 
   .cinematic-panel {
-    padding: 80px 24px 40px 24px;
-    height: auto;
-    min-height: 80vh;
+    padding: 60px 24px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: transparent;
   }
 
   .cinematic-hero-headline {
-    font-size: clamp(2.2rem, 9vw, 3.5rem);
+    font-size: clamp(2.2rem, 9vw, 3.2rem);
     text-align: left;
+    margin-top: -40px;
   }
 
   .cinematic-about-text {
     font-size: 1.1rem;
     text-align: left;
+    line-height: 1.5;
   }
   
   .cinematic-about-badge {
     justify-content: flex-start;
+    margin-bottom: 20px;
   }
 
   .cinematic-expertise-grid {
     grid-template-columns: 1fr;
     gap: 16px;
-    margin-top: 30px;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .expertise-item {
+    padding: 24px;
+    background: hsla(0, 0%, 100%, 0.03);
   }
 
   .cinematic-left::after {
     display: none;
+  }
+
+  /* Make sure the stack section is at the very bottom of the 500vh */
+  .cinematic-h-panel-stack {
+    height: 100vh;
+    background: transparent;
   }
 }

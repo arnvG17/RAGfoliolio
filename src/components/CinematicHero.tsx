@@ -69,20 +69,18 @@ const CinematicHero = () => {
 
     // Scale strictly by height to ensure the full car is visible from top to bottom.
     // Using 0.90 to give it a 5% margin at top and bottom (10% total) to prevent clipping.
-    const scale = (ch / ih) * 0.90;
+    const isMobile = window.innerWidth <= 900;
+    const baseScale = isMobile ? 0.35 : 0.85; // Even smaller for mobile
+    
+    const scale = Math.min(cw / iw, ch / ih) * baseScale;
     const sw = iw * scale;
     const sh = ih * scale;
     const sx = (cw - sw) / 2;
-    const sy = (ch - sh) / 2;
+    const sy = isMobile ? (ch * 0.15) : (ch - sh) / 2; // Fixed top margin for mobile
     
     ctx.clearRect(0, 0, cw, ch);
-
-    // Removed blurred background logic to prevent "white div" look
-
-    // 2. Draw actual unclipped frame centered
     ctx.filter = 'none';
     ctx.drawImage(img, sx, sy, sw, sh);
-
     // Remove any hardcoded background color that might clash
     // (Removed as per user request for static off-white background)
   }, []);
@@ -180,20 +178,32 @@ const CinematicHero = () => {
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: isMobile ? "+=100%" : "+=800%", 
+      end: isMobile ? "bottom bottom" : "+=800%", 
       pin: !isMobile,
-      scrub: 1.2, // Slightly more inertial feel
+      scrub: 1.2, 
       anticipatePin: 1,
-      invalidateOnRefresh: false,
+      invalidateOnRefresh: true,
       fastScrollEnd: true,
       onUpdate: (self) => {
+        const p = self.progress;
+
         if (isMobile) {
-          targetFrameRef.current = self.progress * (TOTAL_FRAMES - 1);
+          // Mobile: Linear continuous car animation linked to natural scroll
+          targetFrameRef.current = p * (TOTAL_FRAMES - 1);
+
+          const canvasContainer = document.querySelector(".cinematic-right") as HTMLElement;
+
+          if (p < 0.75) {
+             if (canvasContainer) canvasContainer.style.opacity = "1";
+          } else {
+             // Fade out car as we enter the Stack/Projects boundary
+             const fadeP = (p - 0.75) / 0.25;
+             if (canvasContainer) canvasContainer.style.opacity = String(1 - fadeP);
+          }
           return;
         }
 
-        const p = self.progress;
-
+        // Desktop logic
         if (p <= PHASE1_END) {
           // Phase 1: Vertical scroll (frames 0 to VERT_END)
           const phase1P = p / PHASE1_END;

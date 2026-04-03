@@ -3,30 +3,75 @@ import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isFullWidth, setIsFullWidth] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0); // Trigger immediately on scroll
+      setIsScrolled(window.scrollY > 10);
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    
+    // Intersection Observer for Sections tracking
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let isProjectOrContact = false;
+        let mostVisibleSection = activeSection;
 
-  const scrollToSection = (sectionId) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            mostVisibleSection = entry.target.id;
+            // The "further-content" wrapper contains projects and contact
+            if (entry.target.id === "further-content" || entry.target.id === "projects" || entry.target.id === "contact") {
+              isProjectOrContact = true;
+            }
+          }
+        });
+
+        setIsFullWidth(isProjectOrContact);
+        setActiveSection(mostVisibleSection);
+      },
+      { 
+        threshold: 0.1,
+        rootMargin: "-10% 0px -10% 0px"
+      }
+    );
+
+    const sections = ["home", "about", "expertise", "projects", "contact", "further-content"];
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) observer.unobserve(el);
+      });
+    };
+  }, [activeSection]);
+
+  const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: "smooth" });
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
     <nav
-      className={`fixed top-6 max-[900px]:left-1/2 min-[901px]:left-[32.5%] -translate-x-1/2 z-50 
-        backdrop-blur-xl border rounded-full w-[94%] min-[901px]:w-[60%]
+      className={`fixed top-6 z-50 transition-all duration-700 ease-[cubic-bezier(0.2, 0.8, 0.2, 1)]
+        backdrop-blur-xl border rounded-full 
         flex items-center justify-between py-3
-        transition-all duration-700 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]
-        ${isScrolled 
-          ? "max-[900px]:max-w-[700px] min-[901px]:max-w-[600px] px-6 bg-white/5 border-white/5 shadow-none" 
-          : "max-[900px]:max-w-[1100px] min-[901px]:max-w-[950px] px-8 bg-background/40 border-white/10 shadow-lg"}`}
+        -translate-x-1/2
+        ${isFullWidth 
+          ? "w-[96%] md:w-[94%] max-w-[1400px] px-8 bg-background/80 border-white/20 shadow-2xl py-4" 
+          : "w-[94%] md:w-[50%] max-w-[900px] px-8 bg-background/40 border-white/10 shadow-lg"}`}
+      style={{ 
+        left: isFullWidth ? '50%' : (typeof window !== 'undefined' && window.innerWidth > 900 ? 'calc(30% + 20px)' : '50%') 
+      }}
     >
       {/* Logo */}
       <div className="flex items-center space-x-2 text-xl font-bold text-accent">
@@ -34,37 +79,32 @@ const Navigation = () => {
       </div>
 
       {/* Links */}
-      <div className={`hidden md:flex items-center transition-all duration-700 ${isScrolled ? "space-x-2 xl:space-x-4" : "space-x-4 xl:space-x-8"}`}>
-        <button
-          onClick={() => scrollToSection("home")}
-          className="text-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
-        >
-          Home
-        </button>
-        <button
-          onClick={() => scrollToSection("about")}
-          className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
-        >
-          About
-        </button>
-        <button
-          onClick={() => scrollToSection("projects")}
-          className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
-        >
-          Projects
-        </button>
-        <button
-          onClick={() => scrollToSection("contact")}
-          className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium"
-        >
-          Contact
-        </button>
+      <div className={`hidden md:flex items-center transition-all duration-700 ${isFullWidth ? "space-x-8" : "space-x-4"}`}>
+        {[
+          { id: "home", label: "Home" },
+          { id: "about", label: "About" },
+          { id: "projects", label: "Projects" },
+          { id: "contact", label: "Contact" }
+        ].map((link) => (
+          <button
+            key={link.id}
+            onClick={() => scrollToSection(link.id)}
+            className={`transition-colors duration-200 text-sm font-medium hover:text-accent
+              ${activeSection === link.id ? "text-accent font-bold" : "text-foreground/70"}`}
+          >
+            {link.label}
+          </button>
+        ))}
       </div>
 
       {/* Resume Button */}
       <Button
         asChild
-        className={`rounded-full transition-all duration-700 ${isScrolled ? "ml-2 px-4 py-2" : "ml-4 px-6 py-2"}`} // capsule shape
+        className={`rounded-full transition-all duration-700 ${
+          isFullWidth 
+            ? "px-8 py-3 text-base bg-accent text-accent-foreground hover:bg-accent/90" 
+            : "px-6 py-2"
+        }`}
       >
         <a
           href="/Arnav_Gawandi_Resume.pdf"

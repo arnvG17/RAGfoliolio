@@ -61,31 +61,31 @@ const HeroSection = () => {
               href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium flex items-center gap-1"
+              className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-light tracking-tight flex items-center gap-1"
             >
-              LINKEDIN <ArrowUpRight className="w-3 h-3" />
+              LinkedIn <ArrowUpRight className="w-3 h-3" />
             </a>
             <a
               href="https://github.com/arnvG17"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium flex items-center gap-1"
+              className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-light tracking-tight flex items-center gap-1"
             >
-              GITHUB <ArrowUpRight className="w-3 h-3" />
+              Github <ArrowUpRight className="w-3 h-3" />
             </a>
             <a
               href="https://leetcode.com/u/ArnV17/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium flex items-center gap-1"
+              className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-light tracking-tight flex items-center gap-1"
             >
-              LEETCODE <ArrowUpRight className="w-3 h-3" />
+              Leetcode <ArrowUpRight className="w-3 h-3" />
             </a>
             <a
               href="mailto:arnavog@gmail.com"
-              className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-medium flex items-center gap-1"
+              className="text-muted-foreground hover:text-accent transition-colors duration-200 text-sm font-light tracking-tight flex items-center gap-1"
             >
-              GMAIL <ArrowUpRight className="w-3 h-3" />
+              Gmail <ArrowUpRight className="w-3 h-3" />
             </a>
           </div>
         </div>

@@ -1,0 +1,137 @@
+.zenitsu-frame-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width to avoid cut-off */
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  background: black;
+  pointer-events: none;
+}
+
+.zenitsu-frame-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  margin: 0 auto;
+}
+
+.zenitsu-frame-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%; /* Covers the entire left half of the screen */
+  height: 100%;
+  object-fit: cover; /* Full-bleed immersion */
+  filter: brightness(0.95) contrast(1.4) saturate(1.15) blur(0.2px); /* Ultra-HD beauty filters */
+  z-index: 1;
+}
+
+/* Holistic Masking: Seamlessly blends the video into total darkness from all sides */
+.zenitsu-mask-overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    /* Right Side Fade: animation -> content */
+    linear-gradient(to right, transparent 0%, transparent 28%, rgba(0,0,0,0.85) 48%, black 85%),
+    /* Left Side Fade: ensure no hard edge if video exceeds width */
+    linear-gradient(to left, transparent 95%, black 100%),
+    /* Top Fade: smooth section transition */
+    linear-gradient(to bottom, black 0%, transparent 18%),
+    /* Bottom Fade: smooth section transition */
+    linear-gradient(to top, black 0%, transparent 18%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Cinematic Grain Overlay for high-end "upscaled" texture */
+.zenitsu-grain-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.14;
+  mix-blend-mode: soft-light;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Central Spotlight Vignette: Focused on the left-side video core */
+.zenitsu-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 25% 50%, transparent 0%, rgba(0,0,0,0.55) 55%, black 100%);
+  z-index: 4;
+  pointer-events: none;
+}
+
+
+
+/* Loading state */
+.zenitsu-frame-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black;
+  z-index: 20;
+}
+
+
+
+
+
+/* Loading state */
+.zenitsu-frame-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black;
+  z-index: 10;
+  transition: opacity 0.5s ease-out;
+}
+
+.zenitsu-frame-loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.zenitsu-frame-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent, #e11d48);
+  border-radius: 50%;
+  animation: zenitsu-spin 0.8s linear infinite;
+}
+
+.zenitsu-frame-loader-bar {
+  width: 200px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.zenitsu-frame-loader-fill {
+  height: 100%;
+  background: var(--accent, #e11d48);
+  transition: width 0.3s ease-out;
+}
+
+.zenitsu-frame-loader-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+}
+
+@keyframes zenitsu-spin {
+  to { transform: rotate(360deg); }
+}

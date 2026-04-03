@@ -178,15 +178,16 @@ const CinematicHero = () => {
     // Phase 3: Premium Car Performance + Stack Exit (PHASE2_END → PHASE3_END)
     // Phase 4: Smooth Projects Reveal from top (PHASE3_END → 1.0)
     const PHASE1_END = 0.30;
-    const PHASE2_END = 0.55;
-    const PHASE3_END = 0.88;
+    const PHASE2_END = 0.50;
+    const PHASE_HOLD_END = 0.65;
+    const PHASE3_END = 0.94;
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: "+=1000%", 
+      end: "+=900%", 
       pin: true,
-      scrub: 1, 
+      scrub: 1.5, // Slightly higher scrub for even more smoothness
       anticipatePin: 1,
       invalidateOnRefresh: false,
       fastScrollEnd: true,
@@ -199,7 +200,7 @@ const CinematicHero = () => {
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            const maxTranslate = window.innerHeight;
+            const maxTranslate = window.innerHeight * 1; // One full height scroll for 2 panels
             leftScroll.style.transform = `translate3d(0, -${phase1P * maxTranslate}px, 0)`;
             leftScroll.style.opacity = "1";
           }
@@ -209,6 +210,7 @@ const CinematicHero = () => {
         } 
         else if (p <= PHASE2_END) {
           const phase2P = (p - PHASE1_END) / (PHASE2_END - PHASE1_END);
+          const easedP = gsap.parseEase("power2.inOut")(phase2P);
           targetFrameRef.current = FRAME_VERT_END + phase2P * ( (FRAME_COUNT_1 - 1) - FRAME_VERT_END );
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
@@ -219,20 +221,42 @@ const CinematicHero = () => {
 
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
-            const translateX = phase2P * (window.innerWidth * 0.60);
-            hz.style.transform = `translate3d(-${translateX}px, 0, 0)`;
+            // Horizontal reveal of Stack panel
+            hz.style.opacity = "1";
+            hz.style.transform = `translate3d(-${easedP * 60}vw, 0, 0)`;
+          }
+        }
+        else if (p <= PHASE_HOLD_END) {
+          // ── HOLD PHASE ──
+          // Car stays at last frame of Seq 1, Stack stays shifted at -60vw
+          targetFrameRef.current = FRAME_COUNT_1 - 1;
+          
+          const hz = document.getElementById("cinematic-horizontal");
+          if (hz) hz.style.transform = `translate3d(-60vw, 0, 0)`;
+
+          const leftScroll = document.getElementById("cinematic-left-scroll");
+          if (leftScroll) {
+            leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
+            leftScroll.style.opacity = "0";
           }
         }
         else if (p <= PHASE3_END) {
-          // ── Phase 3: Premium Car Performance + Smooth Stack Exit ──
-          const phase3P = (p - PHASE2_END) / (PHASE3_END - PHASE2_END);
+          const phase3P = (p - PHASE_HOLD_END) / (PHASE3_END - PHASE_HOLD_END);
           const easedP = gsap.parseEase("power2.inOut")(phase3P);
           targetFrameRef.current = (FRAME_COUNT_1) + easedP * (FRAME_COUNT_2 - 1);
 
+          const leftScroll = document.getElementById("cinematic-left-scroll");
+          if (leftScroll) {
+            // Phase 3 vertical: Scroll from About (100vh) to Expertise (200vh) + Fade in
+            const verticalTranslate = window.innerHeight + (easedP * window.innerHeight);
+            leftScroll.style.transform = `translate3d(0, -${verticalTranslate}px, 0)`;
+            leftScroll.style.opacity = String(easedP);
+          }
+
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
-            const translateX = (window.innerWidth * 0.60) * (1 - easedP);
-            hz.style.transform = `translate3d(-${translateX}px, 0, 0)`;
+            // Phase 3 horizontal: Return horizontally from -60vw back to 0 while car performs
+            hz.style.transform = `translate3d(-${(1 - easedP) * 60}vw, 0, 0)`;
           }
 
           // Subtle Car Performance Zoom
@@ -244,7 +268,6 @@ const CinematicHero = () => {
 
           const further = document.getElementById("further-content");
           if (further) {
-            // Clean: Only animate opacity and pointerEvents - NO layout changes
             further.style.opacity = "0";
             further.style.pointerEvents = "none";
           }
@@ -256,15 +279,28 @@ const CinematicHero = () => {
           
           const further = document.getElementById("further-content");
           if (further) {
-            // Clean: Only animate opacity and transform - NO React triggers
+            // Move to center and enable normal scrolling
             further.style.opacity = "1";
             further.style.pointerEvents = "auto";
             further.style.transform = `translateY(${100 - (phase4P * 100)}vh)`;
           }
+
+          const leftScroll = document.getElementById("cinematic-left-scroll");
+          if (leftScroll) {
+            // Keep Expertise visible and centered
+            leftScroll.style.transform = `translate3d(0, -${window.innerHeight * 2}px, 0)`;
+            leftScroll.style.opacity = String(1 - phase4P); // Fade out to reveal projects
+          }
+
+          const hz = document.getElementById("cinematic-horizontal");
+          if (hz) {
+            // Phase 4: Hero is already centered (0), keep it there
+            hz.style.transform = `translate3d(0, 0, 0)`;
+          }
           
           const heroMain = document.querySelector(".cinematic-hero-main") as HTMLElement;
           if (heroMain) {
-            heroMain.style.opacity = String(1 - (phase4P * 1.5));
+            heroMain.style.opacity = String(1 - phase4P);
           }
         }
       },
@@ -274,7 +310,19 @@ const CinematicHero = () => {
           hero.style.visibility = "hidden";
           hero.style.pointerEvents = "none";
         }
-        // Clean: NO DOM manipulation - let content stay visible
+        const further = document.getElementById("further-content");
+        if (further) {
+          // Position correctly and enable normal scrolling
+          further.style.position = "relative";
+          further.style.top = "auto";
+          further.style.left = "auto";
+          further.style.transform = "none";
+          further.style.opacity = "1";
+          further.style.pointerEvents = "auto";
+        }
+        
+        const hz = document.getElementById("cinematic-horizontal");
+        if (hz) hz.style.transform = "none";
       },
       onEnterBack: () => {
         const hero = sectionRef.current;
@@ -327,16 +375,16 @@ const CinematicHero = () => {
 
                 <div className="cinematic-hero-links">
                   <a href="https://www.linkedin.com/in/arnav-gawandi-2ba6b1324/" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
-                    LINKEDIN <ArrowUpRight className="w-3 h-3" />
+                    LinkedIn <ArrowUpRight className="w-3 h-3" />
                   </a>
                   <a href="https://github.com/arnvG17" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
-                    GITHUB <ArrowUpRight className="w-3 h-3" />
+                    Github <ArrowUpRight className="w-3 h-3" />
                   </a>
                   <a href="https://leetcode.com/u/ArnV17/" target="_blank" rel="noopener noreferrer" className="cinematic-social-link">
-                    LEETCODE <ArrowUpRight className="w-3 h-3" />
+                    Leetcode <ArrowUpRight className="w-3 h-3" />
                   </a>
                   <a href="mailto:arnavog@gmail.com" className="cinematic-social-link">
-                    GMAIL <ArrowUpRight className="w-3 h-3" />
+                    Gmail <ArrowUpRight className="w-3 h-3" />
                   </a>
                 </div>
               </div>
@@ -364,6 +412,37 @@ const CinematicHero = () => {
                   and connects with its audience.
                 </p>
               </div>
+
+              {/* Expertise Panel */}
+              <div id="expertise" className="cinematic-panel cinematic-expertise-panel">
+                <div className="cinematic-about-badge">
+                  <span className="text-accent">✦</span>
+                  <span className="cinematic-about-label">Expertise</span>
+                </div>
+                
+                <div className="cinematic-expertise-grid">
+                  <div className="expertise-item">
+                    <h4 className="expertise-title">Full-Stack Architecture</h4>
+                    <p className="expertise-desc">
+                      Building high-performance, scalable web systems from core backend logic to fluid, pixel-perfect frontend experiences.
+                    </p>
+                  </div>
+                  <div className="expertise-item">
+                    <h4 className="expertise-title">AI & Agentic Workflows</h4>
+                    <p className="expertise-desc">
+                      Pioneering next-gen automation by integrating intelligent agents and Large Language Models into secure, enterprise-ready solutions.
+                    </p>
+                  </div>
+                  <div className="expertise-item">
+                    <h4 className="expertise-title">Web3 & Decentralized Systems</h4>
+                    <p className="expertise-desc">
+                      Developing robust blockchain solutions and secure decentralized protocols for the next iteration of the digital economy.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+
 
             </div>
           </div>

@@ -22,21 +22,23 @@ interface TechItem {
   label: string;
   category: string;
   icon: React.ComponentType<{ size?: number; color?: string }>;
+  color: string;
 }
 
 const techStack: TechItem[] = [
-  { id: 't1',  label: 'React',      category: 'FRONTEND',   icon: SiReact },
-  { id: 't2',  label: 'TypeScript', category: 'LANGUAGE',   icon: SiTypescript },
-  { id: 't3',  label: 'Node.js',    category: 'RUNTIME',    icon: SiNodedotjs },
-  { id: 't4',  label: 'Express',    category: 'BACKEND',    icon: SiExpress },
-  { id: 't5',  label: 'MongoDB',    category: 'DATABASE',   icon: SiMongodb },
-  { id: 't6',  label: 'Firebase',   category: 'BAAS',       icon: SiFirebase },
-  { id: 't7',  label: 'Python',     category: 'LANGUAGE',   icon: SiPython },
-  { id: 't8',  label: 'LangChain',  category: 'AI / ML',    icon: FaRobot },
-  { id: 't9',  label: 'C++ & Java', category: 'SYSTEMS',    icon: SiCplusplus },
-  { id: 't10', label: 'n8n',        category: 'AUTOMATION',  icon: FaProjectDiagram },
-  { id: 't11', label: 'Web3 & AI',  category: 'FRONTIER',   icon: FaRobot },
+  { id: 't1',  label: 'React',      category: 'FRONTEND',   icon: SiReact,      color: '#61DAFB' },
+  { id: 't2',  label: 'TypeScript', category: 'LANGUAGE',   icon: SiTypescript, color: '#3178C6' },
+  { id: 't3',  label: 'Node.js',    category: 'RUNTIME',    icon: SiNodedotjs,  color: '#339933' },
+  { id: 't4',  label: 'Express',    category: 'BACKEND',    icon: SiExpress,    color: '#ffffff' },
+  { id: 't5',  label: 'MongoDB',    category: 'DATABASE',   icon: SiMongodb,    color: '#47A248' },
+  { id: 't6',  label: 'Firebase',   category: 'BAAS',       icon: SiFirebase,   color: '#FFCA28' },
+  { id: 't7',  label: 'Python',     category: 'LANGUAGE',   icon: SiPython,     color: '#3776AB' },
+  { id: 't8',  label: 'LangChain',  category: 'AI / ML',    icon: FaRobot,      color: '#121212' },
+  { id: 't9',  label: 'C++ & Java', category: 'SYSTEMS',    icon: SiCplusplus,  color: '#00599C' },
+  { id: 't10', label: 'n8n',        category: 'AUTOMATION',  icon: FaProjectDiagram, color: '#FF6D5B' },
+  { id: 't11', label: 'Web3 & AI',  category: 'FRONTIER',   icon: FaRobot,      color: '#627EEA' },
 ];
+
 
 /*
   Grandstand positions around the Suzuka replica.
@@ -135,18 +137,21 @@ const RaceTrackStack: React.FC = () => {
 
   return (
     <div className="rt-container">
-      {/* Title */}
-      <div className="rt-header">
-        <span className="rt-badge">✦ MY STACK</span>
-        <h2 className="rt-title">Tech Circuit</h2>
-        <p className="rt-sub">GRANDSTAND MAP</p>
+      {/* Section Header */}
+      <div className="flex items-center justify-center gap-2 mb-8">
+        <span className="text-accent">✦</span>
+        <span className="text-accent font-semibold text-sm tracking-[0.3em] uppercase">
+          My Stack
+        </span>
       </div>
+
 
       <svg
         className="rt-svg"
-        viewBox="0 0 1200 650"
+        viewBox="-50 -50 1300 750"
         preserveAspectRatio="xMidYMid meet"
       >
+
         {/* ═══ Track ═══ */}
 
         {/* Outer track fill — the "asphalt" between outer and inner */}
@@ -237,15 +242,18 @@ const RaceTrackStack: React.FC = () => {
 
               {/* Label */}
               <foreignObject
-                x={isLeft ? g.lx - 5 : g.lx - 145}
-                y={g.ly - 22}
-                width="150"
-                height="48"
+                x={isLeft ? g.lx - 5 : g.lx - 165}
+                y={g.ly - 25}
+                width="170"
+                height="60"
                 className="rt-label-fo"
               >
-                <div className={`rt-label ${isLeft ? 'rt-label--left' : 'rt-label--right'}`}>
+                <div 
+                  className={`rt-label ${isLeft ? 'rt-label--left' : 'rt-label--right'}`}
+                  style={{ '--brand-color': tech.color } as React.CSSProperties}
+                >
                   <div className="rt-label-icon">
-                    <tech.icon size={16} color="#FFD700" />
+                    <tech.icon size={20} color={tech.color} />
                   </div>
                   <div className="rt-label-text">
                     <span className="rt-label-cat">{tech.category}</span>
@@ -253,6 +261,7 @@ const RaceTrackStack: React.FC = () => {
                   </div>
                 </div>
               </foreignObject>
+
             </g>
           );
         })}

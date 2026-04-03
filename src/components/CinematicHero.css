@@ -101,10 +101,10 @@
   align-items: center;
   gap: 4px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 300;
   color: hsl(0 0% 55%);
   text-decoration: none;
-  letter-spacing: 0.05em;
+  letter-spacing: 0;
   transition: color 0.2s ease;
 }
 
@@ -124,6 +124,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 20px;
 }
 
 .cinematic-about-label {
@@ -140,6 +141,79 @@
   line-height: 1.6;
   color: hsl(0 0% 70%);
   max-width: 750px;
+}
+
+/* Expertise panel */
+.cinematic-expertise-panel {
+  align-items: center;
+  text-align: center;
+  padding: 80px 40px;
+}
+
+.cinematic-expertise-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 50px;
+}
+
+.expertise-item {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px 28px;
+  background: hsla(0, 0%, 100%, 0.02);
+  border: 1px solid hsla(0, 0%, 100%, 0.05);
+  border-radius: 20px;
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.expertise-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, hsla(120, 100%, 50%, 0.05), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.expertise-item:hover {
+  background: hsla(0, 0%, 100%, 0.04);
+  border-color: hsla(120, 100%, 50%, 0.3);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.5),
+              0 0 20px -10px hsla(120, 100%, 50%, 0.2);
+}
+
+.expertise-item:hover::before {
+  opacity: 1;
+}
+
+.expertise-title {
+  font-family: 'Clash Display', system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.expertise-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: hsl(0 0% 60%);
+}
+
+@media (max-width: 1200px) {
+  .cinematic-expertise-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
 /* ─── Right column: pinned canvas ─── */

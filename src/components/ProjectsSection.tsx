@@ -56,12 +56,13 @@ const ProjectsSection = () => {
     <section id="projects" className="relative pt-20 pb-4 px-6 overflow-hidden bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-foreground">Selected</span>
-            <span className="text-accent">Projects</span>
-          </h2>
+        <div className="flex items-center justify-center gap-2 mb-16">
+          <span className="text-accent">✦</span>
+          <span className="text-accent font-semibold text-sm tracking-[0.3em] uppercase">
+            My Projects
+          </span>
         </div>
+
 
         {/* Projects Grid */}
         <div
@@ -100,7 +101,7 @@ const ProjectsSection = () => {
                   asChild
                   variant="ghost"
                   size="sm"
-                  className="text-accent px-3 py-1 rounded-full font-medium"
+                  className="text-accent px-3 py-1 rounded-full font-light tracking-tight"
                 >
                   <a href={project.link} target="_blank" rel="noopener noreferrer">
                     View Project <ArrowUpRight className="w-4 h-4 ml-1 inline" />

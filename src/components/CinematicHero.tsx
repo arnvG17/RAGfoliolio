@@ -174,26 +174,20 @@ const CinematicHero = () => {
     rafRef.current = requestAnimationFrame(animate);
 
     const isMobile = window.innerWidth <= 900;
-
-    const PHASE1_END = 0.30;
-    const PHASE2_END = 0.50;
-    const PHASE_HOLD_END = 0.80; 
-    const PHASE3_END = 0.92; 
+    const PHASE1_END = 0.20;
+    const INTERACTION_END = 0.85; 
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
       end: isMobile ? "+=100%" : "+=800%", 
       pin: !isMobile,
-      scrub: 0.8, 
+      scrub: 1.2, // Slightly more inertial feel
       anticipatePin: 1,
       invalidateOnRefresh: false,
       fastScrollEnd: true,
       onUpdate: (self) => {
         if (isMobile) {
-          // On mobile, just handle basic progress if needed, 
-          // but CSS handles most of the stacking layout.
-          // We can still animate the car frames based on scroll.
           targetFrameRef.current = self.progress * (TOTAL_FRAMES - 1);
           return;
         }
@@ -201,12 +195,13 @@ const CinematicHero = () => {
         const p = self.progress;
 
         if (p <= PHASE1_END) {
+          // Phase 1: Vertical scroll (frames 0 to VERT_END)
           const phase1P = p / PHASE1_END;
           targetFrameRef.current = phase1P * FRAME_VERT_END;
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            const maxTranslate = window.innerHeight * 1; 
+            const maxTranslate = window.innerHeight; 
             leftScroll.style.transform = `translate3d(0, -${phase1P * maxTranslate}px, 0)`;
             leftScroll.style.opacity = "1";
           }
@@ -214,53 +209,33 @@ const CinematicHero = () => {
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) hz.style.transform = `translate3d(0, 0, 0)`;
         } 
-        else if (p <= PHASE2_END) {
-          const phase2P = (p - PHASE1_END) / (PHASE2_END - PHASE1_END);
-          const easedP = gsap.parseEase("power2.inOut")(phase2P);
-          targetFrameRef.current = FRAME_VERT_END + phase2P * ( (FRAME_COUNT_1 - 1) - FRAME_VERT_END );
+        else if (p <= INTERACTION_END) {
+          // Phase 2: Smooth Sine-wave Interaction (Slide In & Out)
+          const iP = (p - PHASE1_END) / (INTERACTION_END - PHASE1_END);
+          
+          // Sine curve for perfectly smooth "bounce" (0 -> 1 -> 0)
+          const slideP = Math.sin(iP * Math.PI);
+          
+          // Map frames linearly across the entire interaction
+          targetFrameRef.current = FRAME_VERT_END + iP * (TOTAL_FRAMES - 1 - FRAME_VERT_END);
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
+            // Text panel stays scrolled but fades with the slide
             leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
-            leftScroll.style.opacity = String(1 - phase2P); 
+            leftScroll.style.opacity = String(1 - slideP); 
           }
 
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
             hz.style.opacity = "1";
-            hz.style.transform = `translate3d(-${easedP * 60}vw, 0, 0)`;
-          }
-        }
-        else if (p <= PHASE_HOLD_END) {
-          targetFrameRef.current = FRAME_COUNT_1 - 1;
-          const hz = document.getElementById("cinematic-horizontal");
-          if (hz) hz.style.transform = `translate3d(-60vw, 0, 0)`;
-          const leftScroll = document.getElementById("cinematic-left-scroll");
-          if (leftScroll) {
-            leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
-            leftScroll.style.opacity = "0";
-          }
-        }
-        else if (p <= PHASE3_END) {
-          const phase3P = (p - PHASE_HOLD_END) / (PHASE3_END - PHASE_HOLD_END);
-          const easedP = gsap.parseEase("power3.out")(phase3P); 
-          targetFrameRef.current = (FRAME_COUNT_1) + easedP * (FRAME_COUNT_2 - 1);
-
-          const leftScroll = document.getElementById("cinematic-left-scroll");
-          if (leftScroll) {
-            const verticalTranslate = window.innerHeight + (easedP * window.innerHeight);
-            leftScroll.style.transform = `translate3d(0, -${verticalTranslate}px, 0)`;
-            leftScroll.style.opacity = String(easedP);
-          }
-
-          const hz = document.getElementById("cinematic-horizontal");
-          if (hz) {
-            hz.style.transform = `translate3d(-${(1 - easedP) * 60}vw, 0, 0)`;
+            hz.style.transform = `translate3d(-${slideP * 65}vw, 0, 0)`;
           }
 
           const canvasWrapper = document.querySelector(".cinematic-canvas-wrapper") as HTMLElement;
           if (canvasWrapper) {
-            const scale = 1 + (easedP * 0.05);
+            // Subtle zoom during the peak of the bounce
+            const scale = 1 + (slideP * 0.05);
             canvasWrapper.style.transform = `scale(${scale})`;
           }
 
@@ -271,7 +246,8 @@ const CinematicHero = () => {
           }
         }
         else {
-          const phase4P = (p - PHASE3_END) / (1 - PHASE3_END);
+          // Phase 3: Final exit
+          const phase4P = (p - INTERACTION_END) / (1 - INTERACTION_END);
           targetFrameRef.current = TOTAL_FRAMES - 1;
           
           const further = document.getElementById("further-content");
@@ -284,7 +260,7 @@ const CinematicHero = () => {
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
             leftScroll.style.transform = `translate3d(0, -${window.innerHeight * 2}px, 0)`;
-            leftScroll.style.opacity = String(1 - phase4P); 
+            leftScroll.style.opacity = "0"; 
           }
 
           const hz = document.getElementById("cinematic-horizontal");

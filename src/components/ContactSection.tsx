@@ -7,7 +7,7 @@ const ContactSection = () => {
   const actionsRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.3 });
   const linksRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.4 });
   return (
-    <section id="contact" className="py-20 px-6">
+    <section id="contact" className="pt-4 pb-20 px-6 bg-background">
       <div className="max-w-4xl mx-auto text-center">
         {/* Section Header */}
         <div

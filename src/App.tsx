@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import RagManager from "./pages/RagManager";
 import Navigation from "./components/Navigation";
 import CinematicHero from "./components/CinematicHero";
 import ProjectsSection from "./components/ProjectsSection";
@@ -25,6 +26,7 @@ import "./font/fonts.css";
 const queryClient = new QueryClient();
 
 const App = () => {
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.5,
@@ -79,6 +81,8 @@ const App = () => {
                 </div>
               }
             />
+            
+            <Route path="/rag-manager" element={<RagManager />} />
             
             {/* Catch-all route for 404 */}
             <Route path="*" element={<NotFound />} />

@@ -1,0 +1,221 @@
+/* =============================================
+   RaceTrackStack — Black & White Minimalist
+   Suzuka Circuit Grandstand Map
+   ============================================= */
+
+.rt-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  overflow: hidden;
+  padding: 20px 24px;
+  gap: 8px;
+}
+
+/* ─── Header ─── */
+.rt-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  z-index: 2;
+}
+
+.rt-badge {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.rt-title {
+  font-family: 'Clash Display', system-ui, sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.rt-sub {
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.25);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ─── SVG ─── */
+.rt-svg {
+  width: 100%;
+  max-width: 1050px;
+  height: auto;
+  flex: 1;
+  min-height: 0;
+  z-index: 2;
+}
+
+/* ─── Center line dash animation ─── */
+.rt-center-line {
+  animation: rt-dash 30s linear infinite;
+}
+
+@keyframes rt-dash {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -360; }
+}
+
+/* ─── Grandstand label (foreignObject) ─── */
+.rt-label-fo {
+  overflow: visible;
+}
+
+.rt-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  cursor: default;
+  transition: border-color 0.25s ease, background 0.25s ease;
+  width: fit-content;
+  max-width: 150px;
+}
+
+.rt-label:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rt-label--right {
+  margin-left: auto;
+}
+
+.rt-label-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.rt-label-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.rt-label-cat {
+  font-family: monospace;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.rt-label-name {
+  font-family: 'Clash Display', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* ─── Grandstand hover interaction ─── */
+.rt-grandstand {
+  cursor: pointer;
+}
+
+.rt-grandstand:hover circle:first-of-type {
+  r: 7;
+  transition: r 0.2s ease;
+}
+
+.rt-grandstand:hover circle:last-of-type {
+  opacity: 0.6;
+}
+
+/* ─── Stats bar ─── */
+.rt-stats {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 2;
+  padding: 8px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.rt-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.rt-stat-num {
+  font-family: 'Clash Display', system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.rt-stat-lbl {
+  font-family: monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+}
+
+.rt-stat-sep {
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 18px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .rt-container {
+    padding: 12px 8px;
+  }
+
+  .rt-title {
+    font-size: 20px;
+  }
+
+  .rt-label-name {
+    font-size: 11px;
+  }
+
+  .rt-stats {
+    gap: 12px;
+    padding: 6px 14px;
+  }
+
+  .rt-stat-num {
+    font-size: 14px;
+  }
+}

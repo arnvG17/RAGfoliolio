@@ -387,7 +387,7 @@ function EmptyState({ theme }) {
           Ask me about Arnv
         </div>
         <div style={{ fontSize: 13 }}>
-          F1 • WDC • Sprint • Stint
+          Ml • SWE • Automations • Web3
         </div>
       </div>
     </div>

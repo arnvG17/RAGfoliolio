@@ -175,22 +175,25 @@ const CinematicHero = () => {
 
     // Phase 1: frame animation + text scroll (0 → PHASE1_END)
     // Phase 2: horizontal scroll revealing Stack (PHASE1_END → PHASE2_END)
-    // Phase 3: top scroll revealing Projects (PHASE2_END → 1.0)
-    const PHASE1_END = 0.35;
-    const PHASE2_END = 0.70;
+    // Phase 3: Premium Car Performance + Stack Exit (PHASE2_END → PHASE3_END)
+    // Phase 4: Smooth Projects Reveal from top (PHASE3_END → 1.0)
+    const PHASE1_END = 0.30;
+    const PHASE2_END = 0.55;
+    const PHASE3_END = 0.88;
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: "+=1200%",
+      end: "+=1000%", 
       pin: true,
-      scrub: 0.5,
+      scrub: 1, 
       anticipatePin: 1,
+      invalidateOnRefresh: false,
+      fastScrollEnd: true,
       onUpdate: (self) => {
         const p = self.progress;
 
         if (p <= PHASE1_END) {
-          // ── Phase 1: frame animation + vertical text scroll ──
           const phase1P = p / PHASE1_END;
           targetFrameRef.current = phase1P * FRAME_VERT_END;
 
@@ -198,23 +201,20 @@ const CinematicHero = () => {
           if (leftScroll) {
             const maxTranslate = window.innerHeight;
             leftScroll.style.transform = `translate3d(0, -${phase1P * maxTranslate}px, 0)`;
+            leftScroll.style.opacity = "1";
           }
 
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) hz.style.transform = `translate3d(0, 0, 0)`;
-
-          // Ensure further content section is hidden above
-          const further = document.getElementById("further-content");
-          if (further) further.style.transform = `translate3d(0, -100%, 0)`;
         } 
         else if (p <= PHASE2_END) {
-          // ── Phase 2: horizontal scroll ──
           const phase2P = (p - PHASE1_END) / (PHASE2_END - PHASE1_END);
           targetFrameRef.current = FRAME_VERT_END + phase2P * ( (FRAME_COUNT_1 - 1) - FRAME_VERT_END );
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
             leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
+            leftScroll.style.opacity = String(1 - phase2P); // Fade out hero text
           }
 
           const hz = document.getElementById("cinematic-horizontal");
@@ -222,92 +222,67 @@ const CinematicHero = () => {
             const translateX = phase2P * (window.innerWidth * 0.60);
             hz.style.transform = `translate3d(-${translateX}px, 0, 0)`;
           }
-
-          const further = document.getElementById("further-content");
-          if (further) further.style.transform = `translate3d(0, -100%, 0)`;
         }
-        else {
-          // ── Phase 3: Top scroll (revealing Further Content) + Sequence 2 + STACK EXIT ──
-          const phase3P = (p - PHASE2_END) / (1 - PHASE2_END);
-          targetFrameRef.current = (FRAME_COUNT_1) + phase3P * (FRAME_COUNT_2 - 1);
+        else if (p <= PHASE3_END) {
+          // ── Phase 3: Premium Car Performance + Smooth Stack Exit ──
+          const phase3P = (p - PHASE2_END) / (PHASE3_END - PHASE2_END);
+          const easedP = gsap.parseEase("power2.inOut")(phase3P);
+          targetFrameRef.current = (FRAME_COUNT_1) + easedP * (FRAME_COUNT_2 - 1);
 
-          // 1. Move stack back to the right (X-axis)
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
-            // Translate from -60vw back to 0
-            const translateX = (window.innerWidth * 0.60) * (1 - phase3P);
+            const translateX = (window.innerWidth * 0.60) * (1 - easedP);
             hz.style.transform = `translate3d(-${translateX}px, 0, 0)`;
           }
 
-          // 2. Reveal Further Content block sliding down from top (Y-axis)
+          // Subtle Car Performance Zoom
+          const canvasWrapper = document.querySelector(".cinematic-canvas-wrapper") as HTMLElement;
+          if (canvasWrapper) {
+            const scale = 1 + (easedP * 0.05);
+            canvasWrapper.style.transform = `scale(${scale})`;
+          }
+
           const further = document.getElementById("further-content");
           if (further) {
-            const translateY = -100 + (phase3P * 100);
-            further.style.transform = `translate3d(0, ${translateY}%, 0)`;
-            further.style.zIndex = "50"; 
-            further.style.position = "fixed";
-            further.style.top = "0";
-            further.style.left = "0";
-            further.style.width = "100%";
-            further.style.height = "auto";
-            further.style.maxHeight = "100vh";
-            further.style.overflow = "hidden";
-            further.style.background = "hsl(0 0% 6%)";
+            // Clean: Only animate opacity and pointerEvents - NO layout changes
+            further.style.opacity = "0";
+            further.style.pointerEvents = "none";
           }
         }
-        
-        // Final unpin: smooth handoff to natural page flow
-        // Triggers exactly when the curtain reveal is complete
-        if (p >= 0.99) {
-          const further = document.getElementById("further-content");
-          const hz = document.getElementById("cinematic-horizontal");
-          const hero = sectionRef.current;
+        else {
+          // ── Phase 4: Premium "Pop-in from top" Reveal ──
+          const phase4P = (p - PHASE3_END) / (1 - PHASE3_END);
+          targetFrameRef.current = TOTAL_FRAMES - 1;
           
-          if (hz) hz.style.transform = `translate3d(0, 0, 0)`;
-          if (hero) hero.style.opacity = "0"; // Fade out the hero completely at the end
-
+          const further = document.getElementById("further-content");
           if (further) {
-            further.style.position = "relative";
-            further.style.transform = "none";
-            further.style.zIndex = "auto";
-            further.style.height = "auto";
-            further.style.maxHeight = "none";
-            further.style.overflow = "visible";
+            // Clean: Only animate opacity and transform - NO React triggers
+            further.style.opacity = "1";
+            further.style.pointerEvents = "auto";
+            further.style.transform = `translateY(${100 - (phase4P * 100)}vh)`;
           }
-        } else {
-          // Ensure hero is visible during the pin
-          const hero = sectionRef.current;
-          if (hero) hero.style.opacity = "1";
+          
+          const heroMain = document.querySelector(".cinematic-hero-main") as HTMLElement;
+          if (heroMain) {
+            heroMain.style.opacity = String(1 - (phase4P * 1.5));
+          }
         }
       },
       onLeave: () => {
-        // Ensure everything is perfectly relative and in flow when the pin ends
-        const further = document.getElementById("further-content");
-        const hz = document.getElementById("cinematic-horizontal");
         const hero = sectionRef.current;
-        
-        if (hero) hero.style.opacity = "0";
-        if (hz) hz.style.transform = `translate3d(0, 0, 0)`;
-        if (further) {
-          further.style.position = "relative";
-          further.style.transform = "none";
-          further.style.zIndex = "auto";
-          further.style.height = "auto";
-          further.style.maxHeight = "none";
-          further.style.overflow = "visible";
+        if (hero) {
+          hero.style.visibility = "hidden";
+          hero.style.pointerEvents = "none";
         }
+        // Clean: NO DOM manipulation - let content stay visible
       },
       onEnterBack: () => {
-        // Re-apply reveal styles and show hero if scrolling back up into the pin
-        const further = document.getElementById("further-content");
         const hero = sectionRef.current;
-        if (hero) hero.style.opacity = "1";
-        if (further) {
-          further.style.position = "fixed";
-          further.style.zIndex = "50";
-          further.style.maxHeight = "100vh";
-          further.style.overflow = "hidden";
+        if (hero) {
+          hero.style.visibility = "visible";
+          hero.style.pointerEvents = "auto";
         }
+        // Clean: NO onEnterBack DOM manipulation - remove entirely
       }
     });
 

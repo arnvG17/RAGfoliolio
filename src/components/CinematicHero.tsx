@@ -173,21 +173,31 @@ const CinematicHero = () => {
     window.addEventListener("resize", resizeCanvas);
     rafRef.current = requestAnimationFrame(animate);
 
+    const isMobile = window.innerWidth <= 900;
+
     const PHASE1_END = 0.30;
     const PHASE2_END = 0.50;
-    const PHASE_HOLD_END = 0.80; // Extended hold to make the snap feel more distinct
-    const PHASE3_END = 0.92; // Very tight window for the bounce
+    const PHASE_HOLD_END = 0.80; 
+    const PHASE3_END = 0.92; 
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: "+=800%", 
-      pin: true,
-      scrub: 0.8, // Low scrub for "instant" reaction
+      end: isMobile ? "+=100%" : "+=800%", 
+      pin: !isMobile,
+      scrub: 0.8, 
       anticipatePin: 1,
       invalidateOnRefresh: false,
       fastScrollEnd: true,
       onUpdate: (self) => {
+        if (isMobile) {
+          // On mobile, just handle basic progress if needed, 
+          // but CSS handles most of the stacking layout.
+          // We can still animate the car frames based on scroll.
+          targetFrameRef.current = self.progress * (TOTAL_FRAMES - 1);
+          return;
+        }
+
         const p = self.progress;
 
         if (p <= PHASE1_END) {
@@ -233,7 +243,7 @@ const CinematicHero = () => {
         }
         else if (p <= PHASE3_END) {
           const phase3P = (p - PHASE_HOLD_END) / (PHASE3_END - PHASE_HOLD_END);
-          const easedP = gsap.parseEase("power3.out")(phase3P); // Sharper ease-out for snap
+          const easedP = gsap.parseEase("power3.out")(phase3P); 
           targetFrameRef.current = (FRAME_COUNT_1) + easedP * (FRAME_COUNT_2 - 1);
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
@@ -248,7 +258,6 @@ const CinematicHero = () => {
             hz.style.transform = `translate3d(-${(1 - easedP) * 60}vw, 0, 0)`;
           }
 
-          // Subtle Car Performance Zoom
           const canvasWrapper = document.querySelector(".cinematic-canvas-wrapper") as HTMLElement;
           if (canvasWrapper) {
             const scale = 1 + (easedP * 0.05);
@@ -262,13 +271,11 @@ const CinematicHero = () => {
           }
         }
         else {
-          // ── Phase 4: Premium "Pop-in from top" Reveal ──
           const phase4P = (p - PHASE3_END) / (1 - PHASE3_END);
           targetFrameRef.current = TOTAL_FRAMES - 1;
           
           const further = document.getElementById("further-content");
           if (further) {
-            // Move to center and enable normal scrolling
             further.style.opacity = "1";
             further.style.pointerEvents = "auto";
             further.style.transform = `translateY(${100 - (phase4P * 100)}vh)`;
@@ -276,14 +283,12 @@ const CinematicHero = () => {
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            // Keep Expertise visible and centered
             leftScroll.style.transform = `translate3d(0, -${window.innerHeight * 2}px, 0)`;
-            leftScroll.style.opacity = String(1 - phase4P); // Fade out to reveal projects
+            leftScroll.style.opacity = String(1 - phase4P); 
           }
 
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
-            // Phase 4: Hero is already centered (0), keep it there
             hz.style.transform = `translate3d(0, 0, 0)`;
           }
           
@@ -294,6 +299,7 @@ const CinematicHero = () => {
         }
       },
       onLeave: () => {
+        if (isMobile) return;
         const hero = sectionRef.current;
         if (hero) {
           hero.style.visibility = "hidden";
@@ -301,7 +307,6 @@ const CinematicHero = () => {
         }
         const further = document.getElementById("further-content");
         if (further) {
-          // Position correctly and enable normal scrolling
           further.style.position = "relative";
           further.style.top = "auto";
           further.style.left = "auto";
@@ -314,12 +319,12 @@ const CinematicHero = () => {
         if (hz) hz.style.transform = "none";
       },
       onEnterBack: () => {
+        if (isMobile) return;
         const hero = sectionRef.current;
         if (hero) {
           hero.style.visibility = "visible";
           hero.style.pointerEvents = "auto";
         }
-        // Clean: NO onEnterBack DOM manipulation - remove entirely
       }
     });
 

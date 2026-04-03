@@ -60,6 +60,13 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --dynamic-px: 6vw;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --dynamic-px: 40px;
+    }
   }
 
   /* Dark mode is default for this design */
@@ -74,15 +81,19 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground font-sans;
     font-family: 'Clash Display', system-ui, sans-serif;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
+    width: 100%;
+    position: relative;
     overflow-y: auto;
     min-height: 100vh;
     scroll-behavior: smooth;
+    padding-left: var(--dynamic-px);
+    padding-right: var(--dynamic-px);
   }
 
   html {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow-x: hidden !important;
+    width: 100%;
     min-height: 100%;
   }
 

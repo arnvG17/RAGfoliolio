@@ -53,10 +53,10 @@ const ProjectsSection = () => {
   ];
 
   return (
-    <section id="projects" className="relative pt-20 pb-4 px-6 overflow-hidden bg-background">
+    <section id="projects" className="relative pt-16 md:pt-20 pb-4 px-6 overflow-hidden bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex items-center justify-center gap-2 mb-16">
+        <div className="flex items-center justify-center gap-2 mb-10 md:mb-16">
           <span className="text-accent">✦</span>
           <span className="text-accent font-semibold text-sm tracking-[0.3em] uppercase">
             My Projects

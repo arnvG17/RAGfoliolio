@@ -319,7 +319,19 @@
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
   .cinematic-horizontal {
-    width: 150vw; /* keep horizontal scroll on mobile too */
+    width: 100vw; /* Disable horizontal scroll on mobile */
+    flex-direction: column;
+    height: auto;
+  }
+
+  .cinematic-section {
+    height: auto;
+    overflow: visible;
+  }
+
+  .cinematic-h-panel {
+    width: 100vw;
+    height: auto;
   }
 
   .cinematic-h-panel-main {
@@ -328,46 +340,50 @@
 
   .cinematic-left {
     width: 100%;
-    min-height: 50vh;
+    min-height: auto;
+    padding: 0;
   }
 
   .cinematic-right {
     width: 100%;
-    min-height: 50vh;
-    padding: 15px;
+    min-height: 400px;
+    padding: 20px;
+    justify-content: center;
   }
 
   .cinematic-left-scroll {
     position: relative;
-    height: 200vh;
+    height: auto;
+    transform: none !important;
   }
 
   .cinematic-panel {
-    padding: 40px 24px;
-    height: 100vh;
+    padding: 80px 24px 40px 24px;
+    height: auto;
+    min-height: 80vh;
   }
 
   .cinematic-hero-headline {
-    font-size: clamp(2rem, 7vw, 3rem);
+    font-size: clamp(2.2rem, 9vw, 3.5rem);
+    text-align: left;
   }
 
   .cinematic-about-text {
-    font-size: clamp(1rem, 3.5vw, 1.3rem);
+    font-size: 1.1rem;
+    text-align: left;
+  }
+  
+  .cinematic-about-badge {
+    justify-content: flex-start;
+  }
+
+  .cinematic-expertise-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 30px;
   }
 
   .cinematic-left::after {
-    top: auto;
-    left: 15%;
-    right: 15%;
-    bottom: 0;
-    width: auto;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      hsl(0 0% 18%) 30%,
-      hsl(0 0% 18%) 70%,
-      transparent 100%
-    );
+    display: none;
   }
 }

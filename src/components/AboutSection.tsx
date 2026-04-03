@@ -122,32 +122,32 @@ const AboutSection = () => {
   return (
     <section
       id="about"
-      className="relative flex items-center justify-center min-h-screen px-6 py-20 overflow-hidden bg-black"
+      className="relative flex items-center justify-center min-h-screen px-6 py-24 md:py-20 overflow-hidden bg-black"
     >
       {/* Blob cursor */}
       <BlobCursor />
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl text-center">
-        <div className="flex items-center justify-center gap-2 mb-4">
+        <div className="flex items-center justify-center gap-2 mb-6">
           <span className="text-accent">✦</span>
-          <span className="text-accent font-medium text-sm tracking-wider uppercase">
+          <span className="text-accent font-medium text-sm tracking-widest uppercase">
             About Me
           </span>
         </div>
-        <p className="text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed text-muted-foreground">
+        <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed text-muted-foreground px-4 md:px-0">
           I'm{" "}
-          <span className="text-foreground font-medium">Arnav Gawandi</span>, a{" "}
+          <span className="text-white font-medium">Arnav Gawandi</span>, a{" "}
           <span className="text-accent font-medium">web designer & developer</span> specialzing in{" "}
-          <span className="text-foreground font-medium">Web3 development</span> and{" "}
+          <span className="text-white font-medium">Web3 development</span> and{" "}
           <span className="text-accent font-medium">AI integration</span>. I approach
           every project as if crafting a{" "}
-          <span className="text-foreground font-medium">bespoke home</span>, leveraging{" "}
+          <span className="text-white font-medium">bespoke home</span>, leveraging{" "}
           <span className="text-accent font-medium">agentic workflows</span> to build
           intelligent solutions. My goal is to create digital spaces that are{" "}
-          <span className="text-foreground font-medium">visually striking</span> yet{" "}
+          <span className="text-white font-medium">visually striking</span> yet{" "}
           <span className="text-accent font-medium">personal, functional, and welcoming</span>,
-          a place where your <span className="text-foreground font-medium">brand truly lives </span>
+          a place where your <span className="text-white font-medium">brand truly lives </span>
           and connects with its audience.
         </p>
       </div>

@@ -70,13 +70,13 @@ const CinematicHero = () => {
     // Scale strictly by height to ensure the full car is visible from top to bottom.
     // Using 0.90 to give it a 5% margin at top and bottom (10% total) to prevent clipping.
     const isMobile = window.innerWidth <= 900;
-    const baseScale = isMobile ? 0.35 : 0.85; // Even smaller for mobile
+    const baseScale = isMobile ? 0.8 : 0.85; // Full width look for mobile
     
     const scale = Math.min(cw / iw, ch / ih) * baseScale;
     const sw = iw * scale;
     const sh = ih * scale;
     const sx = (cw - sw) / 2;
-    const sy = isMobile ? (ch * 0.15) : (ch - sh) / 2; // Fixed top margin for mobile
+    const sy = isMobile ? (ch * 0.30) : (ch - sh) / 2; // Position for full-width car
     
     ctx.clearRect(0, 0, cw, ch);
     ctx.filter = 'none';
@@ -172,8 +172,8 @@ const CinematicHero = () => {
     rafRef.current = requestAnimationFrame(animate);
 
     const isMobile = window.innerWidth <= 900;
-    const PHASE1_END = 0.20;
-    const INTERACTION_END = 0.85; 
+    const PHASE1_END = 0.35; // Hero -> About -> Expertise
+    const INTERACTION_END = 0.55; // Bounce/Stack
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
@@ -206,13 +206,16 @@ const CinematicHero = () => {
         // Desktop logic
         if (p <= PHASE1_END) {
           // Phase 1: Vertical scroll (frames 0 to VERT_END)
-          const phase1P = p / PHASE1_END;
-          targetFrameRef.current = phase1P * FRAME_VERT_END;
+          // We scroll through Hero -> About (only 1 panel translation)
+          const scrollProgress = Math.min(1, p / (PHASE1_END * 0.85)); // Finish scrolling text a bit before Phase 1 ends for "dwell"
+          
+          targetFrameRef.current = (p / PHASE1_END) * FRAME_VERT_END;
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            const maxTranslate = window.innerHeight; 
-            leftScroll.style.transform = `translate3d(0, -${phase1P * maxTranslate}px, 0)`;
+            // Translate through 2 panels (0 to -100vh)
+            const maxTranslate = window.innerHeight * 1; 
+            leftScroll.style.transform = `translate3d(0, -${scrollProgress * maxTranslate}px, 0)`;
             leftScroll.style.opacity = "1";
           }
 
@@ -223,17 +226,15 @@ const CinematicHero = () => {
           // Phase 2: Smooth Sine-wave Interaction (Slide In & Out)
           const iP = (p - PHASE1_END) / (INTERACTION_END - PHASE1_END);
           
-          // Sine curve for perfectly smooth "bounce" (0 -> 1 -> 0)
           const slideP = Math.sin(iP * Math.PI);
-          
-          // Map frames linearly across the entire interaction
           targetFrameRef.current = FRAME_VERT_END + iP * (TOTAL_FRAMES - 1 - FRAME_VERT_END);
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            // Text panel stays scrolled but fades with the slide
-            leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
-            leftScroll.style.opacity = String(1 - slideP); 
+            // Transition from About (-100vh) to Expertise (-200vh) progressively during the stack bounce
+            const translateY = window.innerHeight * (1 + iP);
+            leftScroll.style.transform = `translate3d(0, -${translateY}px, 0)`;
+            leftScroll.style.opacity = "1"; 
           }
 
           const hz = document.getElementById("cinematic-horizontal");
@@ -244,7 +245,6 @@ const CinematicHero = () => {
 
           const canvasWrapper = document.querySelector(".cinematic-canvas-wrapper") as HTMLElement;
           if (canvasWrapper) {
-            // Subtle zoom during the peak of the bounce
             const scale = 1 + (slideP * 0.05);
             canvasWrapper.style.transform = `scale(${scale})`;
           }
@@ -270,7 +270,7 @@ const CinematicHero = () => {
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
             leftScroll.style.transform = `translate3d(0, -${window.innerHeight * 2}px, 0)`;
-            leftScroll.style.opacity = "0"; 
+            leftScroll.style.opacity = String(1 - phase4P); 
           }
 
           const hz = document.getElementById("cinematic-horizontal");

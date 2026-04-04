@@ -117,8 +117,11 @@ const ContactSection = () => {
       </div>
 
       {/* Section Blending & Vignettes */}
-      <div className="absolute top-0 left-0 w-full h-32 md:h-48 bg-gradient-to-b from-black to-transparent pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-full h-32 md:h-48 bg-gradient-to-t from-black to-transparent pointer-events-none" />
+      {/* Side Vignettes for Mobile ONLY */}
+      <div className="absolute top-0 left-0 w-1/4 h-full bg-gradient-to-r from-black via-black/40 to-transparent pointer-events-none md:hidden" />
+      <div className="absolute top-0 right-0 w-1/4 h-full bg-gradient-to-l from-black via-black/40 to-transparent pointer-events-none md:hidden" />
+      
+      {/* Original Desktop Right-side Vignette */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-black via-black/40 to-transparent pointer-events-none hidden md:block" />
     </section>
   );

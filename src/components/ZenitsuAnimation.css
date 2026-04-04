@@ -135,3 +135,22 @@
 @keyframes zenitsu-spin {
   to { transform: rotate(360deg); }
 }
+@media (max-width: 900px) {
+  .zenitsu-frame-video {
+    width: 100%; /* Full width for mobile */
+  }
+
+  .zenitsu-mask-overlay {
+    background: 
+      /* Double-sided vignette for mobile immersion */
+      linear-gradient(to right, black 0%, transparent 15%, transparent 85%, black 100%),
+      /* Top/Bottom fades */
+      linear-gradient(to bottom, black 0%, transparent 12%),
+      linear-gradient(to top, black 0%, transparent 12%);
+  }
+
+  .zenitsu-vignette {
+    /* Center the spotlight for full-width mobile view */
+    background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0,0,0,0.6) 60%, black 100%);
+  }
+}

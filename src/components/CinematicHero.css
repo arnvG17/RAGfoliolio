@@ -327,13 +327,16 @@
 
 /* ─── Right column: pinned canvas ─── */
 .cinematic-right {
-  position: relative;
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 40%;
   height: 100vh;
   display: flex;
   align-items: stretch;
   justify-content: flex-end;
   padding: 0;
+  z-index: 1;
 }
 
 .cinematic-canvas-wrapper {
@@ -342,15 +345,14 @@
   height: 100%;
   overflow: hidden;
   border-radius: 0px; 
-  background: transparent;
+  background: hsl(0 0% 4%);
 }
 
 .cinematic-canvas {
   display: block;
   width: 100%;
   height: 100%;
-  mix-blend-mode: multiply;
-  filter: contrast(1.4) brightness(1.25) grayscale(0.5); /* Stronger contrast to wash out frame background to white for 'multiply' */
+  filter: invert(1) contrast(1.2) brightness(0.9) grayscale(0.5);
 }
 
 /* ─── Loading overlay ─── */
@@ -486,6 +488,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+    background: transparent;
   }
 
   /* White soft mask to blend car into white background */

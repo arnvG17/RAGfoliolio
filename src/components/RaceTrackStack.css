@@ -17,8 +17,7 @@
   gap: 12px;
 }
 
-
-/* ─── Header ─── */
+/* Header */
 .rt-header {
   display: flex;
   flex-direction: column;
@@ -215,23 +214,65 @@
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
   .rt-container {
-    padding: 12px 8px;
+    padding: 40px 0; /* No side padding for scroll area */
+    background: transparent;
+    height: auto;
+    min-height: 100vh;
+    justify-content: flex-start;
+  }
+
+  .rt-scroll-wrapper {
+    width: 100%;
+    overflow: visible; /* Remove horizontal scroll */
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .rt-svg {
+    width: 100%; /* Fit to screen width */
+    height: auto;
+    flex: none;
+    padding: 0 10px;
   }
 
   .rt-title {
-    font-size: 20px;
+    font-size: 22px;
+    color: var(--foreground);
   }
 
   .rt-label-name {
-    font-size: 11px;
+    font-size: 14px;
+    color: var(--foreground);
+  }
+
+  .rt-label {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: var(--brand-color, rgba(0, 0, 0, 0.1));
   }
 
   .rt-stats {
     gap: 12px;
-    padding: 6px 14px;
+    padding: 10px 20px;
+    border-color: var(--border);
+    margin-top: 20px;
   }
 
   .rt-stat-num {
-    font-size: 14px;
+    font-size: 16px;
+    color: var(--foreground);
   }
+  
+  .rt-stat-lbl {
+    color: var(--muted-foreground);
+  }
+}
+
+.rt-scroll-wrapper::-webkit-scrollbar {
+  height: 4px;
+}
+
+.rt-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
 }

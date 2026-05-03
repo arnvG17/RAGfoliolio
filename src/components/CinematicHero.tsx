@@ -1,8 +1,10 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Stack from "./Stack";
+import Noise from "./Noise";
 import "./CinematicHero.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -70,13 +72,13 @@ const CinematicHero = () => {
     // Scale strictly by height to ensure the full car is visible from top to bottom.
     // Using 0.90 to give it a 5% margin at top and bottom (10% total) to prevent clipping.
     const isMobile = window.innerWidth <= 900;
-    const baseScale = isMobile ? 0.8 : 0.85; // Full width look for mobile
+    const baseScale = isMobile ? 0.8 : 0.85; // Better size for mobile background
     
     const scale = Math.min(cw / iw, ch / ih) * baseScale;
     const sw = iw * scale;
     const sh = ih * scale;
     const sx = (cw - sw) / 2;
-    const sy = isMobile ? (ch * 0.30) : (ch - sh) / 2; // Position for full-width car
+    const sy = (ch - sh) / 2; // Perfect vertical centering for mobile and desktop
     
     ctx.clearRect(0, 0, cw, ch);
     ctx.filter = 'none';
@@ -178,9 +180,14 @@ const CinematicHero = () => {
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: isMobile ? "bottom bottom" : "+=800%", 
+      end: isMobile 
+        ? () => {
+            const projectsEl = document.getElementById("projects");
+            return projectsEl ? projectsEl.offsetTop : "bottom bottom";
+          }
+        : "+=800%", 
       pin: !isMobile,
-      scrub: 1.2, 
+      scrub: isMobile ? 0.5 : 1.2, 
       anticipatePin: 1,
       invalidateOnRefresh: true,
       fastScrollEnd: true,
@@ -188,17 +195,13 @@ const CinematicHero = () => {
         const p = self.progress;
 
         if (isMobile) {
-          // Mobile: Linear continuous car animation linked to natural scroll
+          // Linear continuous car animation linked to the journey until projects
           targetFrameRef.current = p * (TOTAL_FRAMES - 1);
 
+          // Ensure full visibility throughout the sequence
           const canvasContainer = document.querySelector(".cinematic-right") as HTMLElement;
-
-          if (p < 0.75) {
-             if (canvasContainer) canvasContainer.style.opacity = "1";
-          } else {
-             // Fade out car as we enter the Stack/Projects boundary
-             const fadeP = (p - 0.75) / 0.25;
-             if (canvasContainer) canvasContainer.style.opacity = String(1 - fadeP);
+          if (canvasContainer) {
+            canvasContainer.style.opacity = "1.0";
           }
           return;
         }
@@ -327,6 +330,32 @@ const CinematicHero = () => {
 
   return (
     <section ref={sectionRef} className="cinematic-section" id="home">
+      {/* Car background container moved to root for perfect sticking */}
+      <div className="cinematic-right">
+        <div className="cinematic-canvas-wrapper">
+          <canvas ref={canvasRef} className="cinematic-canvas" />
+          
+          {/* Real Noise.tsx overlay for consistent texture */}
+          <Noise patternAlpha={45} patternRefreshInterval={4} />
+          
+          {/* White soft mask overlay */}
+          <div className="cinematic-white-mask" />
+
+          {/* Loading overlay */}
+          {!ready && (
+            <div className="cinematic-loader">
+              <div className="cinematic-loader-inner">
+                <div className="cinematic-spinner" />
+                <div className="cinematic-loader-bar">
+                  <div className="cinematic-loader-fill" style={{ width: `${pct}%` }} />
+                </div>
+                <span className="cinematic-loader-text">{pct}%</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div id="cinematic-horizontal" className="cinematic-horizontal">
 
         {/* ═══ Panel 1: Original cinematic split-screen ═══ */}
@@ -413,11 +442,66 @@ const CinematicHero = () => {
                       Pioneering next-gen automation by integrating intelligent agents and Large Language Models into secure, enterprise-ready solutions.
                     </p>
                   </div>
-                  <div className="expertise-item">
-                    <h4 className="expertise-title">Web3 & Decentralized Systems</h4>
-                    <p className="expertise-desc">
-                      Developing robust blockchain solutions and secure decentralized protocols for the next iteration of the digital economy.
-                    </p>
+                  
+                  {/* Web3 Dashboard Tile */}
+                  <div className="expertise-item expertise-item--web3">
+                    <div className="web3-dashboard">
+                      <div className="web3-header">
+                        <div className="web3-token">
+                          <span className="web3-token-pair">BTC / USD</span>
+                          <span className="web3-token-price">$64,430.00</span>
+                          <span className="web3-token-change text-accent">+1.02%</span>
+                        </div>
+                        <div className="web3-chart-type">Line chart</div>
+                      </div>
+                      
+                      <div className="web3-chart-container">
+                        <svg viewBox="0 0 400 150" className="web3-svg-chart">
+                          <defs>
+                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.4" />
+                              <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+                            </linearGradient>
+                          </defs>
+                          <motion.path
+                            initial={{ pathLength: 0 }}
+                            whileInView={{ pathLength: 1 }}
+                            transition={{ duration: 2, ease: "easeInOut" }}
+                            d="M0,100 C50,80 80,120 120,90 C160,60 190,110 240,70 C290,30 340,80 400,50 L400,150 L0,150 Z"
+                            fill="url(#chartGradient)"
+                          />
+                          <motion.path
+                            initial={{ pathLength: 0 }}
+                            whileInView={{ pathLength: 1 }}
+                            transition={{ duration: 2, ease: "easeInOut" }}
+                            d="M0,100 C50,80 80,120 120,90 C160,60 190,110 240,70 C290,30 340,80 400,50"
+                            fill="none"
+                            stroke="var(--accent)"
+                            strokeWidth="3"
+                          />
+                          <circle cx="240" cy="70" r="4" fill="var(--accent)" />
+                          <circle cx="240" cy="70" r="8" fill="none" stroke="var(--accent)" strokeWidth="1" opacity="0.5">
+                            <animate attributeName="r" from="4" to="12" dur="1.5s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" from="0.5" to="0" dur="1.5s" repeatCount="indefinite" />
+                          </circle>
+                        </svg>
+                      </div>
+
+                      <div className="web3-footer">
+                        <div className="web3-stat">
+                          <span className="web3-stat-label">Total Balance</span>
+                          <span className="web3-stat-value">$78,820.00</span>
+                        </div>
+                        <div className="web3-stat">
+                          <span className="web3-stat-label">Transactions</span>
+                          <span className="web3-stat-value text-accent">+5.00 ETH</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <h4 className="expertise-title">Web3 & Decentralized Systems</h4>
+                      <p className="expertise-desc">Developing robust blockchain solutions and secure decentralized protocols for the next digital economy.</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -426,27 +510,6 @@ const CinematicHero = () => {
 
             </div>
           </div>
-
-          {/* ─── RIGHT: Pinned frame animation canvas ─── */}
-          <div className="cinematic-right">
-            <div className="cinematic-canvas-wrapper">
-              <canvas ref={canvasRef} className="cinematic-canvas" />
-
-              {/* Loading overlay */}
-              {!ready && (
-                <div className="cinematic-loader">
-                  <div className="cinematic-loader-inner">
-                    <div className="cinematic-spinner" />
-                    <div className="cinematic-loader-bar">
-                      <div className="cinematic-loader-fill" style={{ width: `${pct}%` }} />
-                    </div>
-                    <span className="cinematic-loader-text">{pct}%</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
         </div>
 
         {/* ═══ Panel 2: Stack — revealed via horizontal scroll ═══ */}

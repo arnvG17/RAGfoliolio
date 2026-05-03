@@ -164,13 +164,14 @@
   flex-direction: column;
   gap: 16px;
   padding: 32px 28px;
-  background: hsla(0, 0%, 100%, 0.02);
-  border: 1px solid hsla(0, 0%, 100%, 0.05);
+  background: hsla(0, 0%, 100%, 0.03);
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
   border-radius: 20px;
   transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   text-align: left;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(12px); /* Premium glass blur */
 }
 
 .expertise-item::before {
@@ -207,6 +208,114 @@
   font-size: 0.9rem;
   line-height: 1.5;
   color: hsl(0 0% 60%);
+}
+
+/* ─── Web3 Dashboard Component ─── */
+.expertise-item--web3 {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  background: hsla(0, 0%, 100%, 0.02) !important;
+}
+
+.web3-dashboard {
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(0, 255, 0, 0.05) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.web3-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.web3-token {
+  display: flex;
+  flex-direction: column;
+}
+
+.web3-token-pair {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(0 0% 50%);
+}
+
+.web3-token-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin: 4px 0;
+}
+
+.web3-token-change {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.web3-chart-type {
+  font-size: 10px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  color: hsl(0 0% 70%);
+}
+
+.web3-chart-container {
+  width: 100%;
+  height: 120px;
+  margin: 10px 0;
+}
+
+.web3-svg-chart {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.web3-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.web3-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.web3-stat-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: hsl(0 0% 40%);
+  margin-bottom: 2px;
+}
+
+.web3-stat-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
+
+.expertise-item--web3 > .mt-4 {
+  padding: 20px 24px 32px;
+}
+
+@media (max-width: 900px) {
+  .expertise-item--web3 {
+    background: transparent !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  }
+  
+  .web3-token-price {
+    color: var(--foreground);
+  }
+  
+  .web3-stat-value {
+    color: var(--foreground);
+  }
 }
 
 @media (max-width: 1200px) {
@@ -319,70 +428,84 @@
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
   .cinematic-section {
-    height: 500vh; /* Extremely long for sticky scroll animation */
-    overflow: visible; /* Must be visible for sticky to work */
+    height: auto;
+    overflow: visible;
+    background: transparent !important;
   }
 
   .cinematic-horizontal {
     width: 100vw;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: auto;
     will-change: transform;
+    background: transparent;
   }
 
   .cinematic-h-panel {
     width: 100vw;
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
     flex-shrink: 0;
+    background: transparent;
   }
 
   .cinematic-h-panel-main {
     display: flex;
     flex-direction: column;
-    height: 400vh; /* Sequence of HERO, ABOUT, EXPERTISE */
+    height: auto;
   }
 
   .cinematic-left {
     width: 100%;
-    height: 100%; /* Spans the full 400vh */
+    height: auto;
     padding: 0;
     position: relative;
-    z-index: 2;
+    z-index: 10; /* Definitely above background car */
   }
 
   .cinematic-right {
-    position: sticky; /* Sticky is much better for mobile frames */
-    top: 20vh;
-    left: 0;
-    width: 100%;
-    height: 60vh;
+    position: fixed !important; /* Force stick to viewport regardless of parents */
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw;
+    height: 100vh;
     padding: 0;
     display: flex;
     justify-content: center;
-    z-index: 1;
+    align-items: center;
+    z-index: -5; /* Definitively behind all text, images, and noise */
     pointer-events: none;
-    background: transparent;
+    background: transparent !important;
+    opacity: 0.2; /* Ultra-subtle background presence */
+    transform: none !important; 
   }
 
-  .cinematic-canvas-wrapper::after {
-    content: '';
+  .cinematic-canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* White soft mask to blend car into white background */
+  .cinematic-white-mask {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, black 0%, transparent 15%, transparent 85%, black 100%);
+    background: radial-gradient(circle at center, transparent 0%, rgba(255,255,255,0.3) 50%, white 95%);
     pointer-events: none;
-    z-index: 5;
+    z-index: 3;
   }
 
   .cinematic-left-scroll {
     position: relative;
-    height: 100%;
-    transform: none !important; /* Let natural scroll handle it */
+    height: auto;
+    transform: none !important;
   }
 
   .cinematic-panel {
-    padding: 60px 24px;
-    height: 100vh;
+    padding: 120px 24px;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -390,45 +513,77 @@
   }
 
   .cinematic-hero-headline {
-    font-size: clamp(2.2rem, 9vw, 3.2rem);
-    text-align: left;
-    margin-top: -40px;
+    font-size: clamp(2.4rem, 10vw, 4rem);
+    text-align: center; /* Center text on mobile */
+    color: var(--foreground);
+    margin-top: 0;
+  }
+
+  .cinematic-hero-headline .text-foreground {
+    color: var(--foreground) !important;
+  }
+
+  .cinematic-hero-links {
+    justify-content: center;
   }
 
   .cinematic-about-text {
-    font-size: 1.1rem;
-    text-align: left;
-    line-height: 1.5;
+    font-size: 1.2rem;
+    text-align: center;
+    line-height: 1.6;
+    color: var(--foreground);
+    opacity: 0.9;
+  }
+
+  .cinematic-about-text .text-white {
+    color: var(--foreground) !important;
+    font-weight: 600;
   }
   
   .cinematic-about-badge {
-    justify-content: flex-start;
-    margin-bottom: 20px;
+    justify-content: center;
+    margin-bottom: 24px;
   }
 
   .cinematic-expertise-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-    margin-top: 20px;
+    gap: 24px;
+    margin-top: 40px;
     width: 100%;
   }
 
   .expertise-item {
-    padding: 24px;
-    background: hsla(0, 0%, 100%, 0.03);
+    padding: 32px;
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.05);
+    text-align: center;
+  }
+
+  .expertise-title {
+    color: var(--foreground);
+  }
+
+  .expertise-desc {
+    color: var(--foreground);
+    opacity: 0.7;
   }
 
   .cinematic-left::after {
     display: none;
   }
 
-  /* Make sure the stack section is at the very bottom of the 500vh */
   .cinematic-h-panel-stack {
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
+    width: 100vw;
     background: transparent;
   }
-  /* Disable multiply on mobile to ensure car visibility on dark backgrounds */
+
   .cinematic-canvas {
-    mix-blend-mode: normal;
+    mix-blend-mode: multiply;
+    filter: contrast(1.1) brightness(1.1);
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
   }
 }

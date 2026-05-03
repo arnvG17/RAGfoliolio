@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from "react";
+import Noise from "./Noise";
 import "./ZenitsuAnimation.css";
 
 const VIDEO_PATH = "/zenitsu-thunder-breathing-first-form-thunderclap-and-flash-4k-ultra-hd-2160-ytshorts.savetube.me.mp4";
@@ -49,7 +50,9 @@ const ZenitsuAnimation = () => {
         
         {/* Cinematic Overlays */}
         <div className="zenitsu-mask-overlay" />
-        <div className="zenitsu-grain-overlay" />
+        <div className="zenitsu-grain-overlay-container">
+          <Noise patternAlpha={50} patternRefreshInterval={3} />
+        </div>
         <div className="zenitsu-vignette" />
       </div>
 

@@ -122,7 +122,7 @@ const AboutSection = () => {
   return (
     <section
       id="about"
-      className="relative flex items-center justify-center min-h-screen px-6 py-24 md:py-20 overflow-hidden bg-black"
+      className="relative flex items-center justify-center min-h-screen px-6 py-24 md:py-20 overflow-hidden bg-transparent md:bg-black"
     >
       {/* Blob cursor */}
       <BlobCursor />

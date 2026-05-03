@@ -34,27 +34,21 @@
   position: absolute;
   inset: 0;
   background: 
-    /* Right Side Fade: animation -> content */
-    linear-gradient(to right, transparent 0%, transparent 28%, rgba(0,0,0,0.85) 48%, black 85%),
-    /* Left Side Fade: ensure no hard edge if video exceeds width */
+    /* Right Side Fade: Deepened to blend perfectly into content area */
+    linear-gradient(to right, transparent 0%, transparent 20%, rgba(0,0,0,0.6) 35%, black 65%, black 100%),
+    /* Left Side Fade: ensure no hard edge */
     linear-gradient(to left, transparent 95%, black 100%),
     /* Top Fade: smooth section transition */
-    linear-gradient(to bottom, black 0%, transparent 18%),
+    linear-gradient(to bottom, black 0%, transparent 15%),
     /* Bottom Fade: smooth section transition */
-    linear-gradient(to top, black 0%, transparent 18%);
+    linear-gradient(to top, black 0%, transparent 15%);
   z-index: 2;
   pointer-events: none;
 }
 
-/* Cinematic Grain Overlay for high-end "upscaled" texture */
+/* Local noise grain removed in favor of global noise */
 .zenitsu-grain-overlay {
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.14;
-  mix-blend-mode: soft-light;
-  z-index: 3;
-  pointer-events: none;
+  display: none;
 }
 
 /* Central Spotlight Vignette: Focused on the left-side video core */
@@ -114,7 +108,7 @@
 .zenitsu-frame-loader-bar {
   width: 200px;
   height: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 1px;
   overflow: hidden;
 }
@@ -128,7 +122,7 @@
 .zenitsu-frame-loader-text {
   font-family: 'Space Mono', monospace;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--muted-foreground);
   letter-spacing: 0.1em;
 }
 
@@ -138,6 +132,7 @@
 @media (max-width: 900px) {
   .zenitsu-frame-video {
     width: 100%; /* Full width for mobile */
+    opacity: 0.3; /* Subtle background video */
   }
 
   .zenitsu-mask-overlay {

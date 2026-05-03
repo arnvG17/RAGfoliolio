@@ -79,7 +79,7 @@ export function Component({
     };
   }, [trailColor, dotSize, fadeDuration]);
 
-  return <canvas ref={canvasRef} className={className} style={{ zIndex: -1 }} />;
+  return <canvas ref={canvasRef} className={className} />;
 }
 
 export default Component;

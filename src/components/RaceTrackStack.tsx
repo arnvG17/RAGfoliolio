@@ -145,127 +145,52 @@ const RaceTrackStack: React.FC = () => {
         </span>
       </div>
 
-
-      <svg
-        className="rt-svg"
-        viewBox="-50 -50 1300 750"
-        preserveAspectRatio="xMidYMid meet"
-      >
-
-        {/* ═══ Track ═══ */}
-
-        {/* Outer track fill — the "asphalt" between outer and inner */}
-        <path d={outerPath} fill="#FFD700" stroke="none" opacity="0.06" />
-
-        {/* Outer bold border */}
-        <path
-          d={outerPath}
-          fill="none"
-          stroke="#FFD700"
-          strokeWidth="4"
-          opacity="1"
-          strokeLinejoin="round"
-        />
-
-        {/* Inner bold border */}
-        <path
-          d={innerPath}
-          fill="none"
-          stroke="#FFD700"
-          strokeWidth="2"
-          opacity="0.8"
-          strokeLinejoin="round"
-        />
-
-        {/* Center racing line — thin dashed */}
-        <path
-          d={outerPath}
-          fill="none"
-          stroke="#00FF00"
-          strokeWidth="1"
-          strokeDasharray="8 10"
-          opacity="0.4"
-          className="rt-center-line"
-        />
-
-        {/* ═══ Crossover / Overpass indicator ═══ */}
-        {/* Bridge rectangle to show the overpass */}
-        <g opacity="0.6">
-          <line x1="430" y1="250" x2="490" y2="270" stroke="#00FF00" strokeWidth="16" />
-          <line x1="430" y1="250" x2="490" y2="270" stroke="#ffffff" strokeWidth="3" />
-          <text x="465" y="240" textAnchor="middle" fill="#ffffff" fontSize="8"
-            fontWeight="700" letterSpacing="1" opacity="0.5" fontFamily="monospace">
-            OVERPASS
-          </text>
-        </g>
-
-        {/* ═══ Start / Finish line ═══ */}
-        <g>
-          {/* Checkerboard stripe */}
-          <rect x="848" y="465" width="4" height="25" fill="#00FF00" opacity="0.8" />
-          <rect x="852" y="465" width="4" height="25" fill="#ffffff" opacity="0.4" />
-          <rect x="856" y="465" width="4" height="25" fill="#00FF00" opacity="0.8" />
-          {/* Flag icon ✓ */}
-          <text x="870" y="500" textAnchor="start" fill="#ffffff" fontSize="8"
-            fontWeight="700" letterSpacing="1.5" opacity="0.5" fontFamily="monospace">
-            🏁
-          </text>
-        </g>
-
-        {/* ═══ Infield watermark ═══ */}
-        <text x="600" y="310" textAnchor="middle" fill="#00FF00" fontSize="60"
-          fontWeight="900" letterSpacing="16" opacity="0.03"
-          fontFamily="'Clash Display', system-ui, sans-serif">
-          ARNAV
-        </text>
-
-        {/* ═══ Grandstand Labels ═══ */}
-        {techStack.map((tech, i) => {
-          const g = grandstands[i];
-          const isLeft = g.side === 'left';
-
-          return (
-            <g key={tech.id} className="rt-grandstand">
-              {/* Connector line */}
-              <line
-                x1={g.x} y1={g.y}
-                x2={g.lx} y2={g.ly}
-                stroke="#00FF00"
-                strokeWidth="1"
-                opacity="0.4"
-              />
-
-              {/* Track-point marker */}
-              <circle cx={g.x} cy={g.y} r="5" fill="#00FF00" opacity="0.9" />
-              <circle cx={g.x} cy={g.y} r="8" fill="none"
-                stroke="#ffffff" strokeWidth="1" opacity="0.3" />
-
-              {/* Label */}
-              <foreignObject
-                x={isLeft ? g.lx - 5 : g.lx - 165}
-                y={g.ly - 25}
-                width="170"
-                height="60"
-                className="rt-label-fo"
-              >
-                <div 
-                  className={`rt-label ${isLeft ? 'rt-label--left' : 'rt-label--right'}`}
-                  style={{ '--brand-color': tech.color } as React.CSSProperties}
-                >
-                  <div className="rt-label-icon">
-                    <tech.icon size={20} color={tech.color} />
+      <div className="rt-scroll-wrapper">
+        <svg
+          className="rt-svg"
+          viewBox="-50 -50 1300 750"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          {/* ... existing SVG content ... */}
+          {/* ═══ Track ═══ */}
+          <path d={outerPath} fill="#FFD700" stroke="none" opacity="0.06" />
+          <path d={outerPath} fill="none" stroke="#FFD700" strokeWidth="4" opacity="1" strokeLinejoin="round" />
+          <path d={innerPath} fill="none" stroke="#FFD700" strokeWidth="2" opacity="0.8" strokeLinejoin="round" />
+          <path d={outerPath} fill="none" stroke="#00FF00" strokeWidth="1" strokeDasharray="8 10" opacity="0.4" className="rt-center-line" />
+          <g opacity="0.6">
+            <line x1="430" y1="250" x2="490" y2="270" stroke="#00FF00" strokeWidth="16" />
+            <line x1="430" y1="250" x2="490" y2="270" stroke="#ffffff" strokeWidth="3" />
+            <text x="465" y="240" textAnchor="middle" fill="#ffffff" fontSize="8" fontWeight="700" letterSpacing="1" opacity="0.5" fontFamily="monospace">OVERPASS</text>
+          </g>
+          <g>
+            <rect x="848" y="465" width="4" height="25" fill="#00FF00" opacity="0.8" />
+            <rect x="852" y="465" width="4" height="25" fill="#ffffff" opacity="0.4" />
+            <rect x="856" y="465" width="4" height="25" fill="#00FF00" opacity="0.8" />
+            <text x="870" y="500" textAnchor="start" fill="#ffffff" fontSize="8" fontWeight="700" letterSpacing="1.5" opacity="0.5" fontFamily="monospace">🏁</text>
+          </g>
+          <text x="600" y="310" textAnchor="middle" fill="#00FF00" fontSize="60" fontWeight="900" letterSpacing="16" opacity="0.03" fontFamily="'Clash Display', system-ui, sans-serif">ARNAV</text>
+          {techStack.map((tech, i) => {
+            const g = grandstands[i];
+            const isLeft = g.side === 'left';
+            return (
+              <g key={tech.id} className="rt-grandstand">
+                <line x1={g.x} y1={g.y} x2={g.lx} y2={g.ly} stroke="#00FF00" strokeWidth="1" opacity="0.4" />
+                <circle cx={g.x} cy={g.y} r="5" fill="#00FF00" opacity="0.9" />
+                <circle cx={g.x} cy={g.y} r="8" fill="none" stroke="#ffffff" strokeWidth="1" opacity="0.3" />
+                <foreignObject x={isLeft ? g.lx - 5 : g.lx - 165} y={g.ly - 25} width="170" height="60" className="rt-label-fo">
+                  <div className={`rt-label ${isLeft ? 'rt-label--left' : 'rt-label--right'}`} style={{ '--brand-color': tech.color } as React.CSSProperties}>
+                    <div className="rt-label-icon"><tech.icon size={20} color={tech.color} /></div>
+                    <div className="rt-label-text">
+                      <span className="rt-label-cat">{tech.category}</span>
+                      <span className="rt-label-name">{tech.label}</span>
+                    </div>
                   </div>
-                  <div className="rt-label-text">
-                    <span className="rt-label-cat">{tech.category}</span>
-                    <span className="rt-label-name">{tech.label}</span>
-                  </div>
-                </div>
-              </foreignObject>
-
-            </g>
-          );
-        })}
-      </svg>
+                </foreignObject>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
 
       {/* Stats */}
       <div className="rt-stats">

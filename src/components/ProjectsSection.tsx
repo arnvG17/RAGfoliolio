@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUpRight } from "lucide-react";
+import Noise from "./Noise";
 
 const ProjectsSection = () => {
 
@@ -53,8 +54,13 @@ const ProjectsSection = () => {
   ];
 
   return (
-    <section id="projects" className="relative pt-16 md:pt-20 pb-4 px-6 overflow-hidden bg-background">
-      <div className="max-w-7xl mx-auto">
+    <section id="projects" className="relative pt-16 md:pt-20 pb-4 px-6 overflow-hidden bg-background z-[20]">
+      {/* Background Noise - Visible only in the background of this section */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-40">
+        <Noise patternAlpha={30} />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="flex items-center justify-center gap-2 mb-10 md:mb-16">
           <span className="text-accent">✦</span>
@@ -71,7 +77,7 @@ const ProjectsSection = () => {
           {projects.map((project, index) => (
             <Card
               key={index}
-              className="bg-card/50 border-border/30 overflow-hidden"
+              className="bg-card/40 border-border/20 overflow-hidden backdrop-blur-xl"
             >
               <div className="aspect-video overflow-hidden">
                 <img

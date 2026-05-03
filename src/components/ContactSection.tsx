@@ -1,6 +1,7 @@
 import { Github, Code, Mail } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import ZenitsuAnimation from "./ZenitsuAnimation";
+import Noise from "./Noise";
 import { FlowButton } from "@/components/ui/flow-button";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
@@ -28,9 +29,14 @@ const ContactSection = () => {
   }, []);
 
   return (
-    <section id="contact" className="relative min-h-[85vh] flex items-center bg-black overflow-hidden py-24 md:py-48">
+    <section id="contact" className="relative min-h-[85vh] flex items-center bg-black overflow-hidden py-24 md:py-48 z-10">
       {/* Zenitsu Animation - Fixed to Left Side */}
       <ZenitsuAnimation />
+
+      {/* Local Background Noise - Behind content but over base background */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <Noise patternAlpha={35} />
+      </div>
 
       <div className="container relative z-10 mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
         {/* Left Side: Empty spacing for desktop to balance the animation */}
@@ -56,12 +62,12 @@ const ContactSection = () => {
             </div>
 
             <h2 className="text-4xl sm:text-5xl md:text-[8vw] lg:text-[9vw] font-black mb-8 md:mb-12 tracking-[-0.04em] leading-[0.9] md:leading-[0.8]">
-              <span className="text-white/95">Ready to</span>
+              <span className="text-white">Ready to</span>
               <br />
               <span className="text-accent">execute?</span>
             </h2>
 
-            <p className="text-white/40 text-base md:text-xl font-light leading-relaxed mb-6 max-w-lg tracking-tight px-4 md:px-0">
+            <p className="text-white/60 text-base md:text-xl font-light leading-relaxed mb-6 max-w-lg tracking-tight px-4 md:px-0">
               Elevate your digital presence with elite performance and cinematic design.
               Let's build the future together.
             </p>
@@ -85,7 +91,7 @@ const ContactSection = () => {
               target="_blank"
               rel="noopener noreferrer"
               variant="secondary"
-              className="w-full sm:w-auto px-10 md:px-14 py-5 md:py-6 text-white/90 border-white/10"
+              className="w-full sm:w-auto px-10 md:px-14 py-5 md:py-6 text-foreground/90 border-foreground/10"
             />
           </div>
 
@@ -108,7 +114,7 @@ const ContactSection = () => {
                 title={link.label}
                 className="group relative flex flex-col items-center p-3 md:p-2"
               >
-                <link.icon className="w-6 h-6 md:w-5 md:h-5 text-white/20 group-hover:text-accent transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]" />
+                <link.icon className="w-6 h-6 md:w-5 md:h-5 text-foreground/20 group-hover:text-accent transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]" />
                 <span className="absolute -bottom-2 left-0 h-[2px] w-0 bg-accent transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:w-full" />
               </a>
             ))}
@@ -117,12 +123,8 @@ const ContactSection = () => {
       </div>
 
       {/* Section Blending & Vignettes */}
-      {/* Side Vignettes for Mobile ONLY */}
-      <div className="absolute top-0 left-0 w-1/4 h-full bg-gradient-to-r from-black via-black/40 to-transparent pointer-events-none md:hidden" />
-      <div className="absolute top-0 right-0 w-1/4 h-full bg-gradient-to-l from-black via-black/40 to-transparent pointer-events-none md:hidden" />
-      
       {/* Original Desktop Right-side Vignette */}
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-black via-black/40 to-transparent pointer-events-none hidden md:block" />
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-background via-background/40 to-transparent pointer-events-none hidden md:block" />
     </section>
   );
 };

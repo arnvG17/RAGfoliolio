@@ -58,8 +58,8 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           
-          {/* Background effect rendered on every page */}
-          <div className="fixed inset-0 pointer-events-none -z-10">
+          {/* Global Background effects - Moved between car and content */}
+          <div className="fixed inset-0 pointer-events-none z-[2]">
             <DitherTrail />
             <Noise />
           </div>

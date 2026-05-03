@@ -76,14 +76,13 @@ const Navigation = () => {
       <nav
         className={`fixed top-6 z-[100] transition-all duration-700 ease-[cubic-bezier(0.2, 0.8, 0.2, 1)]
           backdrop-blur-xl border rounded-full 
-          flex items-center justify-between py-3 px-6 md:px-8
-          left-1/2 -translate-x-1/2
+          flex items-center justify-between py-3 px-6 md:px-10
+          transition-all duration-700 ease-[cubic-bezier(0.2, 0.8, 0.2, 1)]
           ${isFullWidth 
-            ? "w-[92%] md:w-[94%] max-w-[1400px] bg-background/80 border-white/20 shadow-2xl py-4" 
-            : "w-[92%] md:w-[600px] bg-background/40 border-white/10 shadow-lg"}`}
+            ? "left-1/2 -translate-x-1/2 w-[90%] max-w-[1600px] bg-background/80 border-white/20 shadow-2xl py-4" 
+            : "left-8 md:left-[5%] w-[92%] md:w-[800px] bg-background/40 border-white/10 shadow-lg"}`}
         style={{ 
-          // Match desktop behavior but disable offset on mobile
-          left: isFullWidth ? '50%' : (typeof window !== 'undefined' && window.innerWidth > 900 ? 'calc(30% + 20px)' : '50%') 
+          // Dynamic width/positioning based on state
         }}
       >
         {/* Logo */}
@@ -119,7 +118,7 @@ const Navigation = () => {
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/10 text-foreground"
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-foreground/5 border border-foreground/10 text-foreground"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}

@@ -5,7 +5,7 @@ const Noise = ({
   patternScaleX = 18,
   patternScaleY = 100,
   patternRefreshInterval = 6,
-  patternAlpha = 55,
+  patternAlpha = 35,
 }) => {
   const grainRef = useRef(null);
 
@@ -62,7 +62,7 @@ const Noise = ({
     };
   }, [patternSize, patternScaleX, patternScaleY, patternRefreshInterval, patternAlpha]);
 
-  return <canvas className="pointer-events-none absolute inset-0 w-full h-full" style={{ imageRendering: 'pixelated', zIndex: -1 }} ref={grainRef} />;
+  return <canvas className="pointer-events-none absolute inset-0 w-full h-full" style={{ imageRendering: 'pixelated' }} ref={grainRef} />;
 };
 
 export default Noise;

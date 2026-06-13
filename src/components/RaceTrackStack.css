@@ -1,237 +1,324 @@
-/* =============================================
-   RaceTrackStack — Black & White Minimalist
-   Suzuka Circuit Grandstand Map
-   ============================================= */
+/* =============================================================
+   RaceTrackStack.css — Minimalist Scroll-Driven Tech Stack
+   ============================================================= */
 
-.rt-container {
+.rt-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #0a0a0a;
+  background: #060608;
+  padding: 80px 40px 30px 40px; /* Safe padding at the top to clear the floating navbar */
   overflow: hidden;
-  padding: 60px 80px; /* Increased padding on all sides */
-  gap: 12px;
+  box-sizing: border-box;
 }
 
-
-/* ─── Header ─── */
-.rt-header {
+/* ─── Minimal Header ─── */
+.rt-minimal-header {
+  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  z-index: 2;
+  z-index: 10;
 }
 
-.rt-badge {
-  font-family: monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.25em;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-}
-
-.rt-title {
-  font-family: 'Clash Display', system-ui, sans-serif;
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #fff;
-  text-transform: uppercase;
-  margin: 0;
-  line-height: 1.1;
-}
-
-.rt-sub {
+.rt-minimal-tag {
   font-family: monospace;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
-  margin: 0;
 }
 
-/* ─── SVG ─── */
-.rt-svg {
-  width: 100%;
-  max-width: 880px; /* Reduced width to make track smaller */
-  height: auto;
+.rt-minimal-title {
+  font-family: 'Clash Display', system-ui, -apple-system, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 4px 0 0 0;
+  letter-spacing: -0.01em;
+}
+
+/* ─── Vertical Flex Layout ─── */
+.rt-flex-layout {
   flex: 1;
-  min-height: 0;
-  z-index: 2;
-  overflow: visible; /* Prevent clipping of larger labels */
-}
-
-
-@media (max-width: 900px) {
-  .rt-container {
-    padding: 30px 20px; /* More padding on mobile too */
-  }
-}
-
-.rt-center-line {
-  animation: rt-dash 30s linear infinite;
-}
-
-@keyframes rt-dash {
-  0% { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -360; }
-}
-
-/* ─── Grandstand label (foreignObject) ─── */
-.rt-label-fo {
-  overflow: visible;
-}
-
-.rt-label {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--brand-color, rgba(255, 255, 255, 0.15));
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  cursor: default;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  width: fit-content;
-  max-width: 200px;
-  box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.5), 
-              0 0 20px -10px var(--brand-color, transparent);
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  justify-content: space-between;
 }
 
-.rt-label:hover {
-  border-color: var(--brand-color, #fff);
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.6), 
-              0 0 25px -5px var(--brand-color, transparent);
-}
-
-.rt-label--right {
-  margin-left: auto;
-}
-
-.rt-label-icon {
-  width: 32px;
-  height: 32px;
+.rt-track-pane {
+  width: 100%;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--brand-color, rgba(255, 255, 255, 0.2));
-  border-radius: 50%;
+  min-height: 0; /* Let it shrink if needed on smaller heights */
+}
+
+.rt-svg-minimal {
+  width: 100%;
+  height: 100%;
+  max-height: 350px; /* Limit height to prevent overflow and leave room for card */
+  overflow: visible;
+}
+
+.rt-details-pane {
+  width: 100%;
   flex-shrink: 0;
-  background: rgba(0, 0, 0, 0.4);
-  box-shadow: inset 0 0 8px var(--brand-color, transparent);
+  z-index: 10;
 }
 
-.rt-label-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-width: 0;
+/* ─── Center-line flow animation ─── */
+.rt-centerline-flow {
+  animation: rt-flow 45s linear infinite;
 }
 
-.rt-label-cat {
-  font-family: monospace;
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.4);
-  text-transform: uppercase;
-  line-height: 1;
+@keyframes rt-flow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -360;
+  }
 }
 
-.rt-label-name {
-  font-family: 'Clash Display', system-ui, sans-serif;
-  font-size: 17px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  white-space: nowrap;
-}
-
-/* ─── Grandstand hover interaction ─── */
-.rt-grandstand {
+/* ─── Tech label nodes on track ─── */
+.rt-tag-node {
   cursor: pointer;
 }
 
-.rt-grandstand:hover circle:first-of-type {
-  r: 8;
-  transition: r 0.2s ease;
+.rt-connector {
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
 }
 
-.rt-grandstand:hover circle:last-of-type {
-  opacity: 0.8;
-  stroke: var(--brand-color, #fff);
+.rt-text-label {
+  letter-spacing: 0.05em;
+  pointer-events: none;
 }
 
+.rt-tag-node.active .rt-connector {
+  stroke-dasharray: 2 2;
+  animation: pulse-line 1.5s infinite alternate;
+}
 
-/* ─── Stats bar ─── */
-.rt-stats {
+@keyframes pulse-line {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* ─── F1 Telemetry Card ─── */
+.rt-card {
+  width: 100%;
+  background: rgba(15, 15, 20, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 3px solid var(--accent-color, #ffffff);
+  border-radius: 8px;
+  padding: 20px 24px;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+  transition: border-color 0.4s ease;
+}
+
+.rt-card-border-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(180deg, var(--accent-color, transparent) -100%, transparent 100%);
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+/* ─── Telemetry 2-Column Flex Layout ─── */
+.rt-telemetry-layout {
+  display: flex;
+  gap: 28px;
+  align-items: stretch;
+}
+
+.rt-telemetry-left {
+  width: 200px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 18px;
-  z-index: 2;
-  padding: 8px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  gap: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  padding-right: 20px;
 }
 
-.rt-stat {
+.rt-telemetry-right {
+  flex: 1;
   display: flex;
-  align-items: baseline;
-  gap: 5px;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0; /* Critically prevents inner elements from blowing out width */
+  gap: 10px;
 }
 
-.rt-stat-num {
-  font-family: 'Clash Display', system-ui, sans-serif;
-  font-size: 18px;
-  font-weight: 800;
-  color: #fff;
+.rt-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  border: 1.5px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+  transition: all 0.4s ease;
 }
 
-.rt-stat-lbl {
+.rt-title-box {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rt-cat-tag {
   font-family: monospace;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: 8px;
+  font-weight: 700;
   color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
-.rt-stat-sep {
-  color: rgba(255, 255, 255, 0.15);
-  font-size: 18px;
+.rt-tech-name {
+  font-family: 'Clash Display', system-ui, -apple-system, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 2px 0 0 0;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-/* ─── Responsive ─── */
+.rt-tech-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  font-weight: 300;
+}
+
+/* ─── Proficiency Tachometer ─── */
+.rt-meter-area {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.rt-meter-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.rt-meter-label {
+  font-family: monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.rt-meter-val {
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.rt-bar-bg {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rt-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.1, 0.76, 0.55, 0.94), background-color 0.4s ease;
+}
+
+/* ─── Card Footer ─── */
+.rt-card-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+  margin-top: 6px;
+}
+
+.rt-stat-pill {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ─── Responsive Adjustments ─── */
 @media (max-width: 900px) {
-  .rt-container {
-    padding: 12px 8px;
+  .rt-wrapper {
+    padding: 80px 16px 20px 16px;
+    height: auto;
+    overflow-y: auto;
+    min-height: 100vh;
   }
 
-  .rt-title {
-    font-size: 20px;
+  .rt-minimal-title {
+    font-size: 22px;
   }
 
-  .rt-label-name {
-    font-size: 11px;
+  .rt-flex-layout {
+    flex-direction: column;
+    gap: 20px;
+    height: auto;
   }
 
-  .rt-stats {
-    gap: 12px;
-    padding: 6px 14px;
+  .rt-track-pane {
+    width: 100%;
+    height: 280px;
+    flex: none;
   }
 
-  .rt-stat-num {
-    font-size: 14px;
+  .rt-svg-minimal {
+    max-height: 100%;
+  }
+
+  .rt-details-pane {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .rt-card {
+    padding: 16px;
+  }
+
+  .rt-telemetry-layout {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .rt-telemetry-left {
+    width: 100%;
+    border-right: none;
+    padding-right: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: center;
   }
 }

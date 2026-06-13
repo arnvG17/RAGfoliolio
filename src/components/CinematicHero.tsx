@@ -203,7 +203,28 @@ const CinematicHero = () => {
           return;
         }
 
-        // Desktop logic
+        // Desktop logic: Drive the 3D text crawl on the left panel
+        const expText = document.getElementById("expertise-perspective-text");
+        if (expText) {
+          const expStart = 0.32;
+          const expEnd = 0.70;
+          const expP = Math.max(0, Math.min(1, (p - expStart) / (expEnd - expStart)));
+          
+          const yVal = 400 - (expP * 650); // 400px (bottom) to -250px (top) for larger range
+          const rotX = 35 - (expP * 23);   // 35deg to 12deg
+          
+          // Fade in and out
+          let opacity = 1;
+          if (p < 0.38) {
+            opacity = (p - 0.32) / 0.06;
+          } else if (p > 0.64) {
+            opacity = Math.max(0, 1 - (p - 0.64) / 0.06);
+          }
+
+          expText.style.transform = `rotateX(${rotX}deg) translateY(${yVal}px) translateZ(10px)`;
+          expText.style.opacity = String(opacity);
+        }
+
         if (p <= PHASE1_END) {
           // Phase 1: Vertical scroll (frames 0 to VERT_END)
           // We scroll through Hero -> About (only 1 panel translation)
@@ -269,6 +290,7 @@ const CinematicHero = () => {
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
+            // Translate the left scroll to -200vh and fade out
             leftScroll.style.transform = `translate3d(0, -${window.innerHeight * 2}px, 0)`;
             leftScroll.style.opacity = String(1 - phase4P); 
           }
@@ -370,7 +392,7 @@ const CinematicHero = () => {
               </div>
 
               {/* About Panel */}
-              <div className="cinematic-panel cinematic-about-panel">
+              <div id="about" className="cinematic-panel cinematic-about-panel">
                 <div className="cinematic-about-badge">
                   <span className="text-accent">✦</span>
                   <span className="cinematic-about-label">About Me</span>
@@ -400,29 +422,48 @@ const CinematicHero = () => {
                   <span className="cinematic-about-label">Expertise</span>
                 </div>
                 
-                <div className="cinematic-expertise-grid">
-                  <div className="expertise-item">
-                    <h4 className="expertise-title">Full-Stack Architecture</h4>
-                    <p className="expertise-desc">
-                      Building high-performance, scalable web systems from core backend logic to fluid, pixel-perfect frontend experiences.
-                    </p>
-                  </div>
-                  <div className="expertise-item">
-                    <h4 className="expertise-title">AI & Agentic Workflows</h4>
-                    <p className="expertise-desc">
-                      Pioneering next-gen automation by integrating intelligent agents and Large Language Models into secure, enterprise-ready solutions.
-                    </p>
-                  </div>
-                  <div className="expertise-item">
-                    <h4 className="expertise-title">Web3 & Decentralized Systems</h4>
-                    <p className="expertise-desc">
-                      Developing robust blockchain solutions and secure decentralized protocols for the next iteration of the digital economy.
-                    </p>
+                <div
+                  className="expertise-perspective-wrapper"
+                  style={{
+                    transformStyle: "preserve-3d",
+                    perspective: "300px",
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                    position: "relative",
+                  }}
+                >
+                  <div
+                    id="expertise-perspective-text"
+                    style={{
+                      transformStyle: "preserve-3d",
+                      transform: "rotateX(15deg) translateY(0px) translateZ(10px)",
+                      willChange: "transform, opacity",
+                    }}
+                    className="w-full max-w-2xl md:max-w-3xl text-center text-3xl md:text-5xl font-bold tracking-tight text-foreground/80 leading-[1.4] uppercase select-none"
+                  >
+                    I SPECIALIZE IN{" "}
+                    <span className="text-accent font-cursive tracking-normal normal-case px-2 drop-shadow-[0_0_15px_rgba(0,255,0,0.3)]">
+                      Agentic Workflows
+                    </span>{" "}
+                    & COGNITIVE ARCHITECTURES. I DESIGN & BUILD{" "}
+                    <span className="text-white font-serif-italic tracking-normal normal-case px-1">
+                      autonomous AI agents
+                    </span>{" "}
+                    THAT REASON, PLAN, AND EXECUTE COMPLEX TASKS. INTEGRATING{" "}
+                    <span className="text-accent font-cursive tracking-normal normal-case px-2 drop-shadow-[0_0_15px_rgba(0,255,0,0.3)]">
+                      RAG Pipelines
+                    </span>
+                    , SEMANTIC SEARCH, AND SELF-HEALING LOOPS WITH HIGH-PERFORMANCE{" "}
+                    <span className="text-white font-serif-italic tracking-normal normal-case px-1">
+                      full-stack systems
+                    </span>.
                   </div>
                 </div>
               </div>
-
-
 
             </div>
           </div>

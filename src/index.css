@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Dancing+Script:wght@600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -247,11 +249,14 @@ All colors MUST be HSL.
   animation-play-state: paused;
 }
 
-/* Smooth hover transitions for FlowingMenu */
-.menu-item {
-  transition: all 0.3s ease;
+/* Premium highlight fonts */
+.font-cursive {
+  font-family: 'Dancing Script', cursive;
+  text-transform: none !important;
 }
 
-.menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+.font-serif-italic {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  text-transform: none !important;
 }

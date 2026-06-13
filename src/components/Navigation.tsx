@@ -16,32 +16,39 @@ const Navigation = () => {
 
     window.addEventListener("scroll", handleScroll);
     
-    // Intersection Observer for Sections tracking
+    // Persistent record of intersection statuses to avoid delta-only layout updates
+    const intersectionStates: Record<string, boolean> = {};
+
     const observer = new IntersectionObserver(
       (entries) => {
-        let isProjectOrContact = false;
-        let mostVisibleSection = activeSection;
-
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            mostVisibleSection = entry.target.id;
-            // ONLY Projects section triggers full width
-            if (entry.target.id === "projects") {
-              isProjectOrContact = true;
-            }
-          }
+          intersectionStates[entry.target.id] = entry.isIntersecting;
         });
 
-        setIsFullWidth(isProjectOrContact);
-        setActiveSection(mostVisibleSection);
+        // Determine active section based on scroll priority (bottom-to-top)
+        let active = "home";
+        if (intersectionStates["contact"]) {
+          active = "contact";
+        } else if (intersectionStates["projects"]) {
+          active = "projects";
+        } else if (intersectionStates["expertise"]) {
+          active = "expertise";
+        } else if (intersectionStates["about"]) {
+          active = "about";
+        } else if (intersectionStates["home"]) {
+          active = "home";
+        }
+
+        setActiveSection(active);
+        setIsFullWidth(active === "projects");
       },
       { 
-        threshold: 0.05, // More sensitive triggering
-        rootMargin: "20% 0px 20% 0px" // Pre-emptively trigger transitions
+        threshold: 0.1, 
+        rootMargin: "-10% 0px -10% 0px"
       }
     );
 
-    const sections = ["home", "about", "expertise", "projects", "contact", "further-content"];
+    const sections = ["home", "about", "expertise", "projects", "contact"];
     sections.forEach(id => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
@@ -54,14 +61,32 @@ const Navigation = () => {
         if (el) observer.unobserve(el);
       });
     };
-  }, [activeSection]);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
+    setIsMenuOpen(false);
+
+    if (sectionId === "home") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    if (sectionId === "about" && window.innerWidth > 900) {
+      const hero = document.getElementById("home");
+      if (hero) {
+        // Pinned scroll calculation:
+        // CinematicHero trigger end is "+=800%" on desktop.
+        // Scroll distance corresponding to About (progress p ~0.29) is offsetTop + 2.3 * window.innerHeight.
+        const scrollDistance = hero.offsetTop + 2.3 * window.innerHeight;
+        window.scrollTo({ top: scrollDistance, behavior: "smooth" });
+        return;
+      }
+    }
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
-    setIsMenuOpen(false);
   };
 
   const navLinks = [
@@ -74,17 +99,13 @@ const Navigation = () => {
   return (
     <>
       <nav
-        className={`fixed top-6 z-[100] transition-all duration-700 ease-[cubic-bezier(0.2, 0.8, 0.2, 1)]
+        className={`fixed top-6 z-[100] transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]
           backdrop-blur-xl border rounded-full 
           flex items-center justify-between py-3 px-6 md:px-8
-          left-1/2 -translate-x-1/2
+          left-1/2 -translate-x-1/2 w-[92%]
           ${isFullWidth 
-            ? "w-[92%] md:w-[94%] max-w-[1400px] bg-background/80 border-white/20 shadow-2xl py-4" 
-            : "w-[92%] md:w-[600px] bg-background/40 border-white/10 shadow-lg"}`}
-        style={{ 
-          // Match desktop behavior but disable offset on mobile
-          left: isFullWidth ? '50%' : (typeof window !== 'undefined' && window.innerWidth > 900 ? 'calc(30% + 20px)' : '50%') 
-        }}
+            ? "md:left-1/2 md:w-[94%] max-w-[1400px] bg-background/80 border-white/20 shadow-2xl py-4" 
+            : "md:left-[30%] md:w-[600px] bg-background/40 border-white/10 shadow-lg"}`}
       >
         {/* Logo */}
         <div className="flex items-center space-x-2 text-xl font-bold text-accent cursor-pointer" onClick={() => scrollToSection("home")}>

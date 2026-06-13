@@ -1,18 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 
 export default function Chatbot({
-  apiUrl = "https://ragfolio-1.onrender.com/chat",
+  apiUrl = "https://ragfolio-1.onrender.com/rag",
   title = "Portfolio RAG Bot",
   placeholder = "Ask me about my projects, skills, or experience…",
-  k = 4,
   customStyles = {},
 }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [streamingText, setStreamingText] = useState("");
+  const [routeInfo, setRouteInfo] = useState(null);
   const listRef = useRef(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const conversationId = useRef(
+    crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)
+  );
 
   const theme = useMemo(
     () => ({
@@ -24,6 +28,8 @@ export default function Chatbot({
       green: "#22c55e",
       greenDark: "#16a34a",
       danger: "#ef4444",
+      personal: "#8b5cf6",
+      general: "#3b82f6",
     }),
     []
   );
@@ -73,44 +79,154 @@ export default function Chatbot({
     });
   }
 
-  // Auto scroll when messages change
+  // Auto scroll when messages or streaming text changes
   useEffect(() => {
     scrollToBottom(true);
-  }, [messages]);
+  }, [messages, streamingText]);
 
-  // Handle scroll restoration and smooth scrolling
+  // Handle scroll restoration
   useEffect(() => {
     if (listRef.current) {
-      // Ensure we start at the bottom
       scrollToBottom(false);
     }
   }, []);
+
+  // Build conversation history for the API
+  const getHistory = useCallback(() => {
+    return messages.slice(-6).map((m) => ({
+      role: m.role,
+      content: m.content,
+    }));
+  }, [messages]);
+
+  // ── SSE Streaming Send ─────────────────────────────────────
 
   async function sendMessage() {
     const question = input.trim();
     if (!question || loading) return;
     setError("");
+    setRouteInfo(null);
 
     const newMsgs = [...messages, { role: "user", content: question }];
     setMessages(newMsgs);
     setInput("");
     setLoading(true);
+    setStreamingText("");
 
     try {
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: question, k }),
+        body: JSON.stringify({
+          query: question,
+          conversation_id: conversationId.current,
+          history: getHistory(),
+        }),
       });
 
       if (!res.ok) {
         const info = await res.json().catch(() => ({}));
-        throw new Error(info?.error || `HTTP ${res.status}`);
+        throw new Error(info?.detail || info?.error || `HTTP ${res.status}`);
       }
 
-      const data = await res.json();
-      const answer = data?.answer ?? "(No answer returned)";
-      setMessages((prev) => [...prev, { role: "assistant", content: answer }]);
+      const contentType = res.headers.get("content-type") || "";
+
+      // ── SSE streaming response ──
+      if (contentType.includes("text/event-stream")) {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let fullText = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          // Process complete SSE events from buffer
+          const events = buffer.split("\n\n");
+          buffer = events.pop(); // Keep incomplete event in buffer
+
+          for (const event of events) {
+            if (!event.trim()) continue;
+
+            const lines = event.split("\n");
+            let eventType = "";
+            let eventData = "";
+
+            for (const line of lines) {
+              if (line.startsWith("event: ")) {
+                eventType = line.slice(7).trim();
+              } else if (line.startsWith("data: ")) {
+                eventData = line.slice(6);
+              }
+            }
+
+            if (!eventData) continue;
+
+            try {
+              const data = JSON.parse(eventData);
+
+              switch (eventType) {
+                case "metadata":
+                  setRouteInfo({
+                    route: data.route,
+                    confidence: data.confidence,
+                    tools: data.tools_used || [],
+                  });
+                  break;
+
+                case "token":
+                  fullText += data.content;
+                  setStreamingText(fullText);
+                  break;
+
+                case "done":
+                  // Finalize: move streaming text to messages
+                  setMessages((prev) => [
+                    ...prev,
+                    {
+                      role: "assistant",
+                      content: fullText,
+                      route: routeInfo?.route,
+                      tools: routeInfo?.tools || [],
+                      latency: data.latency_ms,
+                    },
+                  ]);
+                  setStreamingText("");
+                  break;
+              }
+            } catch (e) {
+              // Skip malformed events
+              console.warn("SSE parse error:", e);
+            }
+          }
+        }
+
+        // If stream ended without a done event, finalize anyway
+        if (fullText && streamingText) {
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: fullText },
+          ]);
+          setStreamingText("");
+        }
+      }
+      // ── Legacy JSON response (backward compat) ──
+      else {
+        const data = await res.json();
+        const answer = data?.answer ?? "(No answer returned)";
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: answer,
+            route: data?.route,
+            tools: data?.tools_used || [],
+          },
+        ]);
+      }
     } catch (e) {
       console.error(e, "error");
       setError(e?.message || "Request failed");
@@ -118,12 +234,12 @@ export default function Chatbot({
         ...prev,
         {
           role: "assistant",
-          content:
-            "Sorry, I couldn't fetch a reply right now. Please try again.",
+          content: "Sorry, I couldn't fetch a reply right now. Please try again.",
         },
       ]);
     } finally {
       setLoading(false);
+      setStreamingText("");
     }
   }
 
@@ -156,16 +272,46 @@ export default function Chatbot({
               width: 10,
               height: 10,
               borderRadius: 999,
-              background: theme.green,
+              background: loading ? "#f59e0b" : theme.green,
+              animation: loading ? "pulse 1.5s ease-in-out infinite" : "none",
             }}
           />
           <h3 style={{ margin: 0, fontSize: 16, letterSpacing: 0.3 }}>
             {title}
           </h3>
         </div>
-        <span style={{ fontSize: 12, color: theme.subtext }}>
-          {loading ? "thinking…" : "online"}
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {routeInfo && (
+            <span
+              style={{
+                fontSize: 10,
+                padding: "2px 8px",
+                borderRadius: 999,
+                background:
+                  routeInfo.route === "personal"
+                    ? "rgba(139,92,246,0.15)"
+                    : "rgba(59,130,246,0.15)",
+                color:
+                  routeInfo.route === "personal"
+                    ? theme.personal
+                    : theme.general,
+                border: `1px solid ${
+                  routeInfo.route === "personal"
+                    ? "rgba(139,92,246,0.3)"
+                    : "rgba(59,130,246,0.3)"
+                }`,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: 0.5,
+              }}
+            >
+              {routeInfo.route}
+            </span>
+          )}
+          <span style={{ fontSize: 12, color: theme.subtext }}>
+            {loading ? "thinking…" : "online"}
+          </span>
+        </div>
       </div>
 
       {/* Messages */}
@@ -174,10 +320,64 @@ export default function Chatbot({
         onScroll={handleScroll}
         style={messagesStyles}
       >
-        {messages.length === 0 && <EmptyState theme={theme} />}
+        {messages.length === 0 && !streamingText && <EmptyState theme={theme} />}
         {messages.map((m, i) => (
-          <Bubble key={i} role={m.role} text={m.content} theme={theme} />
+          <Bubble key={i} role={m.role} text={m.content} theme={theme} meta={m} />
         ))}
+
+        {/* Streaming bubble */}
+        {streamingText && (
+          <Bubble
+            role="assistant"
+            text={streamingText}
+            theme={theme}
+            isStreaming={true}
+          />
+        )}
+
+        {/* Loading indicator */}
+        {loading && !streamingText && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              margin: "8px 0",
+            }}
+          >
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 999,
+                background: "#2a3139",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: theme.text,
+                fontSize: 14,
+                fontWeight: 700,
+              }}
+            >
+              B
+            </div>
+            <div style={{ display: "flex", gap: 4 }}>
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: theme.green,
+                    animation: `bounce 1.4s ease-in-out ${i * 0.16}s infinite`,
+                    opacity: 0.6,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Scroll to bottom button */}
         {showScrollBtn && (
@@ -296,12 +496,37 @@ export default function Chatbot({
           <small style={{ color: theme.subtext }}>Powered by ArnV@teamLH</small>
         </div>
       </div>
+
+      {/* Animations */}
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        @keyframes bounce {
+          0%, 80%, 100% { transform: translateY(0); }
+          40% { transform: translateY(-6px); }
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }
 
-function Bubble({ role, text, theme }) {
+function Bubble({ role, text, theme, isStreaming = false, meta = {} }) {
   const isUser = role === "user";
+
+  // Tool badges
+  const tools = meta?.tools || [];
+  const toolEmojis = {
+    spotify: "🎵",
+    youtube: "▶️",
+    github: "🐙",
+  };
+
   return (
     <div
       style={{
@@ -329,10 +554,31 @@ function Bubble({ role, text, theme }) {
         }}
         title={isUser ? "You" : "Bot"}
       >
-        {isUser ? "U" : "B"}
+        {isUser ? "U" : "A"}
       </div>
 
       <div style={{ maxWidth: "78%", minWidth: 0 }}>
+        {/* Tool badges */}
+        {tools.length > 0 && (
+          <div style={{ display: "flex", gap: 4, marginBottom: 4 }}>
+            {tools.map((t) => (
+              <span
+                key={t}
+                style={{
+                  fontSize: 10,
+                  padding: "1px 6px",
+                  borderRadius: 999,
+                  background: "rgba(34,197,94,0.1)",
+                  color: theme.green,
+                  border: "1px solid rgba(34,197,94,0.2)",
+                }}
+              >
+                {toolEmojis[t] || "🔧"} {t}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div
           style={{
             background: isUser ? "#111518" : "#13181d",
@@ -346,7 +592,34 @@ function Bubble({ role, text, theme }) {
           }}
         >
           {text}
+          {isStreaming && (
+            <span
+              style={{
+                display: "inline-block",
+                width: 2,
+                height: 16,
+                background: theme.green,
+                marginLeft: 2,
+                verticalAlign: "text-bottom",
+                animation: "blink 0.8s step-end infinite",
+              }}
+            />
+          )}
         </div>
+
+        {/* Latency badge */}
+        {meta?.latency && (
+          <div
+            style={{
+              fontSize: 10,
+              color: theme.subtext,
+              marginTop: 2,
+              paddingLeft: 4,
+            }}
+          >
+            {meta.latency}ms
+          </div>
+        )}
       </div>
     </div>
   );
@@ -388,6 +661,16 @@ function EmptyState({ theme }) {
         </div>
         <div style={{ fontSize: 13 }}>
           Ml • SWE • Automations • Web3
+        </div>
+        <div
+          style={{
+            fontSize: 11,
+            marginTop: 8,
+            color: theme.subtext,
+            opacity: 0.7,
+          }}
+        >
+          Try: "What are your projects?" • "What's on your Spotify?"
         </div>
       </div>
     </div>

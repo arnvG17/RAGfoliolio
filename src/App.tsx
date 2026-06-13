@@ -82,6 +82,7 @@ const App = () => {
               }
             />
             
+            <Route path="/rag" element={<RagManager />} />
             <Route path="/rag-manager" element={<RagManager />} />
             
             {/* Catch-all route for 404 */}

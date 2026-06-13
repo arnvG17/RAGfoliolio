@@ -38,9 +38,9 @@ export default function Chatbot({
   const defaultContainerStyles = {
     background: theme.bg,
     color: theme.text,
-    minHeight: 480,
+    minHeight: 520,
     width: "100%",
-    maxWidth: 720,
+    maxWidth: 960,
     margin: "0 auto",
     border: `1px solid ${theme.border}`,
     borderRadius: 16,
@@ -516,107 +516,245 @@ export default function Chatbot({
   );
 }
 
-function Bubble({ role, text, theme, isStreaming = false, meta = {} }) {
-  const isUser = role === "user";
+function MusicTable({ title, headers, rows, accentColor }) {
+  return (
+    <div style={{ marginTop: 12, marginBottom: 4 }}>
+      <div style={{
+        fontSize: 12,
+        fontWeight: 700,
+        letterSpacing: 1,
+        color: accentColor || "#22c55e",
+        textTransform: "uppercase",
+        marginBottom: 6,
+      }}>{title}</div>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: 13,
+        }}>
+          <thead>
+            <tr>
+              {headers.map((h, i) => (
+                <th key={i} style={{
+                  padding: "6px 10px",
+                  background: "#0c1014",
+                  color: accentColor || "#22c55e",
+                  textAlign: "left",
+                  fontWeight: 600,
+                  borderBottom: `1px solid ${accentColor || "#22c55e"}44`,
+                  whiteSpace: "nowrap",
+                  fontSize: 11,
+                  letterSpacing: 0.5,
+                }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, ri) => (
+              <tr key={ri} style={{
+                background: ri % 2 === 0 ? "#0f1418" : "#111820",
+              }}>
+                {row.map((cell, ci) => (
+                  <td key={ci} style={{
+                    padding: "7px 10px",
+                    color: ci === 0 ? (accentColor || "#22c55e") : "#e5e7eb",
+                    fontWeight: ci === 0 ? 700 : 400,
+                    borderBottom: "1px solid #1a2028",
+                    whiteSpace: ci > 0 ? "nowrap" : "normal",
+                    maxWidth: ci === 1 ? 200 : "none",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
 
-  // Tool badges
-  const tools = meta?.tools || [];
-  const toolEmojis = {
-    spotify: "🎵",
-    youtube: "▶️",
-    github: "🐙",
+function parseMusicProfile(text) {
+  // Detect if text contains a music profile block from Last.fm
+  if (!text.includes("MUSIC PROFILE") && !text.includes("TOP TRACKS") && !text.includes("TOP ARTISTS")) {
+    return null;
+  }
+
+  const sections = [];
+  const lines = text.split("\n");
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i].trim();
+
+    // Section headers followed by a header row and dashes
+    if (
+      (line.includes("TOP TRACKS") || line.includes("TOP ARTISTS") ||
+       line.includes("TOP ALBUMS") || line.includes("RECENTLY PLAYED")) &&
+      i + 2 < lines.length
+    ) {
+      const headerLine = lines[i + 1]?.trim();
+      const dashLine = lines[i + 2]?.trim();
+
+      if (headerLine && dashLine && dashLine.startsWith("-")) {
+        const headers = headerLine.split(/\s{2,}/).map(h => h.trim()).filter(Boolean);
+        const rows = [];
+        let j = i + 3;
+        while (j < lines.length && lines[j].trim() && !lines[j].trim().startsWith("-")) {
+          const cells = lines[j].trim().split(/\s{2,}/).map(c => c.trim()).filter(Boolean);
+          if (cells.length >= 2) rows.push(cells);
+          j++;
+        }
+        if (rows.length > 0) {
+          sections.push({ title: line, headers, rows });
+          i = j;
+          continue;
+        }
+      }
+    }
+
+    i++;
+  }
+
+  return sections.length > 0 ? sections : null;
+}
+
+function NowPlayingBanner({ text, theme }) {
+  // Extract NOW PLAYING line
+  const match = text.match(/🔴 NOW PLAYING: (.+?) — (.+?) \(from '(.+?)'\)/);
+  if (!match) return null;
+  const [, track, artist, album] = match;
+  return (
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "8px 12px",
+      background: "linear-gradient(90deg, rgba(239,68,68,0.12) 0%, rgba(15,20,26,0) 100%)",
+      border: "1px solid rgba(239,68,68,0.2)",
+      borderRadius: 8,
+      marginBottom: 8,
+    }}>
+      <span style={{ fontSize: 20 }}>🔴</span>
+      <div>
+        <div style={{ fontWeight: 700, color: "#f87171", fontSize: 13 }}>{track}</div>
+        <div style={{ fontSize: 12, color: "#9ca3af" }}>{artist} · {album}</div>
+      </div>
+    </div>
+  );
+}
+
+function SmartMessageContent({ text, theme }) {
+  const sections = parseMusicProfile(text);
+
+  if (!sections) {
+    // Plain text — find any intro lines before tables
+    return (
+      <span style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>{text}</span>
+    );
+  }
+
+  // Extract the non-table preamble text (before first table marker)
+  const firstTableMarker = ["📋", "🎤", "💿", "🕒"].find(m => text.includes(m));
+  const preamble = firstTableMarker
+    ? text.split(firstTableMarker)[0].replace(/\n{3,}/g, "\n\n").trim()
+    : "";
+
+  const sectionColors = {
+    "TOP TRACKS": "#22c55e",
+    "TOP ARTISTS": "#a78bfa",
+    "TOP ALBUMS": "#60a5fa",
+    "RECENTLY PLAYED": "#f59e0b",
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: isUser ? "row-reverse" : "row",
-        alignItems: "flex-start",
-        gap: 10,
-        margin: "8px 0",
-      }}
-    >
-      <div
-        aria-hidden
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: 999,
-          background: isUser ? theme.green : "#2a3139",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: isUser ? "#0a0f0c" : theme.text,
-          fontSize: 14,
-          fontWeight: 700,
-          flexShrink: 0,
-        }}
-        title={isUser ? "You" : "Bot"}
-      >
+    <div>
+      {preamble && (
+        <div style={{ marginBottom: 10, whiteSpace: "pre-wrap", fontSize: 13, color: "#d1d5db" }}>
+          {preamble}
+        </div>
+      )}
+      <NowPlayingBanner text={text} theme={theme} />
+      {sections.map((s, i) => {
+        const color = Object.entries(sectionColors).find(([k]) => s.title.includes(k))?.[1] || "#22c55e";
+        return (
+          <MusicTable
+            key={i}
+            title={s.title}
+            headers={s.headers}
+            rows={s.rows}
+            accentColor={color}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function Bubble({ role, text, theme, isStreaming = false, meta = {} }) {
+  const isUser = role === "user";
+  const toolEmojis = { spotify: "🎵", youtube: "▶️", github: "🐙" };
+  const tools = meta?.tools || [];
+
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: isUser ? "row-reverse" : "row",
+      alignItems: "flex-start",
+      gap: 10,
+      margin: "8px 0",
+    }}>
+      <div aria-hidden style={{
+        width: 28, height: 28, borderRadius: 999,
+        background: isUser ? theme.green : "#2a3139",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        color: isUser ? "#0a0f0c" : theme.text,
+        fontSize: 14, fontWeight: 700, flexShrink: 0,
+      }} title={isUser ? "You" : "Bot"}>
         {isUser ? "U" : "A"}
       </div>
 
-      <div style={{ maxWidth: "78%", minWidth: 0 }}>
-        {/* Tool badges */}
+      <div style={{ maxWidth: "88%", minWidth: 0 }}>
         {tools.length > 0 && (
           <div style={{ display: "flex", gap: 4, marginBottom: 4 }}>
             {tools.map((t) => (
-              <span
-                key={t}
-                style={{
-                  fontSize: 10,
-                  padding: "1px 6px",
-                  borderRadius: 999,
-                  background: "rgba(34,197,94,0.1)",
-                  color: theme.green,
-                  border: "1px solid rgba(34,197,94,0.2)",
-                }}
-              >
+              <span key={t} style={{
+                fontSize: 10, padding: "1px 6px", borderRadius: 999,
+                background: "rgba(34,197,94,0.1)", color: theme.green,
+                border: "1px solid rgba(34,197,94,0.2)",
+              }}>
                 {toolEmojis[t] || "🔧"} {t}
               </span>
             ))}
           </div>
         )}
 
-        <div
-          style={{
-            background: isUser ? "#111518" : "#13181d",
-            color: theme.text,
-            border: `1px solid ${theme.border}`,
-            borderRadius: 12,
-            padding: "10px 12px",
-            whiteSpace: "pre-wrap",
-            wordWrap: "break-word",
-            overflowWrap: "break-word",
-          }}
-        >
-          {text}
+        <div style={{
+          background: isUser ? "#111518" : "#13181d",
+          color: theme.text,
+          border: `1px solid ${theme.border}`,
+          borderRadius: 12,
+          padding: "10px 14px",
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+        }}>
+          {isUser
+            ? <span style={{ whiteSpace: "pre-wrap" }}>{text}</span>
+            : <SmartMessageContent text={text} theme={theme} />
+          }
           {isStreaming && (
-            <span
-              style={{
-                display: "inline-block",
-                width: 2,
-                height: 16,
-                background: theme.green,
-                marginLeft: 2,
-                verticalAlign: "text-bottom",
-                animation: "blink 0.8s step-end infinite",
-              }}
-            />
+            <span style={{
+              display: "inline-block", width: 2, height: 16,
+              background: theme.green, marginLeft: 2, verticalAlign: "text-bottom",
+              animation: "blink 0.8s step-end infinite",
+            }} />
           )}
         </div>
 
-        {/* Latency badge */}
         {meta?.latency && (
-          <div
-            style={{
-              fontSize: 10,
-              color: theme.subtext,
-              marginTop: 2,
-              paddingLeft: 4,
-            }}
-          >
+          <div style={{ fontSize: 10, color: theme.subtext, marginTop: 2, paddingLeft: 4 }}>
             {meta.latency}ms
           </div>
         )}

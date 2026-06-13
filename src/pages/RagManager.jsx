@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-
-const API_BASE = "http://localhost:5000";
+import { getBackendUrl, DEFAULT_API_BASE } from "../config";
 
 const THEME = {
   bg: "#07090b",
@@ -240,7 +239,8 @@ function ToolCard({ tool, isConfigured, onTest }) {
     setTesting(true);
     setTestResult(null);
     try {
-      const res = await fetch(`${API_BASE}/config/test-tool`, {
+      const base = await getBackendUrl();
+      const res = await fetch(`${base}/config/test-tool`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tool: tool.key }),
@@ -349,6 +349,7 @@ function ToolCard({ tool, isConfigured, onTest }) {
 // ─────────────────────────────────────────────────────────────
 
 export default function RagAdmin() {
+  const [apiBase, setApiBase] = useState(DEFAULT_API_BASE);
   const [activeTab, setActiveTab] = useState("knowledge");
   const [meTxt, setMeTxt] = useState("");
   const [meTxtLoading, setMeTxtLoading] = useState(false);
@@ -359,14 +360,17 @@ export default function RagAdmin() {
 
   // Load data on mount
   useEffect(() => {
-    loadMeTxt();
-    loadConfigStatus();
-    loadHealth();
+    getBackendUrl().then((url) => {
+      setApiBase(url);
+      loadMeTxt(url);
+      loadConfigStatus(url);
+      loadHealth(url);
+    });
   }, []);
 
-  const loadMeTxt = useCallback(async () => {
+  const loadMeTxt = useCallback(async (baseUrl = apiBase) => {
     try {
-      const res = await fetch(`${API_BASE}/me.txt`);
+      const res = await fetch(`${baseUrl}/me.txt`);
       if (res.ok) {
         const text = await res.text();
         setMeTxt(text);
@@ -374,12 +378,12 @@ export default function RagAdmin() {
     } catch (e) {
       console.error("Failed to load me.txt:", e);
     }
-  }, []);
+  }, [apiBase]);
 
-  const loadConfigStatus = useCallback(async () => {
+  const loadConfigStatus = useCallback(async (baseUrl = apiBase) => {
     setConfigLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/config/status`);
+      const res = await fetch(`${baseUrl}/config/status`);
       if (res.ok) {
         const data = await res.json();
         setConfigStatus(data);
@@ -388,11 +392,11 @@ export default function RagAdmin() {
       console.error("Failed to load config status:", e);
     }
     setConfigLoading(false);
-  }, []);
+  }, [apiBase]);
 
-  const loadHealth = useCallback(async () => {
+  const loadHealth = useCallback(async (baseUrl = apiBase) => {
     try {
-      const res = await fetch(`${API_BASE}/health`);
+      const res = await fetch(`${baseUrl}/health`);
       if (res.ok) {
         const data = await res.json();
         setKbStats(data.knowledge_base);
@@ -400,13 +404,13 @@ export default function RagAdmin() {
     } catch (e) {
       console.error("Failed to load health:", e);
     }
-  }, []);
+  }, [apiBase]);
 
   async function saveMeTxt() {
     setMeTxtLoading(true);
     setSaveStatus(null);
     try {
-      const res = await fetch(`${API_BASE}/me.txt`, {
+      const res = await fetch(`${apiBase}/me.txt`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: meTxt }),
@@ -429,7 +433,7 @@ export default function RagAdmin() {
   async function reloadKB() {
     setMeTxtLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/reload`, { method: "POST" });
+      const res = await fetch(`${apiBase}/reload`, { method: "POST" });
       const data = await res.json();
       if (res.ok) {
         setKbStats(data.stats);
@@ -835,7 +839,7 @@ More content...`}
                 <HealthRow
                   label="Backend Server"
                   status={kbStats ? "online" : "offline"}
-                  detail={`http://localhost:5000`}
+                  detail={apiBase}
                 />
                 <HealthRow
                   label="Knowledge Base"
@@ -994,7 +998,8 @@ function TestQueryPanel() {
 
     const start = Date.now();
     try {
-      const res = await fetch(`${API_BASE}/chat`, {
+      const base = await getBackendUrl();
+      const res = await fetch(`${base}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: query.trim(), k: 4 }),

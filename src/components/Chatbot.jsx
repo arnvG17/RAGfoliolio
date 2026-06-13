@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { DEFAULT_API_BASE } from "../config";
 
 export default function Chatbot({
-  apiUrl = "https://ragfolio-1.onrender.com/rag",
+  apiUrl = `${DEFAULT_API_BASE}/rag`,
   title = "Portfolio RAG Bot",
   placeholder = "Ask me about my projects, skills, or experience…",
   customStyles = {},

@@ -1,10 +1,15 @@
-// ChatWidget.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageCircle, X } from "lucide-react";
 import Chatbot from "./Chatbot";
+import { getBackendUrl, DEFAULT_API_BASE } from "../config";
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [apiUrl, setApiUrl] = useState(`${DEFAULT_API_BASE}/rag`);
+
+  useEffect(() => {
+    getBackendUrl().then((url) => setApiUrl(`${url}/rag`));
+  }, []);
 
   return (
     <>
@@ -78,7 +83,7 @@ export default function ChatWidget() {
             }}
           >
             <Chatbot
-              apiUrl="http://localhost:5000/rag"
+              apiUrl={apiUrl}
               title="Ask Arnav AI"
               placeholder="Ask me about Arnav's projects, skills, or what he's listening to…"
               // Override the default styles for the widget context

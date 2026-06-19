@@ -1,8 +1,53 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUpRight } from "lucide-react";
+import { motion, useSpring } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+
+const SPRING = {
+  mass: 0.1,
+  damping: 10,
+  stiffness: 131,
+};
 
 const ProjectsSection = () => {
+  const xSpring = useSpring(0, SPRING);
+  const ySpring = useSpring(0, SPRING);
+  const opacitySpring = useSpring(0, SPRING);
+  const scaleSpring = useSpring(0, SPRING);
+  const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (!sectionRef.current) return;
+    const bounds = sectionRef.current.getBoundingClientRect();
+    xSpring.set(e.clientX - bounds.left);
+    ySpring.set(e.clientY - bounds.top);
+
+    // Detect if hovering over interactive elements
+    const target = e.target as HTMLElement;
+    const isInteractive = target.closest("a, button, [role='button'], .cursor-pointer") !== null;
+    setIsHoveringInteractive(isInteractive);
+  };
+
+  const handlePointerEnter = () => {
+    opacitySpring.set(1);
+    scaleSpring.set(isHoveringInteractive ? 1.8 : 1);
+  };
+
+  const handlePointerLeave = () => {
+    opacitySpring.set(0);
+    scaleSpring.set(0);
+  };
+
+  useEffect(() => {
+    scaleSpring.set(isHoveringInteractive ? 1.8 : 1);
+  }, [isHoveringInteractive, scaleSpring]);
 
   const projects = [
     {
@@ -53,7 +98,14 @@ const ProjectsSection = () => {
   ];
 
   return (
-    <section id="projects" className="relative pt-16 md:pt-20 pb-4 px-6 overflow-hidden bg-background">
+    <section
+      ref={sectionRef}
+      id="projects"
+      onPointerMove={handlePointerMove}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      className="relative pt-16 md:pt-20 pb-4 px-6 overflow-hidden bg-background md:cursor-none"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex items-center justify-center gap-2 mb-10 md:mb-16">
@@ -112,6 +164,18 @@ const ProjectsSection = () => {
           ))}
         </div>
       </div>
+
+      {isMounted && (
+        <motion.div
+          style={{
+            x: xSpring,
+            y: ySpring,
+            opacity: opacitySpring,
+            scale: scaleSpring,
+          }}
+          className="pointer-events-none absolute left-0 top-0 rounded-full w-4 h-4 bg-gradient-to-r from-[#00f0ff] to-[#d000ff] z-50 hidden md:block -translate-x-1/2 -translate-y-1/2"
+        />
+      )}
     </section>
   );
 };

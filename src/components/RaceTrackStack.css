@@ -8,11 +8,132 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #060608;
+  background: transparent;
   padding: 80px 40px 30px 40px; /* Safe padding at the top to clear the floating navbar */
   overflow: hidden;
   box-sizing: border-box;
 }
+
+/* ─── Animated Cyber Grid Background ─── */
+.rt-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+  animation: rt-grid-travel 35s linear infinite;
+}
+
+@keyframes rt-grid-travel {
+  from { background-position: 0 0; }
+  to { background-position: 50px 50px; }
+}
+
+/* ─── Glowing Neon Background Orbs ─── */
+.rt-glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.rt-orb-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--accent-color, #22c55e) 0%, transparent 70%);
+  top: -10%;
+  left: 10%;
+  animation: rt-float-orb-1 25s ease-in-out infinite alternate;
+  transition: background 0.8s ease;
+}
+
+.rt-orb-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #00d8ff 0%, transparent 70%);
+  bottom: -15%;
+  right: 5%;
+  animation: rt-float-orb-2 30s ease-in-out infinite alternate;
+}
+
+@keyframes rt-float-orb-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(80px, 60px) scale(1.15); }
+}
+
+@keyframes rt-float-orb-2 {
+  0% { transform: translate(0, 0) scale(1.1); }
+  100% { transform: translate(-70px, -80px) scale(0.9); }
+}
+
+/* ─── Telemetry Entrance Slide In Animation ─── */
+@keyframes rt-telemetry-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rt-telemetry-animate {
+  animation: rt-telemetry-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── F1 Corner Turn Markers & DRS Zones ─── */
+.rt-turn-marker {
+  cursor: pointer;
+}
+
+.rt-turn-marker circle {
+  transition: stroke-width 0.3s ease, stroke 0.3s ease, r 0.3s ease, fill 0.3s ease, filter 0.3s ease;
+}
+
+.rt-turn-marker text {
+  transition: font-size 0.3s ease, fill 0.3s ease, transform 0.3s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+.rt-turn-marker:hover circle {
+  r: 15px;
+}
+
+.rt-turn-marker.active circle {
+  animation: rt-marker-glow 1s infinite alternate;
+}
+
+@keyframes rt-marker-glow {
+  0% {
+    stroke-width: 2px;
+    filter: drop-shadow(0 0 2px var(--accent-color, #e10600));
+  }
+  100% {
+    stroke-width: 3.5px;
+    filter: drop-shadow(0 0 8px var(--accent-color, #e10600));
+  }
+}
+
+.rt-drs-box {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.rt-drs-box:hover {
+  filter: brightness(1.15) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+  transform: scale(1.05);
+}
+
 
 /* ─── Minimal Header ─── */
 .rt-minimal-header {
@@ -113,17 +234,17 @@
 /* ─── F1 Telemetry Card ─── */
 .rt-card {
   width: 100%;
-  background: rgba(15, 15, 20, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(10, 10, 15, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-top: 3px solid var(--accent-color, #ffffff);
-  border-radius: 8px;
-  padding: 20px 24px;
+  border-radius: 12px;
+  padding: 22px 26px;
   box-sizing: border-box;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
-  transition: border-color 0.4s ease;
+  box-shadow: 0 15px 45px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0px rgba(255, 255, 255, 0.1);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .rt-card-border-glow {
@@ -131,9 +252,9 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 80px;
   background: linear-gradient(180deg, var(--accent-color, transparent) -100%, transparent 100%);
-  opacity: 0.04;
+  opacity: 0.08;
   pointer-events: none;
 }
 
@@ -277,6 +398,7 @@
     height: auto;
     overflow-y: auto;
     min-height: 100vh;
+    background: transparent;
   }
 
   .rt-minimal-title {

@@ -15,7 +15,7 @@
 /* ─── Horizontal scroll container ─── */
 .cinematic-horizontal {
   display: flex;
-  width: 160vw;
+  width: 200vw;
   height: 100vh;
   will-change: transform;
 }
@@ -32,7 +32,7 @@
 }
 
 .cinematic-h-panel-stack {
-  width: 60vw;
+  width: 100vw;
   display: flex;
   align-items: stretch;
   justify-content: stretch;

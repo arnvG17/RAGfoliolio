@@ -67,22 +67,18 @@ const CinematicHero = () => {
     const iw = img.naturalWidth;
     const ih = img.naturalHeight;
 
-    // Scale strictly by height to ensure the full car is visible from top to bottom.
-    // Using 0.90 to give it a 5% margin at top and bottom (10% total) to prevent clipping.
     const isMobile = window.innerWidth <= 900;
-    const baseScale = isMobile ? 0.8 : 0.85; // Full width look for mobile
-    
+    const baseScale = isMobile ? 0.8 : 0.85;
+
     const scale = Math.min(cw / iw, ch / ih) * baseScale;
     const sw = iw * scale;
     const sh = ih * scale;
     const sx = (cw - sw) / 2;
-    const sy = isMobile ? (ch * 0.30) : (ch - sh) / 2; // Position for full-width car
-    
+    const sy = isMobile ? (ch * 0.30) : (ch - sh) / 2;
+
     ctx.clearRect(0, 0, cw, ch);
     ctx.filter = 'none';
     ctx.drawImage(img, sx, sy, sw, sh);
-    // Remove any hardcoded background color that might clash
-    // (Removed as per user request for static off-white background)
   }, []);
 
   const animate = useCallback(() => {
@@ -125,7 +121,6 @@ const CinematicHero = () => {
           resolve();
         };
         img.onerror = () => {
-          // Retry logic
           const r = new Image();
           r.onload = () => { imagesRef.current[i] = r; loadedRef.current[i] = true; setProgress((p) => p + 1); resolve(); };
           r.onerror = () => { loadedRef.current[i] = true; setProgress((p) => p + 1); resolve(); };
@@ -136,13 +131,11 @@ const CinematicHero = () => {
       });
 
     const run = async () => {
-      // Sequence 1 Critical
       const critical1 = Array.from({ length: Math.min(CRITICAL_BATCH, FRAME_COUNT_1) }, (_, i) => i);
       await Promise.all(critical1.map(loadImg));
       if (aborted) return;
       setReady(true);
 
-      // Rest of Sequence 1
       for (let b = CRITICAL_BATCH; b < FRAME_COUNT_1; b += BG_BATCH) {
         if (aborted) return;
         const batch = Array.from({ length: Math.min(BG_BATCH, FRAME_COUNT_1 - b) }, (_, j) => b + j);
@@ -150,7 +143,6 @@ const CinematicHero = () => {
         await new Promise<void>((r) => { const id = setTimeout(r, BG_DELAY); timeouts.push(id); });
       }
 
-      // Sequence 2
       for (let b = FRAME_COUNT_1; b < TOTAL_FRAMES; b += BG_BATCH) {
         if (aborted) return;
         const batch = Array.from({ length: Math.min(BG_BATCH, TOTAL_FRAMES - b) }, (_, j) => b + j);
@@ -172,15 +164,21 @@ const CinematicHero = () => {
     rafRef.current = requestAnimationFrame(animate);
 
     const isMobile = window.innerWidth <= 900;
-    const PHASE1_END = 0.35; // Hero -> About -> Expertise
-    const INTERACTION_END = 0.55; // Bounce/Stack
+    
+    // Desktop Scroll Progress Milestones
+    const STACK_START = 0.25;          // Hero to About text scroll completes
+    const STACK_DRIVE_START = 0.35;    // Tech stack slides into view
+    const STACK_DRIVE_END = 0.65;      // Roller coaster loop completed
+    const STACK_BACK_END = 0.75;       // Tech stack slides back out to the right
+    const EXPERTISE_SCROLL_END = 0.90; // About to Expertise text scroll completes
+    const STACK_END = 1.0;             // Next section fully active
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: isMobile ? "bottom bottom" : "+=800%", 
+      end: isMobile ? "bottom bottom" : "+=800%",
       pin: !isMobile,
-      scrub: 1.2, 
+      scrub: 1.2,
       anticipatePin: 1,
       invalidateOnRefresh: true,
       fastScrollEnd: true,
@@ -188,86 +186,71 @@ const CinematicHero = () => {
         const p = self.progress;
 
         if (isMobile) {
-          // Mobile: Linear continuous car animation linked to natural scroll
           targetFrameRef.current = p * (TOTAL_FRAMES - 1);
 
           const canvasContainer = document.querySelector(".cinematic-right") as HTMLElement;
 
           if (p < 0.75) {
-             if (canvasContainer) canvasContainer.style.opacity = "1";
+            if (canvasContainer) canvasContainer.style.opacity = "1";
           } else {
-             // Fade out car as we enter the Stack/Projects boundary
-             const fadeP = (p - 0.75) / 0.25;
-             if (canvasContainer) canvasContainer.style.opacity = String(1 - fadeP);
+            const fadeP = (p - 0.75) / 0.25;
+            if (canvasContainer) canvasContainer.style.opacity = String(1 - fadeP);
           }
           return;
         }
 
-        // Desktop logic: Drive the 3D text crawl on the left panel
+        // Desktop logic: Drive the 3D text crawl on the left panel (Expertise panel)
         const expText = document.getElementById("expertise-perspective-text");
-        if (expText) {
-          const expStart = 0.32;
-          const expEnd = 0.70;
-          const expP = Math.max(0, Math.min(1, (p - expStart) / (expEnd - expStart)));
-          
-          const yVal = 400 - (expP * 650); // 400px (bottom) to -250px (top) for larger range
-          const rotX = 35 - (expP * 23);   // 35deg to 12deg
-          
-          // Fade in and out
-          let opacity = 1;
-          if (p < 0.38) {
-            opacity = (p - 0.32) / 0.06;
-          } else if (p > 0.64) {
-            opacity = Math.max(0, 1 - (p - 0.64) / 0.06);
-          }
 
-          expText.style.transform = `rotateX(${rotX}deg) translateY(${yVal}px) translateZ(10px)`;
-          expText.style.opacity = String(opacity);
-        }
-
-        if (p <= PHASE1_END) {
-          // Phase 1: Vertical scroll (frames 0 to VERT_END)
-          // We scroll through Hero -> About (only 1 panel translation)
-          const scrollProgress = Math.min(1, p / (PHASE1_END * 0.85)); // Finish scrolling text a bit before Phase 1 ends for "dwell"
-          
-          targetFrameRef.current = (p / PHASE1_END) * FRAME_VERT_END;
+        // --- Scroll Phase Control ---
+        if (p <= STACK_START) {
+          // Phase 1: Vertical scroll of left text panels (Hero -> About, translate 0 to -100vh)
+          const scrollProgress = Math.min(1, p / STACK_START);
+          targetFrameRef.current = scrollProgress * (FRAME_VERT_END * 0.7);
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            // Translate through 2 panels (0 to -100vh)
-            const maxTranslate = window.innerHeight * 1; 
-            leftScroll.style.transform = `translate3d(0, -${scrollProgress * maxTranslate}px, 0)`;
+            leftScroll.style.transform = `translate3d(0, -${scrollProgress * window.innerHeight}px, 0)`;
             leftScroll.style.opacity = "1";
           }
 
           const hz = document.getElementById("cinematic-horizontal");
-          if (hz) hz.style.transform = `translate3d(0, 0, 0)`;
-        } 
-        else if (p <= INTERACTION_END) {
-          // Phase 2: Smooth Sine-wave Interaction (Slide In & Out)
-          const iP = (p - PHASE1_END) / (INTERACTION_END - PHASE1_END);
-          
-          const slideP = Math.sin(iP * Math.PI);
-          targetFrameRef.current = FRAME_VERT_END + iP * (TOTAL_FRAMES - 1 - FRAME_VERT_END);
+          if (hz) {
+            hz.style.transform = `translate3d(0, 0, 0)`;
+            hz.style.opacity = "1";
+          }
+
+          const canvasContainer = document.querySelector(".cinematic-right") as HTMLElement;
+          if (canvasContainer) canvasContainer.style.opacity = "1";
+
+          const further = document.getElementById("further-content");
+          if (further) {
+            further.style.opacity = "0";
+            further.style.pointerEvents = "none";
+          }
+
+          if (expText) expText.style.opacity = "0";
+        }
+        else if (p <= STACK_DRIVE_START) {
+          // Phase 2: Horizontal Slide In (Reveal Tech Stack to the Left)
+          const iP = (p - STACK_START) / (STACK_DRIVE_START - STACK_START);
+          targetFrameRef.current = (FRAME_VERT_END * 0.7) + iP * 40;
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            // Transition from About (-100vh) to Expertise (-200vh) progressively during the stack bounce
-            const translateY = window.innerHeight * (1 + iP);
-            leftScroll.style.transform = `translate3d(0, -${translateY}px, 0)`;
-            leftScroll.style.opacity = "1"; 
+            leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
+            leftScroll.style.opacity = String(1 - iP);
           }
 
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
             hz.style.opacity = "1";
-            hz.style.transform = `translate3d(-${slideP * 65}vw, 0, 0)`;
+            hz.style.transform = `translate3d(-${iP * 100}vw, 0, 0)`;
           }
 
-          const canvasWrapper = document.querySelector(".cinematic-canvas-wrapper") as HTMLElement;
-          if (canvasWrapper) {
-            const scale = 1 + (slideP * 0.05);
-            canvasWrapper.style.transform = `scale(${scale})`;
+          const canvasContainer = document.querySelector(".cinematic-right") as HTMLElement;
+          if (canvasContainer) {
+            canvasContainer.style.opacity = String(1 - iP);
           }
 
           const further = document.getElementById("further-content");
@@ -275,35 +258,133 @@ const CinematicHero = () => {
             further.style.opacity = "0";
             further.style.pointerEvents = "none";
           }
+
+          if (expText) expText.style.opacity = "0";
         }
-        else {
-          // Phase 3: Final exit
-          const phase4P = (p - INTERACTION_END) / (1 - INTERACTION_END);
-          targetFrameRef.current = TOTAL_FRAMES - 1;
-          
-          const further = document.getElementById("further-content");
-          if (further) {
-            further.style.opacity = "1";
-            further.style.pointerEvents = "auto";
-            further.style.transform = `translateY(${100 - (phase4P * 100)}vh)`;
-          }
+        else if (p <= STACK_DRIVE_END) {
+          // Phase 3: Pinned Tech Stack & Coaster Loop
+          targetFrameRef.current = (FRAME_VERT_END * 0.7) + 40;
 
           const leftScroll = document.getElementById("cinematic-left-scroll");
           if (leftScroll) {
-            // Translate the left scroll to -200vh and fade out
-            leftScroll.style.transform = `translate3d(0, -${window.innerHeight * 2}px, 0)`;
-            leftScroll.style.opacity = String(1 - phase4P); 
+            leftScroll.style.opacity = "0";
+          }
+
+          const hz = document.getElementById("cinematic-horizontal");
+          if (hz) {
+            hz.style.opacity = "1";
+            hz.style.transform = `translate3d(-100vw, 0, 0)`;
+          }
+
+          const canvasContainer = document.querySelector(".cinematic-right") as HTMLElement;
+          if (canvasContainer) {
+            canvasContainer.style.opacity = "0";
+          }
+
+          const further = document.getElementById("further-content");
+          if (further) {
+            further.style.opacity = "0";
+            further.style.pointerEvents = "none";
+          }
+
+          if (expText) expText.style.opacity = "0";
+        }
+        else if (p <= STACK_BACK_END) {
+          // Phase 4: Horizontal Slide Back to the Right (Return to main split screen / About section)
+          const iP = (p - STACK_DRIVE_END) / (STACK_BACK_END - STACK_DRIVE_END);
+          targetFrameRef.current = (FRAME_VERT_END * 0.7) + 40;
+
+          const leftScroll = document.getElementById("cinematic-left-scroll");
+          if (leftScroll) {
+            leftScroll.style.transform = `translate3d(0, -${window.innerHeight}px, 0)`;
+            leftScroll.style.opacity = String(iP);
+          }
+
+          const hz = document.getElementById("cinematic-horizontal");
+          if (hz) {
+            hz.style.opacity = "1";
+            hz.style.transform = `translate3d(-${(1 - iP) * 100}vw, 0, 0)`;
+          }
+
+          const canvasContainer = document.querySelector(".cinematic-right") as HTMLElement;
+          if (canvasContainer) {
+            canvasContainer.style.opacity = String(iP);
+          }
+
+          const further = document.getElementById("further-content");
+          if (further) {
+            further.style.opacity = "0";
+            further.style.pointerEvents = "none";
+          }
+
+          if (expText) expText.style.opacity = "0";
+        }
+        else if (p <= EXPERTISE_SCROLL_END) {
+          // Phase 5: Scroll vertically from About to Expertise (translate -100vh to -200vh)
+          const scrollProgress = (p - STACK_BACK_END) / (EXPERTISE_SCROLL_END - STACK_BACK_END);
+          targetFrameRef.current = (FRAME_VERT_END * 0.7) + 40 + scrollProgress * 60;
+
+          const leftScroll = document.getElementById("cinematic-left-scroll");
+          if (leftScroll) {
+            leftScroll.style.transform = `translate3d(0, -${window.innerHeight * (1 + scrollProgress)}px, 0)`;
+            leftScroll.style.opacity = "1";
           }
 
           const hz = document.getElementById("cinematic-horizontal");
           if (hz) {
             hz.style.transform = `translate3d(0, 0, 0)`;
+            hz.style.opacity = "1";
           }
-          
-          const heroMain = document.querySelector(".cinematic-hero-main") as HTMLElement;
+
+          const canvasContainer = document.querySelector(".cinematic-right") as HTMLElement;
+          if (canvasContainer) canvasContainer.style.opacity = "1";
+
+          const further = document.getElementById("further-content");
+          if (further) {
+            further.style.opacity = "0";
+            further.style.pointerEvents = "none";
+          }
+
+          if (expText) {
+            const expP = scrollProgress;
+            const yVal = 400 - (expP * 650);
+            const rotX = 35 - (expP * 23);
+            const opacity = Math.sin(expP * Math.PI);
+            expText.style.transform = `rotateX(${rotX}deg) translateY(${yVal}px) translateZ(10px)`;
+            expText.style.opacity = String(opacity);
+          }
+        }
+        else {
+          // Phase 6: Final Exit (Projects section rises, split screen fades out)
+          const iP = (p - EXPERTISE_SCROLL_END) / (STACK_END - EXPERTISE_SCROLL_END);
+          const startFrame = (FRAME_VERT_END * 0.7) + 40 + 60;
+          targetFrameRef.current = startFrame + iP * (TOTAL_FRAMES - 1 - startFrame);
+
+          const hz = document.getElementById("cinematic-horizontal");
+          if (hz) {
+            hz.style.transform = `translate3d(0, 0, 0)`;
+            hz.style.opacity = String(1 - iP);
+          }
+
+          const further = document.getElementById("further-content");
+          if (further) {
+            further.style.opacity = "1";
+            further.style.pointerEvents = "auto";
+            further.style.transform = `translateY(${100 - (iP * 100)}vh)`;
+          }
+
+          const leftScroll = document.getElementById("cinematic-left-scroll");
+          if (leftScroll) {
+            leftScroll.style.transform = `translate3d(0, -${window.innerHeight * 2}px, 0)`;
+            leftScroll.style.opacity = String(1 - iP);
+          }
+
+          const heroMain = document.querySelector(".cinematic-h-panel-main") as HTMLElement;
           if (heroMain) {
-            heroMain.style.opacity = String(1 - phase4P);
+            heroMain.style.opacity = String(1 - iP);
           }
+
+          if (expText) expText.style.opacity = "0";
         }
       },
       onLeave: () => {
@@ -322,7 +403,7 @@ const CinematicHero = () => {
           further.style.opacity = "1";
           further.style.pointerEvents = "auto";
         }
-        
+
         const hz = document.getElementById("cinematic-horizontal");
         if (hz) hz.style.transform = "none";
       },
@@ -421,7 +502,7 @@ const CinematicHero = () => {
                   <span className="text-accent">✦</span>
                   <span className="cinematic-about-label">Expertise</span>
                 </div>
-                
+
                 <div
                   className="expertise-perspective-wrapper"
                   style={{
@@ -445,11 +526,11 @@ const CinematicHero = () => {
                     }}
                     className="w-full max-w-2xl md:max-w-3xl text-center text-3xl md:text-5xl font-bold tracking-tight text-foreground/80 leading-[1.4] uppercase select-none"
                   >
-                    I SPECIALIZE IN{" "}
+                    EVER SINCE I WAS YOUNG I WANTED TO TURN {" "}
                     <span className="text-accent font-cursive tracking-normal normal-case px-2 drop-shadow-[0_0_15px_rgba(0,255,0,0.3)]">
-                      Agentic Workflows
+                      Messy and unstructed Data into Structured Workflows
                     </span>{" "}
-                    & COGNITIVE ARCHITECTURES. I DESIGN & BUILD{" "}
+                    & COGNITIVE ARCHITECTURES.  INTO  {" "}
                     <span className="text-white font-serif-italic tracking-normal normal-case px-1">
                       autonomous AI agents
                     </span>{" "}

@@ -12,6 +12,7 @@ import {
 import { FaRobot, FaProjectDiagram } from 'react-icons/fa';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import CardSwap, { Card } from './CardSwap';
 import './RaceTrackStack.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -174,10 +175,28 @@ const grandstands: GrandstandPos[] = [
 
 const RaceTrackStack: React.FC = () => {
   const [activeIdx, setActiveIdx] = useState<number>(0);
+  const [pathLength, setPathLength] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   
   const pathRef = useRef<SVGPathElement>(null);
   const carRef = useRef<SVGGElement>(null);
+  const trailRef = useRef<SVGGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (pathRef.current) {
+      setPathLength(pathRef.current.getTotalLength());
+    }
+  }, []);
 
   const trackPath = `
     M 850,490
@@ -219,10 +238,9 @@ const RaceTrackStack: React.FC = () => {
 
     car.setAttribute('transform', `translate(${point.x}, ${point.y}) rotate(${angle})`);
 
-    // Proximity search: find closest tech item based on coordinates
+    // Find closest tech item based on coordinates first
     let nearestIdx = 0;
     let minDist = Infinity;
-    
     grandstands.forEach((g, idx) => {
       const dx = g.x - point.x;
       const dy = g.y - point.y;
@@ -232,6 +250,22 @@ const RaceTrackStack: React.FC = () => {
         nearestIdx = idx;
       }
     });
+
+    // Update glowing tail trail points directly in the DOM for peak scroll performance
+    const trail = trailRef.current;
+    if (trail && trail.children) {
+      const activeColor = techStack[nearestIdx]?.color || '#ffffff';
+      for (let i = 1; i <= 5; i++) {
+        const trailCircle = trail.children[i - 1];
+        if (trailCircle) {
+          const trailProgress = Math.max(0, progress - (i * 6) / len);
+          const trailPoint = path.getPointAtLength(trailProgress * len);
+          trailCircle.setAttribute('cx', String(trailPoint.x));
+          trailCircle.setAttribute('cy', String(trailPoint.y));
+          trailCircle.setAttribute('fill', activeColor);
+        }
+      }
+    }
 
     setActiveIdx(nearestIdx);
   };
@@ -261,7 +295,7 @@ const RaceTrackStack: React.FC = () => {
         onUpdate: (self) => {
           const p = self.progress;
           const start = 0.35;
-          const end = 0.55;
+          const end = 0.65;
           
           let carProgress = 0;
           if (p >= start && p <= end) {
@@ -287,6 +321,11 @@ const RaceTrackStack: React.FC = () => {
 
   return (
     <div className="rt-wrapper" ref={containerRef}>
+      {/* ─── BACKGROUND GLOW EFFECTS & CYBER GRID ─── */}
+      <div className="rt-grid-bg" />
+      <div className="rt-glow-orb rt-orb-1" style={{ '--accent-color': activeTech.color } as React.CSSProperties} />
+      <div className="rt-glow-orb rt-orb-2" />
+
       {/* ─── HEADER ─── */}
       <div className="rt-minimal-header">
         <span className="rt-minimal-tag">SYSTEMS DIAGNOSTICS</span>
@@ -313,35 +352,85 @@ const RaceTrackStack: React.FC = () => {
             {/* Track boundary fill */}
             <path d={trackPath} fill="rgba(255, 255, 255, 0.01)" stroke="none" />
 
-            {/* Racetrack boundaries */}
+            {/* F1 Circuit Asphalt Road Layer (Base outline and width) */}
             <path
               d={trackPath}
-              ref={pathRef}
               fill="none"
-              stroke="rgba(255, 255, 255, 0.12)"
-              strokeWidth="6"
+              stroke="#0f0f14"
+              strokeWidth="20"
               strokeLinejoin="round"
             />
             <path
               d={trackPath}
               fill="none"
-              stroke="#0a0a0c"
-              strokeWidth="4"
+              stroke="rgba(255, 255, 255, 0.05)"
+              strokeWidth="22"
               strokeLinejoin="round"
+            />
+
+            {/* F1 Circuit Colored Sectors (Overlayed dynamically) */}
+            {pathLength > 0 && (
+              <>
+                {/* Sector 1 (Red): Finish Line to Turn 5 (0.0 to 0.35) */}
+                <path
+                  d={trackPath}
+                  fill="none"
+                  stroke="#e10600"
+                  strokeWidth="8"
+                  strokeLinejoin="round"
+                  strokeDasharray={`${pathLength * 0.35} ${pathLength}`}
+                  strokeDashoffset={0}
+                  opacity="0.9"
+                />
+                
+                {/* Sector 2 (Blue): Turn 5 to Turn 11 (0.35 to 0.65) */}
+                <path
+                  d={trackPath}
+                  fill="none"
+                  stroke="#00b0f0"
+                  strokeWidth="8"
+                  strokeLinejoin="round"
+                  strokeDasharray={`0 ${pathLength * 0.35} ${pathLength * 0.30} ${pathLength}`}
+                  strokeDashoffset={0}
+                  opacity="0.9"
+                />
+
+                {/* Sector 3 (Yellow): Turn 11 to Finish Line (0.65 to 1.0) */}
+                <path
+                  d={trackPath}
+                  fill="none"
+                  stroke="#ffd800"
+                  strokeWidth="8"
+                  strokeLinejoin="round"
+                  strokeDasharray={`0 ${pathLength * 0.65} ${pathLength * 0.35} ${pathLength}`}
+                  strokeDashoffset={0}
+                  opacity="0.9"
+                />
+              </>
+            )}
+
+            {/* Racetrack boundaries (hidden calculations path) */}
+            <path
+              d={trackPath}
+              ref={pathRef}
+              fill="none"
+              stroke="none"
+              strokeWidth="1"
+              style={{ pointerEvents: 'none' }}
             />
             
             {/* Center Racing line */}
             <path
               d={trackPath}
               fill="none"
-              stroke="rgba(255, 255, 255, 0.25)"
+              stroke="rgba(255, 255, 255, 0.4)"
               strokeWidth="0.75"
-              strokeDasharray="4 6"
+              strokeDasharray="3 5"
               className="rt-centerline-flow"
             />
 
             {/* Start / Finish checker line */}
-            <line x1="846" y1="462" x2="854" y2="488" stroke="#fff" strokeWidth="2.5" opacity="0.3" />
+            <line x1="846" y1="462" x2="854" y2="488" stroke="#fff" strokeWidth="2.5" opacity="0.4" />
 
             {/* ─── Grandstands / Tech Dots ─── */}
             {techStack.map((tech, idx) => {
@@ -349,34 +438,51 @@ const RaceTrackStack: React.FC = () => {
               const isCurrent = activeIdx === idx;
               const isLeft = g.side === 'left';
 
+              // Math to offset turn marker 16px along connector line to avoid F1 car clipping
+              const angle = Math.atan2(g.ly - g.y, g.lx - g.x);
+              const circleX = g.x + Math.cos(angle) * 16;
+              const circleY = g.y + Math.sin(angle) * 16;
+
               return (
-                <g key={tech.id} className={`rt-tag-node ${isCurrent ? 'active' : ''}`}>
+                <g key={tech.id} className={`rt-turn-marker ${isCurrent ? 'active' : ''}`} style={{ '--accent-color': tech.color } as React.CSSProperties}>
                   {/* Connector line */}
                   <line
-                    x1={g.x} y1={g.y}
+                    x1={circleX} y1={circleY}
                     x2={g.lx} y2={g.ly}
-                    stroke={isCurrent ? tech.color : 'rgba(255, 255, 255, 0.1)'}
+                    stroke={isCurrent ? tech.color : 'rgba(255, 255, 255, 0.08)'}
                     strokeWidth={isCurrent ? 1.5 : 0.75}
                     className="rt-connector"
                   />
 
-                  {/* Node point on track */}
+                  {/* Corner Turn marker circle */}
                   <circle 
-                    cx={g.x} cy={g.y} 
-                    r={isCurrent ? 6 : 4} 
-                    fill={isCurrent ? tech.color : '#1f1f23'}
-                    stroke={isCurrent ? '#fff' : 'rgba(255, 255, 255, 0.2)'}
-                    strokeWidth={isCurrent ? 1.5 : 1}
-                    filter={isCurrent ? 'url(#node-glow)' : 'none'}
+                    cx={circleX} cy={circleY} 
+                    r={isCurrent ? 11 : 9.5} 
+                    fill="#0a0a0f"
+                    stroke={isCurrent ? tech.color : '#444'}
+                    strokeWidth={isCurrent ? 2.5 : 1.5}
                     style={{ transition: 'all 0.3s ease' }}
                   />
+
+                  {/* Corner Turn number */}
+                  <text
+                    x={circleX}
+                    y={circleY + 3.5}
+                    textAnchor="middle"
+                    fill={isCurrent ? '#ffffff' : 'rgba(255, 255, 255, 0.6)'}
+                    fontSize={isCurrent ? 8.5 : 7.5}
+                    fontWeight="bold"
+                    fontFamily="monospace"
+                  >
+                    {String(idx + 1).padStart(2, '0')}
+                  </text>
 
                   {/* Clean text label */}
                   <text
                     x={isLeft ? g.lx : g.lx}
                     y={g.ly + 4}
                     textAnchor={isLeft ? 'start' : 'end'}
-                    fill={isCurrent ? '#ffffff' : 'rgba(255, 255, 255, 0.35)'}
+                    fill={isCurrent ? '#ffffff' : 'rgba(255, 255, 255, 0.3)'}
                     fontSize="11"
                     fontWeight={isCurrent ? '700' : '400'}
                     fontFamily="monospace"
@@ -389,10 +495,47 @@ const RaceTrackStack: React.FC = () => {
               );
             })}
 
+            {/* ─── DRS & Speed Trap visual overlays ─── */}
+            {/* DRS detection zone 1 */}
+            <g className="rt-drs-box" transform="translate(640, 205)" style={{ cursor: 'pointer' }}>
+              <line x1="0" y1="0" x2="80" y2="-105" stroke="#00bb00" strokeWidth="0.75" strokeDasharray="2 3" opacity="0.5" />
+              <rect x="-55" y="-11" width="110" height="22" rx="4" fill="#00bb00" stroke="#fff" strokeWidth="1.5" opacity="0.85" />
+              <text x="0" y="3" textAnchor="middle" fill="#fff" fontSize="8.5" fontWeight="bold" fontFamily="monospace">
+                DRS ZONE 1
+              </text>
+            </g>
+
+            {/* DRS detection zone 2 */}
+            <g className="rt-drs-box" transform="translate(740, 420)" style={{ cursor: 'pointer' }}>
+              <line x1="0" y1="0" x2="20" y2="105" stroke="#00bb00" strokeWidth="0.75" strokeDasharray="2 3" opacity="0.5" />
+              <rect x="-55" y="-11" width="110" height="22" rx="4" fill="#00bb00" stroke="#fff" strokeWidth="1.5" opacity="0.85" />
+              <text x="0" y="3" textAnchor="middle" fill="#fff" fontSize="8.5" fontWeight="bold" fontFamily="monospace">
+                DRS ZONE 2
+              </text>
+            </g>
+
+            {/* Speed trap */}
+            <g className="rt-drs-box" transform="translate(265, 480)" style={{ cursor: 'pointer' }}>
+              <line x1="-15" y1="0" x2="-25" y2="-50" stroke="#ff007f" strokeWidth="0.75" strokeDasharray="2 3" opacity="0.5" />
+              <rect x="-45" y="-11" width="90" height="22" rx="4" fill="#ff007f" stroke="#fff" strokeWidth="1.5" opacity="0.85" />
+              <text x="0" y="3" textAnchor="middle" fill="#fff" fontSize="8.5" fontWeight="bold" fontFamily="monospace">
+                SPEED TRAP
+              </text>
+            </g>
+
+            {/* ─── Moving Car Trail (DOM manipulated) ─── */}
+            <g ref={trailRef} style={{ pointerEvents: 'none' }}>
+              <circle r="7" opacity="0.5" filter="url(#node-glow)" />
+              <circle r="5.5" opacity="0.38" />
+              <circle r="4.2" opacity="0.25" />
+              <circle r="3" opacity="0.14" />
+              <circle r="1.8" opacity="0.06" />
+            </g>
+
             {/* ─── Moving Car ─── */}
             <g ref={carRef} style={{ pointerEvents: 'none' }}>
               {/* Outer soft glow ring */}
-              <circle cx="0" cy="0" r="16" fill={activeTech.color} opacity="0.3" filter="url(#node-glow)" />
+              <circle cx="0" cy="0" r="16" fill={activeTech.color} opacity="0.25" filter="url(#node-glow)" style={{ transition: 'fill 0.3s ease' }} />
               {/* F1 Car silhouette centered at 0,0, facing right */}
               <rect x="-11" y="-8" width="6" height="3" fill="#050505" rx="0.5" />
               <rect x="-11" y="5" width="6" height="3" fill="#050505" rx="0.5" />
@@ -413,60 +556,74 @@ const RaceTrackStack: React.FC = () => {
 
         {/* Telemetry Dashboard Card - Spans Full Width */}
         <div className="rt-details-pane">
-          <div className="rt-card" style={{ '--accent-color': activeTech.color } as React.CSSProperties}>
-            <div className="rt-card-border-glow"></div>
-            
-            <div className="rt-telemetry-layout">
-              
-              {/* Left Column: Tech Identity */}
-              <div className="rt-telemetry-left">
-                <div className="rt-icon-box" style={{ borderColor: activeTech.color, boxShadow: `0 0 10px ${activeTech.color}22` }}>
-                  <ActiveIcon size={22} color={activeTech.color} />
-                </div>
-                <div className="rt-title-box">
-                  <span className="rt-cat-tag">SECTOR: {activeTech.category}</span>
-                  <h3 className="rt-tech-name">{activeTech.label}</h3>
-                </div>
-              </div>
+          <CardSwap
+            width={isMobile ? '90vw' : 680}
+            height={isMobile ? 320 : 200}
+            cardDistance={isMobile ? 6 : 16}
+            verticalDistance={isMobile ? 5 : 10}
+            activeIndex={activeIdx}
+            skewAmount={isMobile ? 2 : 3}
+          >
+            {techStack.map((tech) => {
+              const ActiveIcon = tech.icon;
+              return (
+                <Card
+                  key={tech.id}
+                  style={{ '--accent-color': tech.color } as React.CSSProperties}
+                  className="rt-card"
+                >
+                  <div className="rt-card-border-glow"></div>
+                  <div className="rt-telemetry-layout">
+                    {/* Left Column: Tech Identity */}
+                    <div className="rt-telemetry-left">
+                      <div className="rt-icon-box" style={{ borderColor: tech.color, boxShadow: `0 0 12px ${tech.color}33` }}>
+                        <ActiveIcon size={22} color={tech.color} />
+                      </div>
+                      <div className="rt-title-box">
+                        <span className="rt-cat-tag">SECTOR: {tech.category}</span>
+                        <h3 className="rt-tech-name">{tech.label}</h3>
+                      </div>
+                    </div>
 
-              {/* Right Column: Telemetry Stats & Desc */}
-              <div className="rt-telemetry-right">
-                <p className="rt-tech-desc">
-                  {activeTech.description}
-                </p>
-                
-                <div className="rt-meter-area">
-                  <div className="rt-meter-info">
-                    <span className="rt-meter-label">ENGINE SPEED (PROFICIENCY)</span>
-                    <span className="rt-meter-val" style={{ color: activeTech.color }}>{activeTech.proficiency}%</span>
-                  </div>
-                  <div className="rt-bar-bg">
-                    <div 
-                      className="rt-bar-fill" 
-                      style={{ 
-                        width: `${activeTech.proficiency}%`, 
-                        backgroundColor: activeTech.color,
-                        boxShadow: `0 0 8px ${activeTech.color}44`
-                      }}
-                    ></div>
-                  </div>
-                </div>
+                    {/* Right Column: Telemetry Stats & Desc */}
+                    <div className="rt-telemetry-right">
+                      <p className="rt-tech-desc">
+                        {tech.description}
+                      </p>
+                      
+                      <div className="rt-meter-area">
+                        <div className="rt-meter-info">
+                          <span className="rt-meter-label">ENGINE SPEED (PROFICIENCY)</span>
+                          <span className="rt-meter-val" style={{ color: tech.color }}>{tech.proficiency}%</span>
+                        </div>
+                        <div className="rt-bar-bg">
+                          <div 
+                            className="rt-bar-fill" 
+                            style={{ 
+                              width: `${tech.proficiency}%`, 
+                              backgroundColor: tech.color,
+                              boxShadow: `0 0 8px ${tech.color}44`
+                            }}
+                          ></div>
+                        </div>
+                      </div>
 
-                <div className="rt-card-footer">
-                  <div className="flex gap-4">
-                    <span>LATENCY: {activeTech.latency}</span>
-                    <span>STATUS: OPTIMAL</span>
+                      <div className="rt-card-footer">
+                        <div className="flex gap-4">
+                          <span>LATENCY: {tech.latency}</span>
+                          <span>STATUS: OPTIMAL</span>
+                        </div>
+                        <div className="flex gap-4">
+                          <span className="rt-stat-pill">DIAGNOSTICS: NOMINAL</span>
+                          <span className="rt-stat-lap">LAP TIME: 1:32.482</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex gap-4">
-                    <span className="rt-stat-pill">DIAGNOSTICS: NOMINAL</span>
-                    <span className="rt-stat-lap">LAP TIME: 1:32.482</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
+                </Card>
+              );
+            })}
+          </CardSwap>
         </div>
 
       </div>

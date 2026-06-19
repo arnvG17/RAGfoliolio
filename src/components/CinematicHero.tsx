@@ -199,6 +199,9 @@ const CinematicHero = () => {
           return;
         }
 
+        // Broadcast scroll progress to RaceTrackStack on desktop to prevent dual ScrollTrigger conflicts
+        window.dispatchEvent(new CustomEvent("stack-scroll", { detail: { progress: p } }));
+
         // Desktop logic: Drive the 3D text crawl on the left panel (Expertise panel)
         const expText = document.getElementById("expertise-perspective-text");
 

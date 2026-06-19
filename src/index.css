@@ -89,8 +89,6 @@ All colors MUST be HSL.
     overflow-y: auto;
     min-height: 100vh;
     scroll-behavior: smooth;
-    padding-left: var(--dynamic-px);
-    padding-right: var(--dynamic-px);
   }
 
   html {

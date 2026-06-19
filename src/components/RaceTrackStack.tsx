@@ -290,11 +290,8 @@ const RaceTrackStack: React.FC = () => {
   useEffect(() => {
     updateCar(0);
 
-    const isMobile = window.innerWidth <= 900;
-    let trigger: ScrollTrigger;
-
     if (isMobile) {
-      trigger = ScrollTrigger.create({
+      const trigger = ScrollTrigger.create({
         trigger: '.cinematic-h-panel-stack',
         start: 'top bottom',
         end: 'bottom top',
@@ -303,35 +300,34 @@ const RaceTrackStack: React.FC = () => {
           updateCar(self.progress);
         }
       });
+      return () => {
+        trigger.kill();
+      };
     } else {
-      trigger = ScrollTrigger.create({
-        trigger: '.cinematic-section',
-        start: 'top top',
-        end: '+=800%',
-        scrub: true,
-        onUpdate: (self) => {
-          const p = self.progress;
-          const start = 0.35;
-          const end = 0.65;
-          
-          let carProgress = 0;
-          if (p >= start && p <= end) {
-            carProgress = (p - start) / (end - start);
-          } else if (p > end) {
-            carProgress = 1;
-          } else {
-            carProgress = 0;
-          }
-          
-          updateCar(carProgress);
+      const handleScroll = (e: Event) => {
+        const customEvent = e as CustomEvent<{ progress: number }>;
+        const p = customEvent.detail.progress;
+        const start = 0.35;
+        const end = 0.65;
+        
+        let carProgress = 0;
+        if (p >= start && p <= end) {
+          carProgress = (p - start) / (end - start);
+        } else if (p > end) {
+          carProgress = 1;
+        } else {
+          carProgress = 0;
         }
-      });
-    }
+        
+        updateCar(carProgress);
+      };
 
-    return () => {
-      if (trigger) trigger.kill();
-    };
-  }, []);
+      window.addEventListener("stack-scroll", handleScroll);
+      return () => {
+        window.removeEventListener("stack-scroll", handleScroll);
+      };
+    }
+  }, [isMobile]);
 
   const activeTech = techStack[activeIdx];
   const ActiveIcon = activeTech.icon;
@@ -500,7 +496,7 @@ const RaceTrackStack: React.FC = () => {
                     y={g.ly + 4}
                     textAnchor={isLeft ? 'start' : 'end'}
                     fill={isCurrent ? '#ffffff' : 'rgba(255, 255, 255, 0.3)'}
-                    fontSize="11"
+                    fontSize="14"
                     fontWeight={isCurrent ? '700' : '400'}
                     fontFamily="monospace"
                     className="rt-text-label"
@@ -512,25 +508,7 @@ const RaceTrackStack: React.FC = () => {
               );
             })}
 
-            {/* ─── DRS & Speed Trap visual overlays ─── */}
-            {/* DRS detection zone 1 */}
-            <g className="rt-drs-box" transform="translate(640, 205)" style={{ cursor: 'pointer' }}>
-              <line x1="0" y1="0" x2="80" y2="-105" stroke="#00bb00" strokeWidth="0.75" strokeDasharray="2 3" opacity="0.5" />
-              <rect x="-55" y="-11" width="110" height="22" rx="4" fill="#00bb00" stroke="#fff" strokeWidth="1.5" opacity="0.85" />
-              <text x="0" y="3" textAnchor="middle" fill="#fff" fontSize="8.5" fontWeight="bold" fontFamily="monospace">
-                DRS ZONE 1
-              </text>
-            </g>
-
-            {/* DRS detection zone 2 */}
-            <g className="rt-drs-box" transform="translate(740, 420)" style={{ cursor: 'pointer' }}>
-              <line x1="0" y1="0" x2="20" y2="105" stroke="#00bb00" strokeWidth="0.75" strokeDasharray="2 3" opacity="0.5" />
-              <rect x="-55" y="-11" width="110" height="22" rx="4" fill="#00bb00" stroke="#fff" strokeWidth="1.5" opacity="0.85" />
-              <text x="0" y="3" textAnchor="middle" fill="#fff" fontSize="8.5" fontWeight="bold" fontFamily="monospace">
-                DRS ZONE 2
-              </text>
-            </g>
-
+            {/* ─── Speed Trap visual overlay ─── */}
             {/* Speed trap */}
             <g className="rt-drs-box" transform="translate(265, 480)" style={{ cursor: 'pointer' }}>
               <line x1="-15" y1="0" x2="-25" y2="-50" stroke="#ff007f" strokeWidth="0.75" strokeDasharray="2 3" opacity="0.5" />

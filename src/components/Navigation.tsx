@@ -42,7 +42,7 @@ const Navigation = () => {
         }
 
         setActiveSection(active);
-        setIsFullWidth(active === "stack");
+        setIsFullWidth(active === "stack" || active === "projects");
       },
       { 
         threshold: 0.1, 

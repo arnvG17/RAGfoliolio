@@ -31,6 +31,8 @@ const Navigation = () => {
           active = "contact";
         } else if (intersectionStates["projects"]) {
           active = "projects";
+        } else if (intersectionStates["stack"]) {
+          active = "stack";
         } else if (intersectionStates["expertise"]) {
           active = "expertise";
         } else if (intersectionStates["about"]) {
@@ -40,7 +42,7 @@ const Navigation = () => {
         }
 
         setActiveSection(active);
-        setIsFullWidth(active === "projects");
+        setIsFullWidth(active === "stack");
       },
       { 
         threshold: 0.1, 
@@ -48,7 +50,7 @@ const Navigation = () => {
       }
     );
 
-    const sections = ["home", "about", "expertise", "projects", "contact"];
+    const sections = ["home", "about", "expertise", "stack", "projects", "contact"];
     sections.forEach(id => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);

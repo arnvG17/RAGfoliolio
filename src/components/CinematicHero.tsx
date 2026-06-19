@@ -572,7 +572,7 @@ const CinematicHero = () => {
         </div>
 
         {/* ═══ Panel 2: Stack — revealed via horizontal scroll ═══ */}
-        <div className="cinematic-h-panel cinematic-h-panel-stack">
+        <div id="stack" className="cinematic-h-panel cinematic-h-panel-stack">
           <Stack />
         </div>
 

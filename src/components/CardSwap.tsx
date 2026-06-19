@@ -8,7 +8,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, ...rest }, ref) => (
-  <div ref={ref} {...rest} className={`card ${customClass ?? ''} ${rest.className ?? ''}`.trim()} />
+  <div ref={ref} {...rest} className={`rt-swap-card ${customClass ?? ''} ${rest.className ?? ''}`.trim()} />
 ));
 Card.displayName = 'Card';
 
@@ -98,6 +98,11 @@ const CardSwap: React.FC<CardSwapProps> = ({
     refs.forEach((r, i) => {
       if (r.current) {
         placeNow(r.current, makeSlot(i, cardDistance, verticalDistance, total), skewAmount);
+        const isActive = i === 0;
+        gsap.set(r.current, {
+          scale: isActive ? 1.15 : 0.9,
+          opacity: isActive ? 1 : 0.25
+        });
       }
     });
   }, [cardDistance, verticalDistance, skewAmount, refs]);
@@ -118,51 +123,35 @@ const CardSwap: React.FC<CardSwapProps> = ({
     const newOrder = Array.from({ length: total }, (_, i) => (targetIdx + i) % total);
     order.current = newOrder;
 
-    const tl = gsap.timeline();
-    tlRef.current = tl;
-
     newOrder.forEach((cardIdx, slotIdx) => {
       const el = refs[cardIdx].current;
       if (!el) return;
 
       const slot = makeSlot(slotIdx, cardDistance, verticalDistance, total);
 
-      // Special visual drop-swap animation for the card that was at the front
-      if (cardIdx === prevFrontIndex && slotIdx > 0) {
-        const dropTimeline = gsap.timeline();
-        dropTimeline.to(el, {
-          y: '+=250',
-          duration: config.durDrop * 0.35,
-          ease: 'power2.in'
-        })
-        .set(el, { zIndex: slot.zIndex })
-        .to(el, {
-          x: slot.x,
-          y: slot.y,
-          z: slot.z,
-          duration: config.durReturn * 0.5,
-          ease: config.ease
-        });
-        tl.add(dropTimeline, 0);
-      } else {
-        // Promote/shuffle other cards into their new slot positions
-        tl.to(
-          el,
-          {
-            x: slot.x,
-            y: slot.y,
-            z: slot.z,
-            zIndex: slot.zIndex,
-            duration: config.durMove * 0.45,
-            ease: config.ease
-          },
-          slotIdx * 0.04
-        );
-      }
+      // Kill active tweens to prevent conflict
+      gsap.killTweensOf(el);
+
+      const isActive = slotIdx === 0;
+
+      // Absolute positioning animation prevents layout drift on rapid updates
+      gsap.to(el, {
+        x: slot.x,
+        y: slot.y,
+        z: slot.z,
+        zIndex: slot.zIndex,
+        scale: isActive ? 1.15 : 0.9,
+        opacity: isActive ? 1 : 0.25,
+        duration: 0.35,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
     });
 
     return () => {
-      tl.kill();
+      refs.forEach(r => {
+        if (r.current) gsap.killTweensOf(r.current);
+      });
     };
   }, [activeIndex, cardDistance, verticalDistance, refs, config.durDrop, config.durReturn, config.durMove, config.ease]);
 

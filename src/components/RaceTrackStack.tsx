@@ -175,6 +175,9 @@ const grandstands: GrandstandPos[] = [
 
 const RaceTrackStack: React.FC = () => {
   const [activeIdx, setActiveIdx] = useState<number>(0);
+  const activeIdxRef = useRef<number>(0);
+  activeIdxRef.current = activeIdx;
+
   const [pathLength, setPathLength] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   
@@ -251,10 +254,22 @@ const RaceTrackStack: React.FC = () => {
       }
     });
 
+    // Switch card only when car is within 65px of the closest milestone.
+    // Use progress boundaries for safe start/end transitions.
+    const REACH_THRESHOLD = 65; // px in SVG space
+    let newActiveIdx = activeIdxRef.current;
+    if (minDist < REACH_THRESHOLD) {
+      newActiveIdx = nearestIdx;
+    } else if (progress < 0.01) {
+      newActiveIdx = 0;
+    } else if (progress > 0.99) {
+      newActiveIdx = techStack.length - 1;
+    }
+
     // Update glowing tail trail points directly in the DOM for peak scroll performance
     const trail = trailRef.current;
     if (trail && trail.children) {
-      const activeColor = techStack[nearestIdx]?.color || '#ffffff';
+      const activeColor = techStack[newActiveIdx]?.color || '#ffffff';
       for (let i = 1; i <= 5; i++) {
         const trailCircle = trail.children[i - 1];
         if (trailCircle) {
@@ -267,7 +282,9 @@ const RaceTrackStack: React.FC = () => {
       }
     }
 
-    setActiveIdx(nearestIdx);
+    if (newActiveIdx !== activeIdxRef.current) {
+      setActiveIdx(newActiveIdx);
+    }
   };
 
   useEffect(() => {
@@ -557,68 +574,33 @@ const RaceTrackStack: React.FC = () => {
         {/* Telemetry Dashboard Card - Spans Full Width */}
         <div className="rt-details-pane">
           <CardSwap
-            width={isMobile ? '90vw' : 680}
-            height={isMobile ? 320 : 200}
-            cardDistance={isMobile ? 6 : 16}
-            verticalDistance={isMobile ? 5 : 10}
+            width={isMobile ? 150 : 180}
+            height={isMobile ? 150 : 180}
+            cardDistance={isMobile ? 4 : -6}
+            verticalDistance={isMobile ? 4 : 8}
             activeIndex={activeIdx}
-            skewAmount={isMobile ? 2 : 3}
+            skewAmount={isMobile ? 2 : 2}
           >
-            {techStack.map((tech) => {
+            {techStack.map((tech, idx) => {
               const ActiveIcon = tech.icon;
+              const isCurrent = activeIdx === idx;
               return (
                 <Card
                   key={tech.id}
-                  style={{ '--accent-color': tech.color } as React.CSSProperties}
-                  className="rt-card"
+                  className={`rt-square-card ${isCurrent ? 'active' : ''}`}
                 >
-                  <div className="rt-card-border-glow"></div>
-                  <div className="rt-telemetry-layout">
-                    {/* Left Column: Tech Identity */}
-                    <div className="rt-telemetry-left">
-                      <div className="rt-icon-box" style={{ borderColor: tech.color, boxShadow: `0 0 12px ${tech.color}33` }}>
-                        <ActiveIcon size={22} color={tech.color} />
-                      </div>
-                      <div className="rt-title-box">
-                        <span className="rt-cat-tag">SECTOR: {tech.category}</span>
-                        <h3 className="rt-tech-name">{tech.label}</h3>
-                      </div>
+                  {/* iOS-style Top Window Header with 3 Dots */}
+                  <div className="rt-ios-header">
+                    <div className="rt-ios-dot" />
+                    <div className="rt-ios-dot" />
+                    <div className="rt-ios-dot" />
+                  </div>
+                  
+                  <div className="rt-square-layout">
+                    <div className="rt-square-icon-box">
+                      <ActiveIcon size={36} color={isCurrent ? '#ffffff' : 'rgba(255, 255, 255, 0.4)'} />
                     </div>
-
-                    {/* Right Column: Telemetry Stats & Desc */}
-                    <div className="rt-telemetry-right">
-                      <p className="rt-tech-desc">
-                        {tech.description}
-                      </p>
-                      
-                      <div className="rt-meter-area">
-                        <div className="rt-meter-info">
-                          <span className="rt-meter-label">ENGINE SPEED (PROFICIENCY)</span>
-                          <span className="rt-meter-val" style={{ color: tech.color }}>{tech.proficiency}%</span>
-                        </div>
-                        <div className="rt-bar-bg">
-                          <div 
-                            className="rt-bar-fill" 
-                            style={{ 
-                              width: `${tech.proficiency}%`, 
-                              backgroundColor: tech.color,
-                              boxShadow: `0 0 8px ${tech.color}44`
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="rt-card-footer">
-                        <div className="flex gap-4">
-                          <span>LATENCY: {tech.latency}</span>
-                          <span>STATUS: OPTIMAL</span>
-                        </div>
-                        <div className="flex gap-4">
-                          <span className="rt-stat-pill">DIAGNOSTICS: NOMINAL</span>
-                          <span className="rt-stat-lap">LAP TIME: 1:32.482</span>
-                        </div>
-                      </div>
-                    </div>
+                    <h3 className="rt-square-tech-name">{tech.label}</h3>
                   </div>
                 </Card>
               );
